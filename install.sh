@@ -6,7 +6,7 @@
 # `piggyback install` — which installs stock codegraph if absent, reconciles
 # your global hooks, and drops a `piggyback` launcher on PATH.
 #
-#   curl -fsSL https://raw.githubusercontent.com/<YOUR_GH_USER>/codegraph-piggyback/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/PhatChenh/codegraph-piggyback/main/install.sh | sh
 #
 # Uninstall:  piggyback uninstall   (then: rm -rf ~/.codegraph-piggyback)
 #
@@ -15,8 +15,7 @@
 #   PIGGYBACK_INSTALL_DIR clone location    (default: ~/.codegraph-piggyback)
 set -eu
 
-# >>> EDIT THIS to your fork's slug, or export PIGGYBACK_REPO before running. <<<
-REPO="${PIGGYBACK_REPO:-YOUR_GH_USER/codegraph-piggyback}"
+REPO="${PIGGYBACK_REPO:-PhatChenh/codegraph-piggyback}"
 DIR="${PIGGYBACK_INSTALL_DIR:-$HOME/.codegraph-piggyback}"
 URL="https://github.com/${REPO}.git"
 

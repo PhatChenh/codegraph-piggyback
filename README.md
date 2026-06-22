@@ -32,7 +32,7 @@ One line — clones the repo to `~/.codegraph-piggyback`, installs stock codegra
 if absent, reconciles your global hooks, and puts a `piggyback` launcher on PATH:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/<YOUR_GH_USER>/codegraph-piggyback/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/PhatChenh/codegraph-piggyback/main/install.sh | sh
 ```
 
 Then **restart your agent session** (Claude Code loads hooks at session start),
