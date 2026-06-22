@@ -4,6 +4,83 @@ Tools and scripts that query `codegraph.db` to enforce better AI coding agent be
 
 Codegraph docs: https://github.com/colbymchenry/codegraph/tree/main
 
+## How it works
+
+[`piggyback.py`](piggyback.py) wires the hook scripts (impact-analyzer, gate, …)
+into Claude Code's `settings.json`. [`manifest.json`](manifest.json) is the
+single source of truth: each entry = one script + its hook event(s)/matcher(s) +
+scope (`global` → `~/.claude`, `repo` → `./.claude`).
+
+Two roles:
+
+- **Dev machine** (this repo): you add/edit scripts and run `piggyback add` /
+  `rm` to mutate the manifest, then **`git commit && git push`**.
+- **Any machine** (consumer): `piggyback install` / `init` / `update` pull the
+  newest manifest from your remote and **reconcile** `settings.json` to match it —
+  adding new hooks **and removing ones the manifest no longer lists**. Only hooks
+  *piggyback wrote* (scripts under the install dir) are touched; your own hooks
+  are left alone.
+
+Prereqs: **Python 3**, **git**, **curl**.
+
+> **Before first use:** set your repo slug. Edit `REPO=` in [`install.sh`](install.sh)
+> (or `export PIGGYBACK_REPO=you/codegraph-piggyback`), and push this repo to GitHub.
+
+## Setup (new machine)
+
+One line — clones the repo to `~/.codegraph-piggyback`, installs stock codegraph
+if absent, reconciles your global hooks, and puts a `piggyback` launcher on PATH:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/<YOUR_GH_USER>/codegraph-piggyback/main/install.sh | sh
+```
+
+Then **restart your agent session** (Claude Code loads hooks at session start),
+and make sure `~/.local/bin` is on your PATH so the `piggyback` command resolves.
+
+### Per repo (once each)
+
+```sh
+cd /path/to/repo
+piggyback init
+```
+
+Idempotent: indexes the repo only if `.codegraph/` is missing, and reconciles the
+repo-scope hooks. Safe to re-run.
+
+### Updating — consumers
+
+`install` / `init` / `update` **self-update first** (`git pull` the install dir),
+so you always run the newest scripts + manifest. Offline / local edits → it skips
+the pull and uses the local copy (never blocks). To refresh a machine:
+
+```sh
+piggyback update          # pull + reconcile global (and the current repo if indexed)
+piggyback update --no-update   # reconcile only, skip the pull
+```
+
+Changing a script's *content* (not its hooks) needs no `settings.json` edit at
+all — the hook path is stable, so a `pull` is enough.
+
+### Adding / changing / removing scripts — dev machine
+
+```sh
+# add or update an entry (overwrite-by-name), then apply it locally:
+piggyback add doc-coverage --script doc-coverage/doc_coverage.py \
+  --scope repo --hook 'PostToolUse:Edit|Write'
+# multi-hook script: repeat --hook
+piggyback add codegraph-gate --script codegraph_adoption/codegraph-gate.py \
+  --scope repo --hook 'PreToolUse:Grep|Glob|Read' --hook 'PostToolUse:mcp__codegraph__.*'
+# remove an entry (and its hooks locally):
+piggyback rm doc-coverage
+```
+
+Then **`git commit && git push`**. Consumers pick up the change — add *or* remove —
+on their next `init` / `update`.
+
+`status` shows what's registered; `unregister <name>` / `uninstall` reverse things
+manually.
+
 ## Tools
 
 | Folder | What | Delivery | Status |
