@@ -134,24 +134,6 @@ def main():
         check("unparseable settings aborts (exit 1)", res.returncode == 1)
         check("unparseable settings not clobbered", g.read_text() == "{ not json ]")
 
-        # 10. PORTABILITY: a script under $HOME renders as a $HOME-relative
-        #     command (portable across machines); a path outside stays absolute.
-        import importlib.util
-        spec = importlib.util.spec_from_file_location("piggyback", CLI)
-        pg = importlib.util.module_from_spec(spec); spec.loader.exec_module(pg)
-        old_home = os.environ.get("HOME")
-        try:
-            os.environ["HOME"] = str(home)
-            inside = Path(home) / ".codegraph-piggyback" / GATE
-            check("portable path uses $HOME (not absolute home)",
-                  pg._portable_path(inside)
-                  == "$HOME/.codegraph-piggyback/" + GATE)
-            check("non-home path stays absolute",
-                  pg._portable_path(Path("/opt/tools/x.py")) == "/opt/tools/x.py")
-        finally:
-            if old_home is not None:
-                os.environ["HOME"] = old_home
-
     print(f"\n{PASS} passed, {FAIL} failed")
     sys.exit(1 if FAIL else 0)
 

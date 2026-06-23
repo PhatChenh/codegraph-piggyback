@@ -87,46 +87,19 @@ def script_entry(scripts: dict, name: str) -> dict:
     return scripts[name]
 
 
-def _portable_path(p: Path) -> str:
-    """Render an absolute script path as a $HOME-relative shell token when it
-    lives under the user's home, so the command string committed to
-    settings.json is portable across machines/users. The install convention is
-    ~/.codegraph-piggyback (install.sh), so `$HOME/<rel>` resolves on every
-    machine. `$HOME` is left UNQUOTED so the shell expands it; only the
-    remainder is shlex-quoted (a no-op for ordinary paths). Paths outside the
-    home dir fall back to the quoted absolute path."""
-    try:
-        rel = p.relative_to(Path.home())
-    except ValueError:
-        return shlex.quote(str(p))
-    return f"$HOME/{shlex.quote(str(rel))}"
-
-
 def hook_command(entry: dict) -> str:
     """The exact command string written into settings.json — also the
-    dedupe/ownership key, so it must be stable across runs AND machines.
-    Emits a $HOME-relative path (see _portable_path) so a committed
-    settings.json is not pinned to one machine's absolute home."""
+    dedupe/ownership key, so it must be stable across runs."""
     abs_path = (ROOT / entry["script"]).resolve()
     if not abs_path.exists():
         warn(f"script file missing (registering anyway): {abs_path}")
-    return f"python3 {_portable_path(abs_path)}"
+    return f"python3 {shlex.quote(str(abs_path))}"
 
 
 def is_owned(command: str) -> bool:
     """A hook is ours (and thus removable on reconcile) iff its command runs a
-    script under the install root — matched in either the portable
-    ($HOME-relative) form OR a legacy absolute form, so pre-portability entries
-    are still recognized and migrated. Distinguishes our hooks from the user's own."""
-    if not (isinstance(command, str) and command.startswith("python3 ")):
-        return False
-    if str(ROOT) in command:                       # legacy absolute (this machine)
-        return True
-    try:
-        root_rel = f"$HOME/{ROOT.relative_to(Path.home())}"
-    except ValueError:
-        return False
-    return root_rel in command                     # portable $HOME-relative form
+    script under the install root. Distinguishes our hooks from the user's own."""
+    return isinstance(command, str) and command.startswith("python3 ") and str(ROOT) in command
 
 
 # ── settings.json paths + io ──────────────────────────────────────────────────
