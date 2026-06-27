@@ -27,7 +27,11 @@ Design:
 Commands:
   install                 self-update + install codegraph (if absent) +
                           reconcile global hooks + install the `piggyback` launcher
-  init                    self-update + index repo (if needed) + reconcile repo hooks
+  init                    per-repo setup (single command, idempotent): pick the
+                          REPO-scoped scripts (default all) + install codegraph (if
+                          absent) + index repo (if needed) + wire chosen hooks
+                          (add-only) + seed decision-index (if absent).
+                          Global-scoped scripts belong to `install`.
   update                  self-update + reconcile global (and repo, if cwd indexed)
   add <name> ...          DEV: upsert a manifest entry, then apply locally
   rm <name>               DEV: delete a manifest entry, then apply locally
@@ -367,19 +371,129 @@ def cmd_install(args) -> None:
     restart_note()
 
 
-def cmd_init(args) -> None:
-    self_update(args)
+def ensure_codegraph_and_index(args) -> None:
+    """Make sure codegraph is on PATH and the current repo is indexed. Idempotent:
+    installs codegraph only if absent, runs `codegraph init` only if .codegraph/
+    is missing."""
     if (Path.cwd() / ".codegraph").is_dir():
         ok("repo already indexed (.codegraph/ present) — skipping `codegraph init`")
-    elif not check_codegraph(warn_only=False):
-        die("codegraph not on PATH and repo not indexed. Run `piggyback install` "
-            "first, then re-run `piggyback init`.")
+        return
+    if not check_codegraph(warn_only=True):
+        if args.no_codegraph:
+            die("codegraph not on PATH (--no-codegraph) and repo not indexed; cannot init.")
+        install_codegraph()
+        if not check_codegraph(warn_only=False):
+            die("codegraph still not on PATH after install — add its bin dir to PATH "
+                "(usually ~/.local/bin) or restart your shell, then re-run `piggyback init`.")
+    info("running `codegraph init`…")
+    rc = subprocess.call(["codegraph", "init"])
+    if rc != 0:
+        die(f"`codegraph init` exited {rc}; aborting.")
+
+
+def select_scripts(scripts: dict, args) -> dict:
+    """Ask which scripts to install, defaulting to all. --all or a non-interactive
+    stdin installs everything without prompting. Returns the chosen {name: entry}."""
+    names = sorted(scripts)
+    if getattr(args, "all", False) or not sys.stdin.isatty():
+        if not getattr(args, "all", False):
+            info("non-interactive stdin — installing all scripts.")
+        return {n: scripts[n] for n in names}
+
+    info("Available piggyback scripts:")
+    for i, n in enumerate(names, 1):
+        e = scripts[n]
+        info(f"  {i}) {n}  ({e.get('scope', '?')})  — {e.get('desc', '')}")
+    try:
+        ans = input("Install which? [Enter=all, e.g. 1,3, or 'n'=none]: ").strip()
+    except EOFError:
+        ans = ""
+    if ans.lower() in ("n", "none"):
+        return {}
+    if ans == "" or ans.lower() in ("a", "all"):
+        return {n: scripts[n] for n in names}
+    chosen = {}
+    for tok in ans.replace(" ", "").split(","):
+        if tok.isdigit() and 1 <= int(tok) <= len(names):
+            n = names[int(tok) - 1]
+            chosen[n] = scripts[n]
+        else:
+            warn(f"ignoring '{tok}' (not a listed number)")
+    return chosen
+
+
+def apply_entry(scope: str, entry: dict) -> int:
+    """Add an entry's hooks into a scope's settings.json. Add-only + idempotent
+    (dedupes on command), so re-running only writes genuinely new hooks. Returns
+    the number of hooks added."""
+    path = settings_path(scope)
+    settings = read_settings(path)
+    cmd = hook_command(entry)
+    added = 0
+    for h in entry.get("hooks", []):
+        if add_hook(settings, h["event"], h["matcher"], cmd):
+            added += 1
+    if added:
+        write_settings(path, settings)
+    return added
+
+
+def bootstrap_decision_index(args) -> None:
+    """Seed docs/decision-index.json from docs/adrs/*.md if absent. Idempotent:
+    never overwrites a curated index. No ADRs / unindexed repo → skip quietly."""
+    cwd = Path.cwd()
+    index = cwd / "docs" / "decision-index.json"
+    if index.exists():
+        ok("decision index present — leaving it (curated). Use `decision_index status`/`refresh`.")
+        return
+    if not sorted(cwd.glob("docs/adrs/*.md")):
+        info("no docs/adrs/*.md — skipping decision-index seed (nothing to track yet).")
+        return
+    if not (cwd / ".codegraph").is_dir():
+        warn("repo not indexed — skipping decision-index seed.")
+        return
+    script = ROOT / "ssot-diagram" / "decision_index.py"
+    info("seeding decision index from docs/adrs/*.md …")
+    rc = subprocess.call([sys.executable, str(script), "bootstrap"])
+    if rc == 0:
+        ok("seeded docs/decision-index.json — curate it (every anchor is verified:false).")
     else:
-        info("running `codegraph init`…")
-        rc = subprocess.call(["codegraph", "init"])
-        if rc != 0:
-            die(f"`codegraph init` exited {rc}; not reconciling repo hooks.")
-    reconcile_report("repo")
+        warn(f"`decision_index bootstrap` exited {rc}; seed skipped.")
+
+
+def cmd_init(args) -> None:
+    """Single per-repo setup: pick the REPO-scoped scripts (default all), ensure
+    codegraph + index, wire the chosen hooks (add-only/idempotent), seed the
+    decision index. Project-level only — global-scoped scripts belong to
+    `piggyback install`. Safe to re-run."""
+    self_update(args)
+    scripts = {n: e for n, e in load_manifest().items() if e.get("scope") == "repo"}
+    if not scripts:
+        info("no repo-scoped scripts in the manifest — nothing for `init` to do.")
+        return
+    chosen = select_scripts(scripts, args)
+    if not chosen:
+        info("nothing selected — done.")
+        return
+
+    ensure_codegraph_and_index(args)
+
+    if set(chosen) == set(scripts):
+        # Full selection → reconcile: idempotent AND self-healing. Removes our own
+        # stale hooks (e.g. a script whose folder was renamed) and adds the current
+        # ones, so a re-run after a rename never duplicates or orphans.
+        reconcile_report("repo")
+    else:
+        # Subset → add-only (can't prune, or we'd drop the unselected scripts).
+        for name in sorted(chosen):
+            added = apply_entry("repo", chosen[name])
+            ok(f"{name} → repo: " + (f"+{added} hook(s)" if added else "already present"))
+        warn("subset install — stale hooks from unselected scripts aren't pruned; "
+             "run `piggyback update` to reconcile the whole scope.")
+
+    if "decision-index" in chosen:
+        bootstrap_decision_index(args)
+
     restart_note()
 
 
@@ -554,7 +668,9 @@ def build_parser() -> argparse.ArgumentParser:
     add_no_update(pin)
     pin.set_defaults(fn=cmd_install)
 
-    pi = sub.add_parser("init", help="index repo if needed + reconcile repo hooks")
+    pi = sub.add_parser("init", help="per-repo setup: pick repo-scoped scripts (default all), codegraph + index, wire hooks, seed decision index")
+    pi.add_argument("--all", action="store_true", help="install all repo-scoped scripts without prompting")
+    pi.add_argument("--no-codegraph", action="store_true", help="don't auto-install codegraph")
     add_no_update(pi)
     pi.set_defaults(fn=cmd_init)
 

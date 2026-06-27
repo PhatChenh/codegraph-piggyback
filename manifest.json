@@ -1,19 +1,29 @@
 {
-  "_comment": "Registration source for piggyback.py. One entry per hook script. To add a new script: drop the file in the repo, add an entry here, then run `piggyback register <name>`. 'script' is relative to the repo root (the dir holding piggyback.py). 'scope' decides which settings.json gets the hook: global = ~/.claude/settings.json (every project), repo = ./.claude/settings.json (current repo only). Each hook = one Claude Code event + matcher; a script may register several.",
+  "_comment": "Registration source for piggyback.py. One entry per hook script. To add a new script: drop the file in the repo, add an entry here, then run `piggyback register <name>`. 'script' is relative to the repo root (the dir holding piggyback.py). A folder usually matches its entry key, but a larger feature may host several scripts under one folder (e.g. ssot-diagram/ hosts the decision-index engine + hook). 'scope' decides which settings.json gets the hook: global = ~/.claude/settings.json (every project), repo = ./.claude/settings.json (current repo only). 'desc' is shown in the `piggyback init` picker. Each hook = one Claude Code event + matcher; a script may register several.",
   "scripts": {
     "impact-analyzer": {
       "script": "impact-analyzer/impact-analyzer.py",
       "scope": "global",
+      "desc": "PostToolUse:Read — show callers affected by what you just read",
       "hooks": [
         { "event": "PostToolUse", "matcher": "Read" }
       ]
     },
     "codegraph-gate": {
-      "script": "codegraph_adoption/codegraph-gate.py",
+      "script": "codegraph-gate/codegraph-gate.py",
       "scope": "repo",
+      "desc": "codegraph-first ordering gate — steer Grep/Glob/Read after codegraph",
       "hooks": [
         { "event": "PreToolUse", "matcher": "Grep|Glob|Read" },
         { "event": "PostToolUse", "matcher": "mcp__codegraph__.*" }
+      ]
+    },
+    "decision-index": {
+      "script": "ssot-diagram/decision_hook.py",
+      "scope": "repo",
+      "desc": "surface stale ADRs on Read (anchors drifted in codegraph)",
+      "hooks": [
+        { "event": "PostToolUse", "matcher": "Read" }
       ]
     }
   }

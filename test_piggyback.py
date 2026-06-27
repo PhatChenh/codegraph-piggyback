@@ -19,7 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 CLI = ROOT / "piggyback.py"
 IMPACT = "impact-analyzer/impact-analyzer.py"
-GATE = "codegraph_adoption/codegraph-gate.py"
+GATE = "codegraph-gate/codegraph-gate.py"
 PASS = FAIL = 0
 
 

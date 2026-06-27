@@ -28,25 +28,56 @@ Prereqs: **Python 3**, **git**, **curl**.
 
 ## Setup (new machine)
 
-One line — clones the repo to `~/.codegraph-piggyback`, installs stock codegraph
-if absent, reconciles your global hooks, and puts a `piggyback` launcher on PATH:
+**The install root is whichever checkout you run `install` from.** `piggyback install`
+writes the `piggyback` launcher (`~/.local/bin/piggyback`) to point at *that* checkout,
+installs stock codegraph if absent, and reconciles your **global**-scoped hooks. Pick a
+model:
+
+**A — Consumer (use the published hooks).** One line: clones to the fixed path
+`~/.codegraph-piggyback` (same on every machine → portable) and runs `install` for you:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/PhatChenh/codegraph-piggyback/main/install.sh | sh
 ```
 
-Then **restart your agent session** (Claude Code loads hooks at session start),
-and make sure `~/.local/bin` is on your PATH so the `piggyback` command resolves.
+**B — Dev machine (edit + use the same checkout).** Clone wherever you work, then run
+`install` from that clone — it becomes the root, so edits to scripts go live immediately
+(no commit/pull):
+
+```sh
+git clone https://github.com/PhatChenh/codegraph-piggyback.git ~/projects/codegraph-piggyback
+python3 ~/projects/codegraph-piggyback/piggyback.py install
+```
+
+Either way: **restart your agent session** afterwards, and ensure `~/.local/bin` is on
+your PATH so `piggyback` resolves. **Switching the root later** = just run `install` from
+the checkout you want — it rewrites the launcher, no manual edit. (Avoid two checkouts
+both wired into the same repo: hooks carry the path of the root that wrote them, so two
+roots = duplicate hooks. One root per machine.)
 
 ### Per repo (once each)
 
 ```sh
 cd /path/to/repo
-piggyback init
+piggyback init            # interactive: pick scripts (default = all)
+piggyback init --all      # non-interactive: install everything, no prompt
 ```
 
-Idempotent: indexes the repo only if `.codegraph/` is missing, and reconciles the
-repo-scope hooks. Safe to re-run.
+`init` is the single per-repo setup and is **idempotent / safe to re-run**. In one
+command it:
+
+1. **asks which scripts to install** (Enter = all; or `1,3`; or `n` = none). A
+   non-interactive stdin (CI, pipes) installs all without prompting.
+2. installs codegraph if absent and runs `codegraph init` only if `.codegraph/`
+   is missing.
+3. wires the chosen repo-scoped hooks. Full selection **reconciles** (idempotent +
+   self-healing: re-runs never duplicate, and a renamed/removed script's old hook is
+   pruned); a subset is add-only (run `piggyback update` to reconcile the whole scope).
+4. if **decision-index** was chosen, **seeds `docs/decision-index.json`** from
+   `docs/adrs/*.md` (only when absent — your curated index is never clobbered).
+
+Per-script control still exists: `piggyback register <name>` / `unregister <name>`
+wire one script at a time; `piggyback status` shows what's registered.
 
 ### Updating — consumers
 
@@ -69,7 +100,7 @@ all — the hook path is stable, so a `pull` is enough.
 piggyback add doc-coverage --script doc-coverage/doc_coverage.py \
   --scope repo --hook 'PostToolUse:Edit|Write'
 # multi-hook script: repeat --hook
-piggyback add codegraph-gate --script codegraph_adoption/codegraph-gate.py \
+piggyback add codegraph-gate --script codegraph-gate/codegraph-gate.py \
   --scope repo --hook 'PreToolUse:Grep|Glob|Read' --hook 'PostToolUse:mcp__codegraph__.*'
 # remove an entry (and its hooks locally):
 piggyback rm doc-coverage
@@ -80,6 +111,52 @@ on their next `init` / `update`.
 
 `status` shows what's registered; `unregister <name>` / `uninstall` reverse things
 manually.
+
+## Active scripts
+
+A folder usually matches its manifest key; a larger feature may host several
+scripts under one folder (e.g. `ssot-diagram/` hosts the `decision-index` engine +
+hook). The `init` picker lists these:
+
+| Name | Scope | Hook(s) | What |
+|---|---|---|---|
+| `impact-analyzer` | global | `PostToolUse:Read` | show callers affected by what you just read |
+| `codegraph-gate` | repo | `PreToolUse:Grep\|Glob\|Read` + `PostToolUse:mcp__codegraph__.*` | codegraph-first ordering gate |
+| `decision-index` | repo | `PostToolUse:Read` | surface stale ADRs when you read them |
+
+Scope decides the installer: **`piggyback init`** (per-repo) wires the **repo**-scoped
+scripts into `./.claude` and its picker lists only those; **`piggyback install`**
+(per-machine) wires the **global**-scoped scripts into `~/.claude`. So
+`impact-analyzer` comes from `install`; `codegraph-gate` + `decision-index` from `init`.
+
+### decision-index — decision-staleness tracking
+
+Tracks whether the code an ADR depends on has drifted, deterministically, off the
+codegraph index. Each decision declares **anchors** (a file or a symbol) with a
+**signature** snapshot; the engine recomputes and compares — no LLM in the verdict.
+
+States: `FRESH` (unchanged) · `STALE` (code drifted, review it) · `ORPHANED`
+(anchor gone) · `AMBIGUOUS` (anchor matches >1 symbol).
+
+The hook (wired by `init`) **surfaces** staleness when you read an ADR; it never
+edits the ADR. Resolution is human-gated.
+
+The engine is also a standalone CLI ([`ssot-diagram/decision_index.py`](ssot-diagram/decision_index.py)):
+
+```sh
+# from a codegraph-indexed repo with docs/adrs/*.md:
+decision_index bootstrap              # seed docs/decision-index.json (also run by `piggyback init`)
+decision_index status                 # FRESH/STALE/ORPHANED per anchor; exit 1 if any not FRESH
+decision_index status --json          # machine-readable (CI gate)
+decision_index check docs/adrs/ADR-0007-*.md   # one doc (the hook calls this)
+decision_index refresh ADR-0007       # re-snapshot after confirming the decision still holds
+```
+
+`bootstrap` is a **seed**: every anchor lands `verified:false` for you to curate
+(drop wrong anchors, disambiguate `name@path`, set `supersedes`). Ambiguous /
+unresolved doc tokens are skipped and reported, never guessed. Anchor signatures
+come from `.codegraph/codegraph.db` (read-only): file anchor = `files.content_hash`;
+symbol anchor = sha256 of the symbol's source slice.
 
 ## Tools
 

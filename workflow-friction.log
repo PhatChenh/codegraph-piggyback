@@ -1,0 +1,154 @@
+{"ts": "2026-06-27T01:13:07Z", "session": "7895af2c-9bd1-4e34-a86d-379bd4be6e04", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-06-27T01:13:07Z", "session": "7895af2c-9bd1-4e34-a86d-379bd4be6e04", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 166}
+{"ts": "2026-06-27T01:13:10Z", "session": "7895af2c-9bd1-4e34-a86d-379bd4be6e04", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-06-27T01:13:10Z", "session": "77985", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-06-27T01:13:10Z", "session": "77985", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 73}
+{"ts": "2026-06-27T01:14:33Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-06-27T01:14:34Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["SEC-DEP-AUDIT-001", "FW-M2-RT-005", "SEC-AUTH-ENUM-001", "CLEAN-COMMENT-002", "PERF-LAZY-001"]}
+{"ts": "2026-06-27T01:15:31Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T01:15:31Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 181}
+{"ts": "2026-06-27T01:15:33Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 400, "rules_returned_count": 10, "rule_ids": ["SEC-INJ-CMD-002", "ERR-CIRCUIT-001", "ARCH-ASYNC-001", "ARCH-ENV-001", "ARCH-ASYNC-002", "ERR-HANDLE-002", "CLEAN-FUNC-003", "ENF-PRE-001", "PERF-ASYNC-001", "SEC-AUTH-TIMING-001"]}
+{"ts": "2026-06-27T01:15:33Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 495}
+{"ts": "2026-06-27T01:15:37Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T01:15:37Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 128}
+{"ts": "2026-06-27T01:15:38Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 320, "rules_returned_count": 8, "rule_ids": ["CLEAN-NAME-001", "DOC-INLINE-001", "DOC-TYPE-001", "PY-PYDANTIC-001", "SEC-VAL-REGEX-001", "PERF-MEM-002", "CLEAN-SIDE-001", "CLEAN-NEST-001"]}
+{"ts": "2026-06-27T01:15:38Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 379}
+{"ts": "2026-06-27T01:15:43Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T01:15:43Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 124}
+{"ts": "2026-06-27T01:16:00Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 53}
+{"ts": "2026-06-27T01:45:00Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["DOC-ONBOARD-001", "SEC-DEP-REVIEW-001", "ERR-HANDLE-001", "DRY-TEMPLATE-001", "SEC-RATE-UPLOAD-001"]}
+{"ts": "2026-06-27T01:58:22Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 42}
+{"ts": "2026-06-27T02:03:50Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["DOC-ARCH-001", "TEST-PERF-001", "ENF-OPS-001", "PERF-OPT-001", "ENF-SYS-002"]}
+{"ts": "2026-06-27T02:07:38Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 50}
+{"ts": "2026-06-27T02:13:33Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "approval_pattern_miss", "prompt": "ok,i confirm the approach, so what would we build for this: what artifact will there be?"}
+{"ts": "2026-06-27T02:13:33Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["ARCH-STATE-002", "ENF-PRE-004", "PY-IMPORT-001", "FW-M2-002", "DOC-README-001"]}
+{"ts": "2026-06-27T02:14:08Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 48}
+{"ts": "2026-06-27T02:15:40Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "approval_pattern_miss", "prompt": "ok, go A. B should be the real e2e test of A, not u write it. After done A, ill run it on mkt_engine to get B"}
+{"ts": "2026-06-27T02:15:40Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["TEST-INT-001", "TEST-NAME-001", "PHP-ERR-001", "TEST-EDGE-001", "ENF-POST-004"]}
+{"ts": "2026-06-27T02:18:16Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "approval_pattern_miss", "prompt": "ok, go A. B should be the real e2e test of A, not u write it. After done A, ill run it on mkt_engine to get B"}
+{"ts": "2026-06-27T02:18:16Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["TEST-ISOLATE-001", "TEST-CI-001", "FW-M2-006", "PERF-CACHE-004", "PERF-CACHE-003"]}
+{"ts": "2026-06-27T02:18:51Z", "session": "679c49d6-96dd-4cf9-9f8c-360eded7587a", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-06-27T02:18:51Z", "session": "679c49d6-96dd-4cf9-9f8c-360eded7587a", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 169}
+{"ts": "2026-06-27T02:19:02Z", "session": "6695a3dd-7b6e-4fc2-bf3d-3f57b102deec", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-06-27T02:19:02Z", "session": "6695a3dd-7b6e-4fc2-bf3d-3f57b102deec", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 174}
+{"ts": "2026-06-27T02:24:26Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "approval_pattern_match", "matched_prompt": "continue", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-06-27T02:24:26Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-06-27T02:24:26Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 155}
+{"ts": "2026-06-27T02:27:13Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:27:13Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 146}
+{"ts": "2026-06-27T02:28:26Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:28:26Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 137}
+{"ts": "2026-06-27T02:28:27Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 200, "rules_returned_count": 5, "rule_ids": ["ARCH-MIGRATION-001", "SEC-INJ-SQL-002", "SCALE-MIGRATE-001", "SEC-DEP-LOCK-001", "ERR-FALLBACK-001"]}
+{"ts": "2026-06-27T02:28:27Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 393}
+{"ts": "2026-06-27T02:29:01Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:29:01Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 139}
+{"ts": "2026-06-27T02:29:01Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 400, "rules_returned_count": 10, "rule_ids": ["CLEAN-LOG-002", "SEC-INJ-PATH-001", "PERF-IO-001", "API-VERSION-001", "FW-M2-003", "SCALE-DB-002", "ERR-FALLBACK-001", "ENF-SYS-006", "TEST-ISOLATE-003", "SEC-AUTHZ-TENANT-001"]}
+{"ts": "2026-06-27T02:29:01Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 412}
+{"ts": "2026-06-27T02:29:14Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:29:14Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 119}
+{"ts": "2026-06-27T02:30:30Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:30:30Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 181}
+{"ts": "2026-06-27T02:31:52Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 44}
+{"ts": "2026-06-27T02:40:37Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:40:37Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 144}
+{"ts": "2026-06-27T02:41:05Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:41:05Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 124}
+{"ts": "2026-06-27T02:41:13Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:41:13Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 125}
+{"ts": "2026-06-27T02:41:20Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:41:20Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 123}
+{"ts": "2026-06-27T02:41:32Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:41:32Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 145}
+{"ts": "2026-06-27T02:41:37Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:41:37Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 138}
+{"ts": "2026-06-27T02:41:58Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:41:58Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 140}
+{"ts": "2026-06-27T02:42:05Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:42:05Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 117}
+{"ts": "2026-06-27T02:42:26Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:42:26Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 121}
+{"ts": "2026-06-27T02:44:17Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 45}
+{"ts": "2026-06-27T02:48:45Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:48:45Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 117}
+{"ts": "2026-06-27T02:48:50Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:48:50Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 115}
+{"ts": "2026-06-27T02:48:56Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:48:56Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 132}
+{"ts": "2026-06-27T02:49:02Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:49:02Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 123}
+{"ts": "2026-06-27T02:49:11Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:49:11Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 114}
+{"ts": "2026-06-27T02:49:18Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:49:18Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 116}
+{"ts": "2026-06-27T02:50:09Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:50:09Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 129}
+{"ts": "2026-06-27T02:55:08Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:55:08Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 123}
+{"ts": "2026-06-27T02:55:20Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:55:20Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 123}
+{"ts": "2026-06-27T02:55:26Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:55:26Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 120}
+{"ts": "2026-06-27T02:55:36Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T02:55:36Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 117}
+{"ts": "2026-06-27T03:00:26Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T03:00:26Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 120}
+{"ts": "2026-06-27T03:01:08Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 40}
+{"ts": "2026-06-27T03:11:24Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 42}
+{"ts": "2026-06-27T03:28:22Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T03:28:22Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 125}
+{"ts": "2026-06-27T03:29:35Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 50}
+{"ts": "2026-06-27T03:31:47Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T03:31:47Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 131}
+{"ts": "2026-06-27T03:31:54Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T03:31:54Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 118}
+{"ts": "2026-06-27T03:32:10Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 42}
+{"ts": "2026-06-27T03:52:08Z", "session": "679c49d6-96dd-4cf9-9f8c-360eded7587a", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-06-27T03:52:08Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-06-27T03:52:08Z", "session": "63202", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-06-27T03:52:08Z", "session": "63202", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-06-27T03:52:08Z", "session": "63202", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 391}
+{"ts": "2026-06-27T03:52:08Z", "session": "63202", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 392}
+{"ts": "2026-06-27T04:22:52Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-06-27T04:22:52Z", "session": "68409", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-06-27T04:22:52Z", "session": "68409", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 554}
+{"ts": "2026-06-27T09:17:18Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-06-27T09:17:18Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 233}
+{"ts": "2026-06-27T09:17:24Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["DOC-README-001", "ENF-OPS-002", "ARCH-EVENT-001", "PERF-QBUDGET-001", "CLEAN-ERR-001"]}
+{"ts": "2026-06-27T09:17:31Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "mode_change", "change_type": "set", "from_mode": null, "to_mode": "conversation"}
+{"ts": "2026-06-27T09:17:48Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 53}
+{"ts": "2026-06-27T09:21:43Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["DOC-ARCH-001", "TEST-PERF-001", "PHP-ERR-002", "DOC-API-001", "ENF-SYS-002"]}
+{"ts": "2026-06-27T09:23:50Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 43}
+{"ts": "2026-06-27T09:24:14Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["SEC-DEP-LOCK-001", "SCALE-DB-002", "DOC-SYNC-001", "ENF-PRE-002", "ERR-GRACEFUL-002"]}
+{"ts": "2026-06-27T09:24:28Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 44}
+{"ts": "2026-06-27T09:25:44Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "approval_pattern_miss", "prompt": "ok apply fix 1"}
+{"ts": "2026-06-27T09:25:45Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["API-STATUS-002", "TEST-REGRESSION-001", "SEC-CRYPTO-TLS-001", "SEC-DEP-PIN-001", "TEST-CI-001"]}
+{"ts": "2026-06-27T09:25:57Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T09:25:57Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 152}
+{"ts": "2026-06-27T09:25:57Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 400, "rules_returned_count": 10, "rule_ids": ["CLEAN-FUNC-003", "CLEAN-NAME-001", "ARCH-ASYNC-001", "DOC-INLINE-001", "PY-PYDANTIC-001", "ARCH-ASYNC-002", "PERF-ASYNC-001", "CLEAN-SIDE-001", "PERF-MEM-002", "CLEAN-NEST-001"]}
+{"ts": "2026-06-27T09:25:57Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 368}
+{"ts": "2026-06-27T09:26:19Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T09:26:19Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 150}
+{"ts": "2026-06-27T09:26:19Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 400, "rules_returned_count": 10, "rule_ids": ["ARCH-ENV-001", "SEC-AUTHZ-PRIV-001", "PERF-IO-001", "SEC-INJ-PATH-001", "DOC-CONFIG-001", "PERF-LAZY-001", "SEC-CRYPTO-KEY-002", "SEC-AUTH-TIMING-001", "TEST-EDGE-001", "ERR-FALLBACK-001"]}
+{"ts": "2026-06-27T09:26:19Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 416}
+{"ts": "2026-06-27T09:26:29Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-27T09:26:29Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 166}
+{"ts": "2026-06-27T09:26:29Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 400, "rules_returned_count": 10, "rule_ids": ["SEC-RATE-QUERY-001", "ARCH-MIGRATION-001", "SEC-INJ-CMD-002", "PY-ASYNC-001", "SEC-INJ-SQL-002", "DOC-TYPE-001", "SOLID-DIP-001", "ERR-HANDLE-002", "ARCH-LAYER-002", "ARCH-BOUNDARY-002"]}
+{"ts": "2026-06-27T09:26:29Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 410}
+{"ts": "2026-06-27T09:27:03Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 46}
+{"ts": "2026-06-27T09:27:04Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["SCALE-CONFIG-001", "SOLID-OCP-001", "API-VERSION-001", "DRY-CONFIG-001", "ENF-PRE-004"]}
+{"ts": "2026-06-27T09:27:31Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 47}
+{"ts": "2026-06-27T09:29:52Z", "session": "356f7f27-bec0-4cda-98f7-e3097e3b104a", "event": "pressure_audit", "mode": "conversation", "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-06-27T09:29:52Z", "session": "40135", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-06-27T09:29:53Z", "session": "40135", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 297}
+{"ts": "2026-06-27T09:29:58Z", "session": "289dc28e-8191-48fd-ab4c-b27ee6d6b938", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-06-27T09:29:58Z", "session": "289dc28e-8191-48fd-ab4c-b27ee6d6b938", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 245}
+{"ts": "2026-06-27T09:30:03Z", "session": "289dc28e-8191-48fd-ab4c-b27ee6d6b938", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-06-27T09:30:03Z", "session": "54805", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-06-27T09:30:03Z", "session": "54805", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 260}
+{"ts": "2026-06-27T09:42:40Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-06-27T09:42:40Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 171}
+{"ts": "2026-06-27T09:42:45Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-06-27T09:42:45Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 129}
+{"ts": "2026-06-27T09:58:42Z", "session": "e955b989-52b0-4092-9dd0-623f4a639c52", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-06-27T09:58:42Z", "session": "71539", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-06-27T09:58:42Z", "session": "71539", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 298}
