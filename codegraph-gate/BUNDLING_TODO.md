@@ -17,11 +17,12 @@ plan to make it automatic.
 
 | Event | Matcher | Action |
 |---|---|---|
-| `PostToolUse` | `mcp__codegraph__.*` | write epoch ts → `<cwd>/.codegraph/.last_graph_use` |
-| `PreToolUse` | `Grep\|Glob\|Read` | **deny** unless a codegraph tool ran within `WINDOW` (300s) |
+| `PostToolUse` | `mcp__codegraph__.*` | write epoch ts → `<cwd>/.codegraph/.last_graph_use`; if `codegraph_node`, also record `file` → `.gate_shown` |
+| `PostToolUse` | `Edit\|Write` | record `file_path` → `<cwd>/.codegraph/.gate_edited` |
+| `PreToolUse` | `Grep\|Glob\|Read` | **deny** unless a codegraph tool ran within `WINDOW` (300s), or the Read target is in `.gate_shown`/`.gate_edited` within its TTL |
 
 - **Gated:** Grep (unless `type`/`glob` scoped to non-py), Glob (always), Read on `*.py`.
-- **Never gated:** non-`.py` Read; anything inside the warm window after a codegraph call.
+- **Never gated:** non-`.py` Read; anything inside the warm window after a codegraph call; Read of a file in `.gate_shown` within `SHOW_TTL` (default 1800s) or in `.gate_edited` within `EDIT_TTL` (default 300s). The per-file exemptions fix G1/G2 in FEEDBACK.md — the edit phase is no longer taxed by the 5-min window.
 - **Deny mechanism:** JSON `{"hookSpecificOutput":{"permissionDecision":"deny","permissionDecisionReason":...}}`. **Not** bare exit-2 (claude-code issue #24327: exit-2 can make Claude halt instead of adapting).
 - **Portability guard:** no-op if cwd has no `.codegraph/`; fail OPEN on any error. Safe to ship even globally — only bites in indexed repos.
 
@@ -53,11 +54,12 @@ Reimplement the gate as a hidden `codegraph tool-gate` subcommand — **exact mi
 - [ ] Kill-switch env var (mirror `CODEGRAPH_NO_PROMPT_HOOK`): e.g. `CODEGRAPH_NO_TOOL_GATE=1` → return immediately.
 - [ ] `process.stdin.isTTY` → return (invoked by hand).
 - [ ] Port the gate logic from `codegraph-gate.py`:
-  - `PostToolUse` + `tool_name` starts `mcp__codegraph__` → write ts to `<root>/.codegraph/.last_graph_use`.
-  - `PreToolUse`: compute `gated` (Grep unless non-py scoped; Glob always; Read iff `file_path` ends `.py`). If gated and `now - last > WINDOW` → print deny JSON. Else print nothing.
+  - `PostToolUse` + `tool_name` starts `mcp__codegraph__` → write ts to `<root>/.codegraph/.last_graph_use`; if `codegraph_node`, also record `tool_input.file` → `.gate_shown` (JSON `{file: ts}`, prune past `SHOW_TTL`).
+  - `PostToolUse` + `tool_name` in {`Edit`,`Write`} → record `tool_input.file_path` → `.gate_edited` (JSON `{file: ts}`, prune past `EDIT_TTL`).
+  - `PreToolUse`: compute `gated` (Grep unless non-py scoped; Glob always; Read iff `file_path` ends `.py`). If `Read` and target matches a key in `.gate_shown` (within `SHOW_TTL`) or `.gate_edited` (within `EDIT_TTL`) — match on exact path OR basename — allow. Else if gated and `now - last > WINDOW` → print deny JSON. Else print nothing.
 - [ ] Use the same indexed-root discovery as `prompt-hook` (`isInitialized` walk up ≤6 levels). No `.codegraph/` → return (allow).
 - [ ] **Fail open by contract:** wrap in try/catch, always exit 0, never throw into the tool pipeline.
-- [ ] Make `WINDOW` configurable (env `CODEGRAPH_TOOL_GATE_WINDOW`, default 300).
+- [ ] Make `WINDOW` configurable (env `CODEGRAPH_TOOL_GATE_WINDOW`, default 300). Likewise `CODEGRAPH_GATE_SHOW_TTL` (default 1800) and `CODEGRAPH_GATE_EDIT_TTL` (default 300) for the per-file exemptions.
 
 ### 2. Wire it during install
 - [ ] In `src/installer/config-writer.ts` (settings.json path resolved at lines 54–55: global `~/.claude/settings.json`, local `./.claude/settings.json`), add a `writeHooks(loc)` that merges the two blocks below into `settings.json.hooks`. **Merge, don't overwrite** — append to existing `PreToolUse`/`PostToolUse` arrays; dedupe on the command string so re-install is idempotent.
@@ -79,6 +81,12 @@ Reimplement the gate as a hidden `codegraph tool-gate` subcommand — **exact mi
     "PostToolUse": [
       {
         "matcher": "mcp__codegraph__.*",
+        "hooks": [
+          { "type": "command", "command": "codegraph tool-gate", "timeout": 5 }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
         "hooks": [
           { "type": "command", "command": "codegraph tool-gate", "timeout": 5 }
         ]
@@ -113,6 +121,10 @@ Feed simulated hook JSON on stdin and assert:
 - [ ] non-`.py` Read, `type:md` Grep → no output (allow).
 - [ ] PostToolUse on `mcp__codegraph__codegraph_explore` → writes/refreshes state file.
 - [ ] warm (state ts < WINDOW old): Grep / Read `*.py` → no output (allow).
+- [ ] **per-file shown (G2/G1):** `PostToolUse` `codegraph_node` with `file=X` → `.gate_shown` has X; backdate `.last_graph_use` past WINDOW; `Read` X → no output (allow); `Read` of an unrelated `.py` → deny.
+- [ ] **basename match:** `codegraph_node` `file="bn.py"` → `Read` of `/abs/bn.py` allowed.
+- [ ] **per-file edited (G1):** `PostToolUse` `Edit`/`Write` with `file_path=X` → `Read` X past WINDOW allowed.
+- [ ] **TTL expiry:** backdate a `.gate_shown` entry past `SHOW_TTL` → `Read` denied again.
 - [ ] cwd without `.codegraph/` → no output (allow).
 - [ ] garbage stdin → exit 0, no output (fail-open).
 - [ ] **end-to-end:** real session in an indexed repo — first Grep blocked, `codegraph_explore` then Grep allowed.
