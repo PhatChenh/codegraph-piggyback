@@ -79,16 +79,44 @@ command it:
 Per-script control still exists: `piggyback register <name>` / `unregister <name>`
 wire one script at a time; `piggyback status` shows what's registered.
 
-### Updating — consumers
+### Updating — consumers (the runbook you run tomorrow)
 
 `install` / `init` / `update` **self-update first** (`git pull` the install dir),
 so you always run the newest scripts + manifest. Offline / local edits → it skips
-the pull and uses the local copy (never blocks). To refresh a machine:
+the pull and uses the local copy (never blocks).
+
+**Two scopes, two commands — don't mix them up:**
+
+- `piggyback install` → **global** hooks only (`impact-analyzer`). Run once per
+  machine, from anywhere. Does **not** wire `codegraph-gate` (gate is repo-scope).
+- `piggyback init` → **repo** hooks (`codegraph-gate`, `decision-index`). Run once
+  per project repo, **from inside that repo**. Wires into `./.claude/settings.json`.
+
+**Refresh a machine after a push (dev → GitHub → consumers):**
 
 ```sh
-piggyback update          # pull + reconcile global (and the current repo if indexed)
-piggyback update --no-update   # reconcile only, skip the pull
+# 1. global hooks (impact-analyzer) — any dir, once per machine:
+piggyback update                # pull + reconcile global (+ current repo if indexed)
+# or: piggyback install --no-update
+
+# 2. repo hooks (the gate) — inside EACH project you want the gate active in:
+cd /path/to/project
+piggyback init --all            # re-runs safely; prunes stale, adds current
 ```
+
+Then **restart your agent session** (hooks load at session start).
+
+**Cross-machine sync without re-init on every box:** commit each project's
+`.claude/settings.json` to git. Repo-scope hooks point at `~/.codegraph-piggyback/...`
+(portable `$HOME` form), so the same file works on every machine. Then machine B
+just `git pull`s the project and restarts — no `piggyback init` needed there.
+(Only the global `install` step is per-machine.)
+
+**Gotcha that bites:** running `piggyback install` (or `update`) reconciles
+**global** only. If `codegraph-gate` was previously wired globally (legacy, when
+its scope was `global`), `install`/`update` will **remove it as stale** — that's
+correct under the current repo-scope design, but it looks like the gate
+"disappeared." Re-wire it with `piggyback init --all` inside the project repo.
 
 Changing a script's *content* (not its hooks) needs no `settings.json` edit at
 all — the hook path is stable, so a `pull` is enough.
@@ -101,7 +129,8 @@ piggyback add doc-coverage --script doc-coverage/doc_coverage.py \
   --scope repo --hook 'PostToolUse:Edit|Write'
 # multi-hook script: repeat --hook
 piggyback add codegraph-gate --script codegraph-gate/codegraph-gate.py \
-  --scope repo --hook 'PreToolUse:Grep|Glob|Read' --hook 'PostToolUse:mcp__codegraph__.*'
+  --scope repo --hook 'PreToolUse:Grep|Glob|Read' --hook 'PostToolUse:mcp__codegraph__.*' \
+  --hook 'PostToolUse:Edit|Write'
 # remove an entry (and its hooks locally):
 piggyback rm doc-coverage
 ```
@@ -121,7 +150,7 @@ hook). The `init` picker lists these:
 | Name | Scope | Hook(s) | What |
 |---|---|---|---|
 | `impact-analyzer` | global | `PostToolUse:Read` | show callers affected by what you just read |
-| `codegraph-gate` | repo | `PreToolUse:Grep\|Glob\|Read` + `PostToolUse:mcp__codegraph__.*` | codegraph-first ordering gate |
+| `codegraph-gate` | repo | `PreToolUse:Grep\|Glob\|Read` + `PostToolUse:mcp__codegraph__.*` + `PostToolUse:Edit\|Write` | codegraph-first ordering gate |
 | `decision-index` | repo | `PostToolUse:Read` | surface stale ADRs when you read them |
 
 Scope decides the installer: **`piggyback init`** (per-repo) wires the **repo**-scoped
