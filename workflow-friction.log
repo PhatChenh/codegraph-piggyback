@@ -174,3 +174,7 @@
 {"ts": "2026-06-28T03:35:06Z", "session": "ea7658ae-533f-44a5-8f37-2e4e6e34d1ce", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
 {"ts": "2026-06-28T03:35:06Z", "session": "73588", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
 {"ts": "2026-06-28T03:35:06Z", "session": "73588", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 278}
+{"ts": "2026-06-29T04:35:29Z", "session": "62acc8f2-d4f9-4e82-8212-7599ab9f33f7", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 107}
+{"ts": "2026-06-29T04:36:02Z", "session": "62acc8f2-d4f9-4e82-8212-7599ab9f33f7", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 136}
+{"ts": "2026-06-29T04:37:02Z", "session": "62acc8f2-d4f9-4e82-8212-7599ab9f33f7", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-06-29T04:37:02Z", "session": "36941", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
