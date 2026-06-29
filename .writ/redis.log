@@ -9,3 +9,7 @@
 37306:M 29 Jun 2026 11:34:54.120 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
 37306:M 29 Jun 2026 11:34:54.134 # Can't handle RDB format version 14
 37306:M 29 Jun 2026 11:34:54.139 # Fatal error loading the DB, check server logs. Exiting.
+35926:M 29 Jun 2026 22:05:43.225 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
+35926:M 29 Jun 2026 22:05:43.230 # WARNING: Redis does not require authentication. Redis will accept connections from any local client.
+35926:signal-handler (1782745544) Received SIGTERM scheduling shutdown...
+35926:M 29 Jun 2026 22:05:44.761 # Redis is now ready to exit, bye bye...

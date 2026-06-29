@@ -178,3 +178,38 @@
 {"ts": "2026-06-29T04:36:02Z", "session": "62acc8f2-d4f9-4e82-8212-7599ab9f33f7", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 136}
 {"ts": "2026-06-29T04:37:02Z", "session": "62acc8f2-d4f9-4e82-8212-7599ab9f33f7", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
 {"ts": "2026-06-29T04:37:02Z", "session": "36941", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-06-29T15:05:43Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-06-29T15:05:43Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 154}
+{"ts": "2026-06-29T15:05:59Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["API-ERROR-002", "TEST-REGRESSION-001", "SCALE-DB-002", "CLEAN-ERR-003", "DOC-README-001"]}
+{"ts": "2026-06-29T15:21:56Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T15:21:56Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 177}
+{"ts": "2026-06-29T15:21:57Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 400, "rules_returned_count": 10, "rule_ids": ["CLEAN-LOG-001", "SEC-VAL-TYPE-001", "ARCH-ASYNC-002", "PY-PYDANTIC-001", "SEC-UNI-003", "ARCH-ASYNC-001", "API-CONTRACT-001", "PERF-ASYNC-001", "DOC-API-001", "SEC-AUTH-TIMING-001"]}
+{"ts": "2026-06-29T15:21:57Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 427}
+{"ts": "2026-06-29T15:22:44Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T15:22:44Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 122}
+{"ts": "2026-06-29T15:24:30Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T15:24:30Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 176}
+{"ts": "2026-06-29T15:24:30Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 400, "rules_returned_count": 10, "rule_ids": ["TEST-EDGE-001", "ERR-HANDLE-002", "PERF-IO-001", "SEC-INJ-PATH-001", "PHP-ERR-001", "SCALE-HEALTH-001", "SEC-INJ-CMD-002", "FW-M2-RT-001", "FW-M2-003", "FW-M2-RT-004"]}
+{"ts": "2026-06-29T15:24:31Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 417}
+{"ts": "2026-06-29T15:26:28Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T15:26:28Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 131}
+{"ts": "2026-06-29T15:26:48Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T15:26:48Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 125}
+{"ts": "2026-06-29T15:27:03Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T15:27:03Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 120}
+{"ts": "2026-06-29T15:27:16Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T15:27:16Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 169}
+{"ts": "2026-06-29T15:27:33Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T15:27:33Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 126}
+{"ts": "2026-06-29T15:27:54Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T15:27:54Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 124}
+{"ts": "2026-06-29T15:29:01Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 57}
+{"ts": "2026-06-29T15:32:35Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T15:32:35Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 145}
+{"ts": "2026-06-29T15:32:36Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 400, "rules_returned_count": 10, "rule_ids": ["ERR-FALLBACK-001", "CLEAN-ERR-001", "ERR-CIRCUIT-001", "DOC-ONBOARD-001", "PY-IMPORT-001", "PERF-LAZY-001", "ENF-SYS-006", "SOLID-DIP-002", "SOLID-OCP-001", "ENF-SYS-002"]}
+{"ts": "2026-06-29T15:32:36Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 409}
+{"ts": "2026-06-29T15:41:44Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 42}
+{"ts": "2026-06-29T15:45:05Z", "session": "a2cadcabfe7bc78dc", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "d43c9884-c31c-4320-93de-9d30615a3489"}
+{"ts": "2026-06-29T15:45:05Z", "session": "a2cadcabfe7bc78dc", "mode": null, "event": "subagent_complete", "agent_id": "a2cadcabfe7bc78dc", "agent_type": "general-purpose", "parent_session": "d43c9884-c31c-4320-93de-9d30615a3489", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-06-29T15:52:24Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["PERF-MEM-002", "TEST-EDGE-003", "PY-ASYNC-001", "ERR-GRACEFUL-002", "DRY-DUP-001"]}
+{"ts": "2026-06-29T15:52:48Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 45}
