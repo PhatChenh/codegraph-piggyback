@@ -6,3 +6,6 @@
 63926:M 27 Jun 2026 08:13:08.645 # WARNING: Redis does not require authentication. Redis will accept connections from any local client.
 63926:signal-handler (1782524472) Received SIGTERM scheduling shutdown...
 63926:M 27 Jun 2026 08:41:12.302 # Redis is now ready to exit, bye bye...
+37306:M 29 Jun 2026 11:34:54.120 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
+37306:M 29 Jun 2026 11:34:54.134 # Can't handle RDB format version 14
+37306:M 29 Jun 2026 11:34:54.139 # Fatal error loading the DB, check server logs. Exiting.
