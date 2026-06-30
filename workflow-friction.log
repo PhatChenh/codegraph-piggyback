@@ -213,3 +213,17 @@
 {"ts": "2026-06-29T15:45:05Z", "session": "a2cadcabfe7bc78dc", "mode": null, "event": "subagent_complete", "agent_id": "a2cadcabfe7bc78dc", "agent_type": "general-purpose", "parent_session": "d43c9884-c31c-4320-93de-9d30615a3489", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
 {"ts": "2026-06-29T15:52:24Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["PERF-MEM-002", "TEST-EDGE-003", "PY-ASYNC-001", "ERR-GRACEFUL-002", "DRY-DUP-001"]}
 {"ts": "2026-06-29T15:52:48Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 45}
+{"ts": "2026-06-29T15:55:35Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 43}
+{"ts": "2026-06-29T15:55:36Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["SEC-DEP-LOCK-001", "PERF-BATCH-001", "ERR-HANDLE-001", "TEST-ISOLATE-003", "ENF-PRE-004"]}
+{"ts": "2026-06-29T15:55:49Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 43}
+{"ts": "2026-06-29T15:56:08Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["SEC-DEP-AUDIT-001", "PY-PROTO-001", "CLEAN-COMMENT-002", "SEC-DEP-PIN-001", "ARCH-LAYER-001"]}
+{"ts": "2026-06-29T16:00:02Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T16:00:02Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 120}
+{"ts": "2026-06-29T16:00:17Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T16:00:17Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 118}
+{"ts": "2026-06-29T16:00:40Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-29T16:00:40Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 120}
+{"ts": "2026-06-29T16:01:40Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 43}
+{"ts": "2026-06-29T16:01:55Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-06-29T16:01:55Z", "session": "35431", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-06-29T16:01:55Z", "session": "35431", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 552}
