@@ -152,6 +152,50 @@ def main():
             if old_home is not None:
                 os.environ["HOME"] = old_home
 
+        # 11. is_dead_ours unit: dead (ours-path, file missing) → True;
+        #     existing script + unrelated user hook → False.
+        import importlib.util as _ilu
+        _spec = _ilu.spec_from_file_location("piggyback_dead", CLI)
+        _pg = _ilu.module_from_spec(_spec); _spec.loader.exec_module(_pg)
+        _envman = os.environ.get("PIGGYBACK_MANIFEST")
+        write_manifest(man, dict(GATE_ENTRY))
+        os.environ["PIGGYBACK_MANIFEST"] = str(man)
+        try:
+            check("is_dead_ours: ours-path + file missing -> True",
+                  _pg.is_dead_ours("python3 /no_such_dir/codegraph-piggyback/codegraph-gate/codegraph-gate.py"))
+            check("is_dead_ours: existing script -> False",
+                  not _pg.is_dead_ours(f"python3 {ROOT / GATE}"))
+            check("is_dead_ours: unrelated hook -> False",
+                  not _pg.is_dead_ours("python3 /tmp/some_user_hook.py"))
+        finally:
+            if _envman is None:
+                os.environ.pop("PIGGYBACK_MANIFEST", None)
+            else:
+                os.environ["PIGGYBACK_MANIFEST"] = _envman
+
+        # 12. AUTO-REPAIR: a dead orphaned owned hook (left by a checkout rename/
+        #     move -> path no longer matches current ROOT, file missing) is pruned
+        #     on `update`, the live gate is re-added, the user's sibling survives.
+        g.write_text("{}")                       # case 9 left global settings corrupt; reset
+        (repo / ".claude").mkdir(parents=True, exist_ok=True)
+        r.write_text(json.dumps({"hooks": {"PreToolUse": [{"matcher": "Grep|Glob|Read", "hooks": [
+            {"type": "command",
+             "command": "python3 /no_such_dir/codegraph-piggyback/codegraph-gate/codegraph-gate.py"},
+            {"type": "command", "command": "echo repo-sibling"},
+        ]}]}}, indent=2))
+        write_manifest(man, dict(GATE_ENTRY))
+        run(U, home, repo, man)
+        s12 = load(r)
+        _grp = s12.get("hooks", {}).get("PreToolUse", [])
+        check("dead orphan hook pruned on update",
+              not any("/no_such_dir/" in h.get("command", "")
+                      for grp in _grp for h in grp.get("hooks", [])))
+        check("live gate re-added after prune",
+              has_hook(s12, "PreToolUse", "Grep|Glob|Read", GATE))
+        check("user sibling survives prune",
+              any("echo repo-sibling" in h.get("command", "")
+                  for grp in _grp for h in grp.get("hooks", [])))
+
     print(f"\n{PASS} passed, {FAIL} failed")
     sys.exit(1 if FAIL else 0)
 

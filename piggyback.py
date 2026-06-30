@@ -45,6 +45,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shlex
 import shutil
 import subprocess
@@ -131,6 +132,44 @@ def is_owned(command: str) -> bool:
     except ValueError:
         return False
     return root_rel in command                     # portable $HOME-relative form
+
+
+def _command_script_path(command: str):
+    """Best-effort: extract the .py script path a hook command runs, $HOME expanded.
+    Handles both 'python3 PATH ...' and any future shell-guarded wrapper form."""
+    if not isinstance(command, str):
+        return None
+    m = re.search(r'python3\s+"?(\$HOME/[^"\s]+\.py|/[^"\s]+\.py)"?', command)
+    if not m:
+        return None
+    tok = m.group(1)
+    if tok.startswith("$HOME/"):
+        tok = str(Path.home() / tok[len("$HOME/"):])
+    return tok
+
+
+def _our_script_basenames() -> set:
+    return {Path(e["script"]).name for e in load_manifest().values() if e.get("script")}
+
+
+def is_dead_ours(command: str) -> bool:
+    """True iff a hook runs one of OUR scripts (by manifest basename, or under a
+    codegraph-piggyback / codegraph_adoption path) but its target file is MISSING on disk.
+
+    Safe to prune on reconcile: a dead path does nothing but crash the gated tool, so
+    removing it cannot break a working hook. Keys on 'file missing', NOT on 'matches the
+    current root' (which is what is_owned() requires) — so a checkout rename/move that
+    orphaned a hook auto-heals on the next `piggyback update`/`install`/`init`, while every
+    valid hook (file present, incl. a different legit install root) is left untouched."""
+    sp = _command_script_path(command)
+    if not sp:
+        return False
+    looks_ours = (
+        Path(sp).name in _our_script_basenames()
+        or "codegraph-piggyback" in sp
+        or "codegraph_adoption" in sp
+    )
+    return looks_ours and not Path(sp).exists()
 
 
 # ── settings.json paths + io ──────────────────────────────────────────────────
@@ -268,7 +307,7 @@ def reconcile(scope: str) -> tuple[int, int]:
                 kept = []
                 for h in g["hooks"]:
                     cmd = h.get("command", "") if isinstance(h, dict) else ""
-                    stale = is_owned(cmd) and (event, matcher, cmd) not in want
+                    stale = (is_owned(cmd) and (event, matcher, cmd) not in want) or is_dead_ours(cmd)
                     if stale:
                         removed += 1
                     else:
@@ -477,6 +516,7 @@ def cmd_init(args) -> None:
         return
 
     ensure_codegraph_and_index(args)
+    reconcile_report("global")
 
     if set(chosen) == set(scripts):
         # Full selection → reconcile: idempotent AND self-healing. Removes our own

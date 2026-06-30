@@ -5,6 +5,52 @@ Each entry: symptom, why it bites, suggested fix. Newest first.
 
 ---
 
+## 2026-06-30 — Gate hook command path wrong → every Read crashes (mkt_engine session)
+
+**Symptom:** every `Read` tool call failed with a PreToolUse hook *error* (not the normal
+gate block):
+```
+PreToolUse:Read hook error: [python3 $HOME/01_all_projects/codegraph-piggyback/codegraph-gate/codegraph-gate.py]:
+... can't open file '/Users/lap14806/01_all_projects/codegraph-piggyback/codegraph-gate/codegraph-gate.py': [Errno 2] No such file or directory
+```
+The configured hook command in the project `.claude/settings.json` pointed at
+`$HOME/01_all_projects/codegraph-piggyback/...`, but the repo actually lives at
+`$HOME/all-projects/codegraph-piggyback/...` (no `01_` prefix). Same wrong prefix on 3 lines:
+the `codegraph-gate.py` PreToolUse hooks (×2) and the `ssot-diagram/decision_hook.py` hook.
+
+**Why it bites:** a non-existent script path makes python exit non-zero, which the harness
+surfaces as a hook *error* that **blocks the gated tool entirely** — so `Read` was dead for the
+whole session. Worse than the intended gate (which blocks with guidance); this is a hard crash
+with no codegraph workaround. Editing also breaks downstream: the Edit tool requires a prior
+`Read`, so with `Read` crashing, all Edits are blocked too (had to fall back to Bash/python
+for every file edit).
+
+**Root cause (verified, not a code bug):** `hook_command()` builds the command from
+`ROOT = Path(__file__).resolve().parent` and emits a `$HOME`-relative path — so the path written is
+whatever directory piggyback.py lived in at install time. The checkout was at
+`$HOME/01_all_projects/codegraph-piggyback/` when these PROJECT-scope hooks were registered, then the
+dir was renamed `01_all_projects` → `all-projects`, orphaning the recorded paths. The two sibling hooks
+that point at `$HOME/.codegraph-piggyback/codegraph_adoption/...` (the install.sh global-clone convention)
+were unaffected — confirming this is a dual-install + post-install rename, not a path-construction bug in
+install.sh or piggyback.py.
+
+**Fix (applied host-side):** replaced `$HOME/01_all_projects/` → `$HOME/all-projects/` (3 occurrences)
+in the project `.claude/settings.json`; JSON re-validated; both target scripts confirmed present
++ `py_compile`-clean. Takes effect next session (hooks load at session start).
+
+**Fix IMPLEMENTED (2026-06-30):** root of why `update` didn't already self-heal — `reconcile()` only
+removes hooks `is_owned()` recognizes, and `is_owned()` matches the *current* ROOT only, so a hook left
+behind by a checkout rename (old root) is invisible to reconcile and survives. Added `is_dead_ours(cmd)`:
+a hook that runs one of our scripts (manifest basename, or a path under `codegraph-piggyback` /
+`codegraph_adoption`) **whose target file is missing on disk**. `reconcile()` now prunes those too:
+`stale = (is_owned and not desired) or is_dead_ours`. Keyed on *file missing*, not *current root*, so:
+(a) a rename/move auto-heals on the next `piggyback update`/`install`/`init` (reconcile prunes the dead
+entry, the manifest re-adds the correct current-ROOT one), and (b) valid hooks — including a different
+legit install root like `~/.codegraph-piggyback` whose files exist — are never touched. Verified against
+5 path cases (stale-missing → pruned; both live roots + unrelated user hook → kept).
+
+---
+
 ## 2026-06-29 — Iris Phase 6 orchestration (Claude reviewing deepseek-implemented code across git worktrees)
 
 **Overall:** codegraph itself (the `explore`/`node` MCP tools) was the highest-value tool of the session — one `codegraph_explore` returned verbatim source + blast radius (callers/tests) and replaced large amounts of file reading; per-worktree indexing (`init` the integration worktree, `sync` after each merge) worked exactly as documented. The friction below is entirely about the **gate hook**, not the index.

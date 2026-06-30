@@ -227,3 +227,14 @@
 {"ts": "2026-06-29T16:01:55Z", "session": "d43c9884-c31c-4320-93de-9d30615a3489", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
 {"ts": "2026-06-29T16:01:55Z", "session": "35431", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
 {"ts": "2026-06-29T16:01:55Z", "session": "35431", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 552}
+{"ts": "2026-06-30T03:06:20Z", "session": "65aba109-07c2-4cbf-8a35-091867023aeb", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-06-30T03:06:20Z", "session": "65aba109-07c2-4cbf-8a35-091867023aeb", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 667}
+{"ts": "2026-06-30T03:09:29Z", "session": "65aba109-07c2-4cbf-8a35-091867023aeb", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 114}
+{"ts": "2026-06-30T03:10:17Z", "session": "65aba109-07c2-4cbf-8a35-091867023aeb", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 118}
+{"ts": "2026-06-30T03:15:07Z", "session": "65aba109-07c2-4cbf-8a35-091867023aeb", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 234}
+{"ts": "2026-06-30T03:16:03Z", "session": "65aba109-07c2-4cbf-8a35-091867023aeb", "mode": null, "event": "approval_pattern_match", "matched_prompt": "ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-06-30T03:16:15Z", "session": "65aba109-07c2-4cbf-8a35-091867023aeb", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-06-30T03:16:15Z", "session": "65aba109-07c2-4cbf-8a35-091867023aeb", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 1263}
+{"ts": "2026-06-30T03:16:20Z", "session": "65aba109-07c2-4cbf-8a35-091867023aeb", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 124}
+{"ts": "2026-06-30T04:51:02Z", "session": "65aba109-07c2-4cbf-8a35-091867023aeb", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-06-30T04:51:03Z", "session": "22846", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
