@@ -1,0 +1,3 @@
+
+# writ per-machine runtime state (redis RDB dump; version-locked to local redis) — never commit
+.writ/
