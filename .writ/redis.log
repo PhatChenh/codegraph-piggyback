@@ -22,3 +22,23 @@
 23400:M 30 Jun 2026 10:06:22.684 # Fatal error loading the DB, check server logs. Exiting.
 4976:M 02 Jul 2026 08:35:21.541 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
 4976:M 02 Jul 2026 08:35:21.547 # WARNING: Redis does not require authentication. Redis will accept connections from any local client.
+25751:M 02 Jul 2026 13:19:54.857 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
+25751:M 02 Jul 2026 13:19:54.873 # Can't handle RDB format version 14
+25751:M 02 Jul 2026 13:19:54.876 # Fatal error loading the DB, check server logs. Exiting.
+34840:M 02 Jul 2026 13:32:46.710 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
+34840:M 02 Jul 2026 13:32:46.728 # Can't handle RDB format version 14
+34840:M 02 Jul 2026 13:32:46.735 # Fatal error loading the DB, check server logs. Exiting.
+35693:M 02 Jul 2026 13:34:28.174 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
+35693:M 02 Jul 2026 13:34:28.197 # Can't handle RDB format version 14
+35693:M 02 Jul 2026 13:34:28.202 # Fatal error loading the DB, check server logs. Exiting.
+35797:M 02 Jul 2026 13:34:37.082 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
+35797:M 02 Jul 2026 13:34:37.099 # Can't handle RDB format version 14
+35797:M 02 Jul 2026 13:34:37.107 # Fatal error loading the DB, check server logs. Exiting.
+35877:M 02 Jul 2026 13:34:38.105 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
+35877:M 02 Jul 2026 13:34:38.117 # Can't handle RDB format version 14
+35877:M 02 Jul 2026 13:34:38.120 # Fatal error loading the DB, check server logs. Exiting.
+36253:M 02 Jul 2026 13:34:51.505 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
+36254:M 02 Jul 2026 13:34:51.505 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
+36253:M 02 Jul 2026 13:34:51.512 # Failed opening Unix socket: bind: File exists
+36254:M 02 Jul 2026 13:34:51.518 # Can't handle RDB format version 14
+36254:M 02 Jul 2026 13:34:51.524 # Fatal error loading the DB, check server logs. Exiting.

@@ -264,3 +264,44 @@
 {"ts": "2026-07-02T03:14:26Z", "session": "27363", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
 {"ts": "2026-07-02T03:14:26Z", "session": "27363", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 90}
 {"ts": "2026-07-02T03:14:26Z", "session": "27363", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 86}
+{"ts": "2026-07-02T06:20:18Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "approval_pattern_miss", "prompt": "every Read/Write fires ~/.codegraph-piggyback/codegraph-gate/codegraph-gate.py -> hook died, how to fix"}
+{"ts": "2026-07-02T06:29:01Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 133}
+{"ts": "2026-07-02T06:29:55Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "approval_pattern_miss", "prompt": "done the 2, check if ok. btw what is cp"}
+{"ts": "2026-07-02T06:30:03Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-02T06:30:04Z", "session": "1", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-02T06:32:46Z", "session": "7ca03243-2b10-48fd-8f55-ca5ce33d8d36", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-02T06:32:46Z", "session": "7ca03243-2b10-48fd-8f55-ca5ce33d8d36", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 548}
+{"ts": "2026-07-02T06:32:48Z", "session": "110dae25-4708-49c0-9f42-b7056e8da4d5", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-02T06:32:48Z", "session": "110dae25-4708-49c0-9f42-b7056e8da4d5", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 341}
+{"ts": "2026-07-02T06:32:59Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-02T06:32:59Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 338}
+{"ts": "2026-07-02T06:34:27Z", "session": "95869afb-22b0-494f-b28a-766a4d942fad", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-02T06:34:27Z", "session": "95869afb-22b0-494f-b28a-766a4d942fad", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 370}
+{"ts": "2026-07-02T06:34:36Z", "session": "95869afb-22b0-494f-b28a-766a4d942fad", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-02T06:34:36Z", "session": "35533", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-02T06:34:37Z", "session": "35533", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 926}
+{"ts": "2026-07-02T06:34:47Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "approval_pattern_match", "matched_prompt": "continue", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-02T06:34:50Z", "session": "7ca03243-2b10-48fd-8f55-ca5ce33d8d36", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-02T06:34:50Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-02T06:34:51Z", "session": "34537", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-02T06:34:51Z", "session": "34537", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-02T06:34:51Z", "session": "34537", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 1013}
+{"ts": "2026-07-02T06:34:51Z", "session": "34537", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 1032}
+{"ts": "2026-07-02T06:48:46Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 145}
+{"ts": "2026-07-02T06:51:31Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 291}
+{"ts": "2026-07-02T06:53:21Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "approval_pattern_match", "matched_prompt": "ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-02T07:01:55Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 146}
+{"ts": "2026-07-02T07:05:17Z", "session": "a9c3a248cd7328d5a", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "d20509c7-2411-4b26-be88-b06cb0d839e2"}
+{"ts": "2026-07-02T07:05:18Z", "session": "a9c3a248cd7328d5a", "mode": null, "event": "subagent_complete", "agent_id": "a9c3a248cd7328d5a", "agent_type": "general-purpose", "parent_session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-02T07:21:36Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 134}
+{"ts": "2026-07-02T07:23:07Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "approval_pattern_miss", "prompt": "ok, and u suggest we kill B?"}
+{"ts": "2026-07-02T07:24:38Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 150}
+{"ts": "2026-07-02T07:27:42Z", "session": "a325eec1649376ac5", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "d20509c7-2411-4b26-be88-b06cb0d839e2"}
+{"ts": "2026-07-02T07:27:42Z", "session": "a325eec1649376ac5", "mode": null, "event": "subagent_complete", "agent_id": "a325eec1649376ac5", "agent_type": "general-purpose", "parent_session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-02T07:36:18Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 173}
+{"ts": "2026-07-02T07:37:57Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "approval_pattern_match", "matched_prompt": "yep", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-02T07:38:49Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-02T07:38:49Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 468}
+{"ts": "2026-07-02T07:38:54Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 147}
+{"ts": "2026-07-02T07:40:04Z", "session": "d20509c7-2411-4b26-be88-b06cb0d839e2", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-02T07:40:04Z", "session": "35533", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
