@@ -20,3 +20,5 @@
 23400:M 30 Jun 2026 10:06:22.611 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
 23400:M 30 Jun 2026 10:06:22.682 # Can't handle RDB format version 14
 23400:M 30 Jun 2026 10:06:22.684 # Fatal error loading the DB, check server logs. Exiting.
+4976:M 02 Jul 2026 08:35:21.541 # WARNING: The TCP backlog setting of 511 cannot be enforced because kern.ipc.somaxconn is set to the lower value of 128.
+4976:M 02 Jul 2026 08:35:21.547 # WARNING: Redis does not require authentication. Redis will accept connections from any local client.
