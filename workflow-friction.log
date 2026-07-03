@@ -320,3 +320,276 @@
 {"ts": "2026-07-02T17:09:37Z", "session": "1", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
 {"ts": "2026-07-02T17:09:37Z", "session": "e667309e-6701-4c8c-be11-87ec7e971e61", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
 {"ts": "2026-07-02T17:09:37Z", "session": "1", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 86}
+{"ts": "2026-07-03T02:08:51Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:08:51Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:08:52Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 267}
+{"ts": "2026-07-03T02:08:52Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 268}
+{"ts": "2026-07-03T02:08:53Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": null, "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-03T02:08:53Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["DESIGN-OPTIONS-001", "DOC-ARCH-001", "THINK-CONTRARY-001", "CLEAN-FUNC-002", "FW-M2-RT-005"]}
+{"ts": "2026-07-03T02:09:03Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "mode_change", "change_type": "set", "from_mode": null, "to_mode": "conversation"}
+{"ts": "2026-07-03T02:13:39Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T02:13:39Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 141}
+{"ts": "2026-07-03T02:14:17Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 67}
+{"ts": "2026-07-03T02:14:23Z", "session": "ad5df20ccc8227209", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "e5c6e160-f14a-4e35-904e-14f379fd934d"}
+{"ts": "2026-07-03T02:14:23Z", "session": "ad5df20ccc8227209", "mode": null, "event": "subagent_complete", "agent_id": "ad5df20ccc8227209", "agent_type": "general-purpose", "parent_session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T02:24:17Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-03T02:24:17Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["THINK-STEELMAN-001", "SEC-AUTH-MFA-001", "THINK-ASSUME-001", "DESIGN-REVERSE-001", "THINK-SECOND-001"]}
+{"ts": "2026-07-03T02:32:46Z", "session": "38e41cc1-3e97-4d98-8101-92793430749d", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:32:46Z", "session": "38e41cc1-3e97-4d98-8101-92793430749d", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:32:46Z", "session": "38e41cc1-3e97-4d98-8101-92793430749d", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 219}
+{"ts": "2026-07-03T02:32:46Z", "session": "38e41cc1-3e97-4d98-8101-92793430749d", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 230}
+{"ts": "2026-07-03T02:32:49Z", "session": "5c1d4fd9-debe-4fdc-9da8-1dfe49c71e7f", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:32:49Z", "session": "5c1d4fd9-debe-4fdc-9da8-1dfe49c71e7f", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:32:49Z", "session": "5c1d4fd9-debe-4fdc-9da8-1dfe49c71e7f", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 166}
+{"ts": "2026-07-03T02:32:49Z", "session": "5c1d4fd9-debe-4fdc-9da8-1dfe49c71e7f", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 167}
+{"ts": "2026-07-03T02:33:14Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:33:14Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:33:14Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 217}
+{"ts": "2026-07-03T02:33:14Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 218}
+{"ts": "2026-07-03T02:33:15Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-03T02:33:15Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 240, "rules_returned_count": 2, "rule_ids": ["DOC-CONFIG-001", "UIUX-FOCUS-001"]}
+{"ts": "2026-07-03T02:34:40Z", "session": "7091", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-03T02:34:40Z", "session": "7091", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-03T02:34:40Z", "session": "38e41cc1-3e97-4d98-8101-92793430749d", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-03T02:34:40Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "event": "pressure_audit", "mode": "conversation", "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-03T02:34:40Z", "session": "7091", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 136}
+{"ts": "2026-07-03T02:34:40Z", "session": "7091", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 137}
+{"ts": "2026-07-03T02:34:42Z", "session": "ff1b067f-1b4e-47cd-b68b-88b3948cb92d", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:34:42Z", "session": "ff1b067f-1b4e-47cd-b68b-88b3948cb92d", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:34:42Z", "session": "ff1b067f-1b4e-47cd-b68b-88b3948cb92d", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 214}
+{"ts": "2026-07-03T02:34:42Z", "session": "ff1b067f-1b4e-47cd-b68b-88b3948cb92d", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 217}
+{"ts": "2026-07-03T02:34:45Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "continue", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T02:34:45Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:34:45Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:34:45Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 179}
+{"ts": "2026-07-03T02:34:45Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 183}
+{"ts": "2026-07-03T02:35:10Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-03T02:35:10Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["DOC-ONBOARD-001", "SEC-INJ-PATH-001", "ERR-HANDLE-001", "SEC-INJ-LDAP-001", "SEC-AUTH-RESET-001"]}
+{"ts": "2026-07-03T02:35:28Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "event": "pressure_audit", "mode": "conversation", "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-03T02:35:28Z", "session": "9563", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-03T02:35:28Z", "session": "9563", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 147}
+{"ts": "2026-07-03T02:35:29Z", "session": "e89f59e5-0550-4317-8119-c584d776f6c2", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:35:29Z", "session": "e89f59e5-0550-4317-8119-c584d776f6c2", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:35:29Z", "session": "e89f59e5-0550-4317-8119-c584d776f6c2", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 255}
+{"ts": "2026-07-03T02:35:29Z", "session": "e89f59e5-0550-4317-8119-c584d776f6c2", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 250}
+{"ts": "2026-07-03T02:35:38Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:35:38Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:35:38Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 185}
+{"ts": "2026-07-03T02:35:38Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 186}
+{"ts": "2026-07-03T02:35:38Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-03T02:35:38Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["ENF-SYS-002", "ARCH-EVENT-001", "PERF-BATCH-001", "PY-ASYNC-001", "SEC-INJ-REDIR-001"]}
+{"ts": "2026-07-03T02:36:22Z", "session": "98296", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-03T02:36:22Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "event": "pressure_audit", "mode": "conversation", "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-03T02:36:22Z", "session": "98296", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 94}
+{"ts": "2026-07-03T02:37:22Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:37:22Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-03T02:37:22Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 227}
+{"ts": "2026-07-03T02:37:22Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 233}
+{"ts": "2026-07-03T02:37:23Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-03T02:37:23Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["DESIGN-OPTIONS-001", "DOC-ARCH-001", "THINK-CONTRARY-001", "CLEAN-FUNC-002", "FW-M2-RT-005"]}
+{"ts": "2026-07-03T02:37:33Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "mode_change", "change_type": "set", "from_mode": null, "to_mode": "conversation"}
+{"ts": "2026-07-03T02:39:27Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 46}
+{"ts": "2026-07-03T02:42:28Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-03T02:42:28Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["DESIGN-BORING-001", "DESIGN-SKELETON-001", "PHP-ERR-001", "ENF-SYS-006", "PERF-ASYNC-001"]}
+{"ts": "2026-07-03T02:42:43Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 66}
+{"ts": "2026-07-03T02:42:49Z", "session": "a17ad0a3b059cd08b", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T02:42:49Z", "session": "a17ad0a3b059cd08b", "mode": null, "event": "subagent_complete", "agent_id": "a17ad0a3b059cd08b", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T02:56:07Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-03T02:56:07Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["SEC-INJ-LOG-001", "ARCH-EVENT-001", "FW-M2-002", "DESIGN-DATA-001", "PY-PYDANTIC-001"]}
+{"ts": "2026-07-03T02:57:07Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 71}
+{"ts": "2026-07-03T02:57:12Z", "session": "ac8fe7fd766ee8ea3", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T02:57:12Z", "session": "ac8fe7fd766ee8ea3", "mode": null, "event": "subagent_complete", "agent_id": "ac8fe7fd766ee8ea3", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T03:11:05Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T03:12:48Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:12:48Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 115}
+{"ts": "2026-07-03T03:12:50Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:12:50Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 112}
+{"ts": "2026-07-03T03:13:01Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:13:01Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 113}
+{"ts": "2026-07-03T03:13:06Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:13:06Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 113}
+{"ts": "2026-07-03T03:13:16Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:13:16Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 114}
+{"ts": "2026-07-03T03:13:18Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:13:18Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 111}
+{"ts": "2026-07-03T03:13:32Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:13:32Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 112}
+{"ts": "2026-07-03T03:13:47Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:13:47Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 114}
+{"ts": "2026-07-03T03:13:56Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:13:56Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 117}
+{"ts": "2026-07-03T03:14:07Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:14:07Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 111}
+{"ts": "2026-07-03T03:14:09Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:14:09Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 110}
+{"ts": "2026-07-03T03:14:19Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:14:19Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 116}
+{"ts": "2026-07-03T03:14:23Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:14:23Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 115}
+{"ts": "2026-07-03T03:14:34Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:14:34Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 115}
+{"ts": "2026-07-03T03:14:37Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:14:37Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 115}
+{"ts": "2026-07-03T03:14:58Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:14:58Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 113}
+{"ts": "2026-07-03T03:15:01Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:15:01Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 111}
+{"ts": "2026-07-03T03:15:20Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:15:20Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 117}
+{"ts": "2026-07-03T03:15:33Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:15:33Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 114}
+{"ts": "2026-07-03T03:15:43Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:15:43Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 113}
+{"ts": "2026-07-03T03:15:46Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:15:46Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 113}
+{"ts": "2026-07-03T03:16:01Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:16:01Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 113}
+{"ts": "2026-07-03T03:16:03Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:16:03Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 113}
+{"ts": "2026-07-03T03:16:16Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:16:16Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 112}
+{"ts": "2026-07-03T03:16:26Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:16:26Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 112}
+{"ts": "2026-07-03T03:16:31Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:16:31Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 111}
+{"ts": "2026-07-03T03:16:43Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:16:43Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 112}
+{"ts": "2026-07-03T03:16:54Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:16:54Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 114}
+{"ts": "2026-07-03T03:17:16Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:17:16Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 114}
+{"ts": "2026-07-03T03:17:20Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:17:20Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 115}
+{"ts": "2026-07-03T03:17:37Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 47}
+{"ts": "2026-07-03T03:17:42Z", "session": "a54dbf7fe412d6b28", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T03:17:42Z", "session": "a54dbf7fe412d6b28", "mode": null, "event": "subagent_complete", "agent_id": "a54dbf7fe412d6b28", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T03:18:34Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T03:19:22Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 93}
+{"ts": "2026-07-03T03:19:28Z", "session": "a5013d1523284b644", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T03:19:28Z", "session": "a5013d1523284b644", "mode": null, "event": "subagent_complete", "agent_id": "a5013d1523284b644", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T03:33:21Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-03T03:33:21Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["CLEAN-COMMENT-001", "PY-ASYNC-001", "CLEAN-FORMAT-001", "SEC-INJ-SQL-002", "CLEAN-NEST-001"]}
+{"ts": "2026-07-03T03:33:37Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 67}
+{"ts": "2026-07-03T03:33:42Z", "session": "af03353bf3b811ddc", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T03:33:42Z", "session": "af03353bf3b811ddc", "mode": null, "event": "subagent_complete", "agent_id": "af03353bf3b811ddc", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T03:35:53Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T03:36:08Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 63}
+{"ts": "2026-07-03T03:36:13Z", "session": "ab58ede5cd75d6187", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T03:36:13Z", "session": "ab58ede5cd75d6187", "mode": null, "event": "subagent_complete", "agent_id": "ab58ede5cd75d6187", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T03:37:16Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_miss", "prompt": "yes, and if you need, redesign the delivery rail of piggy too - that one is very primative"}
+{"ts": "2026-07-03T03:37:58Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 98}
+{"ts": "2026-07-03T03:38:03Z", "session": "a78aa31217bc3b21a", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T03:38:03Z", "session": "a78aa31217bc3b21a", "mode": null, "event": "subagent_complete", "agent_id": "a78aa31217bc3b21a", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T03:39:05Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "yes", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T03:39:31Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:39:31Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 160}
+{"ts": "2026-07-03T03:39:50Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:39:50Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 174}
+{"ts": "2026-07-03T03:40:08Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:40:08Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 139}
+{"ts": "2026-07-03T03:40:41Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 44}
+{"ts": "2026-07-03T03:40:46Z", "session": "a3f83df4704340ad4", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T03:40:46Z", "session": "a3f83df4704340ad4", "mode": null, "event": "subagent_complete", "agent_id": "a3f83df4704340ad4", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T03:45:14Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T03:45:28Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 63}
+{"ts": "2026-07-03T03:45:35Z", "session": "a7d6b9b9b279464cc", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T03:45:35Z", "session": "a7d6b9b9b279464cc", "mode": null, "event": "subagent_complete", "agent_id": "a7d6b9b9b279464cc", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T03:46:40Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "Ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T03:47:05Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:47:05Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 126}
+{"ts": "2026-07-03T03:47:28Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 56}
+{"ts": "2026-07-03T03:47:34Z", "session": "aa0e8b0fe7573b240", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T03:47:34Z", "session": "aa0e8b0fe7573b240", "mode": null, "event": "subagent_complete", "agent_id": "aa0e8b0fe7573b240", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T03:48:53Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "Ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T03:49:12Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:49:12Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 116}
+{"ts": "2026-07-03T03:49:56Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:49:56Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 114}
+{"ts": "2026-07-03T03:50:30Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T03:50:30Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 115}
+{"ts": "2026-07-03T03:51:15Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 48}
+{"ts": "2026-07-03T03:51:20Z", "session": "a8b70aee9c5854088", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T03:51:20Z", "session": "a8b70aee9c5854088", "mode": null, "event": "subagent_complete", "agent_id": "a8b70aee9c5854088", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T04:09:57Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "Yes", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T04:10:29Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 66}
+{"ts": "2026-07-03T04:10:35Z", "session": "a32d242e4f8abd318", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T04:10:35Z", "session": "a32d242e4f8abd318", "mode": null, "event": "subagent_complete", "agent_id": "a32d242e4f8abd318", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T04:25:24Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "Ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T04:25:39Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 47}
+{"ts": "2026-07-03T04:25:44Z", "session": "a159cd64d4063e277", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T04:25:44Z", "session": "a159cd64d4063e277", "mode": null, "event": "subagent_complete", "agent_id": "a159cd64d4063e277", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T04:47:51Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 45}
+{"ts": "2026-07-03T04:47:55Z", "session": "a37d1de31c30f0d48", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T04:47:55Z", "session": "a37d1de31c30f0d48", "mode": null, "event": "subagent_complete", "agent_id": "a37d1de31c30f0d48", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T04:59:01Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "Yes", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T04:59:42Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T04:59:42Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 147}
+{"ts": "2026-07-03T05:00:02Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:00:02Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 126}
+{"ts": "2026-07-03T05:00:15Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:00:15Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 116}
+{"ts": "2026-07-03T05:00:30Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:00:30Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 117}
+{"ts": "2026-07-03T05:00:58Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 42}
+{"ts": "2026-07-03T05:01:05Z", "session": "ab616d16b5de82fa7", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T05:01:05Z", "session": "ab616d16b5de82fa7", "mode": null, "event": "subagent_complete", "agent_id": "ab616d16b5de82fa7", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T05:01:52Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "Ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T05:02:10Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 47}
+{"ts": "2026-07-03T05:02:16Z", "session": "a93c881378b212d92", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T05:02:16Z", "session": "a93c881378b212d92", "mode": null, "event": "subagent_complete", "agent_id": "a93c881378b212d92", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T05:02:51Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "Ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T05:03:01Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 47}
+{"ts": "2026-07-03T05:03:07Z", "session": "a1ad86287043de645", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T05:03:07Z", "session": "a1ad86287043de645", "mode": null, "event": "subagent_complete", "agent_id": "a1ad86287043de645", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T05:03:29Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "Ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T05:04:03Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 47}
+{"ts": "2026-07-03T05:04:08Z", "session": "a8290437c3c63b4f3", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T05:04:08Z", "session": "a8290437c3c63b4f3", "mode": null, "event": "subagent_complete", "agent_id": "a8290437c3c63b4f3", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T05:07:03Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 49}
+{"ts": "2026-07-03T05:07:09Z", "session": "a4dabde93dd4a7b0f", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T05:07:09Z", "session": "a4dabde93dd4a7b0f", "mode": null, "event": "subagent_complete", "agent_id": "a4dabde93dd4a7b0f", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T05:09:14Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:09:14Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 174}
+{"ts": "2026-07-03T05:09:34Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:09:34Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 126}
+{"ts": "2026-07-03T05:09:49Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:09:49Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 128}
+{"ts": "2026-07-03T05:10:02Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:10:02Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 125}
+{"ts": "2026-07-03T05:10:20Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:10:20Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 133}
+{"ts": "2026-07-03T05:10:48Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:10:48Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 116}
+{"ts": "2026-07-03T05:10:59Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:10:59Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 114}
+{"ts": "2026-07-03T05:11:23Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 44}
+{"ts": "2026-07-03T05:11:28Z", "session": "ae0a01d52b1cd721f", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T05:11:28Z", "session": "ae0a01d52b1cd721f", "mode": null, "event": "subagent_complete", "agent_id": "ae0a01d52b1cd721f", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T05:18:15Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_match", "matched_prompt": "Ok", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-03T05:18:28Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 43}
+{"ts": "2026-07-03T05:18:33Z", "session": "ae12df84b6b3c0e5b", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T05:18:33Z", "session": "ae12df84b6b3c0e5b", "mode": null, "event": "subagent_complete", "agent_id": "ae12df84b6b3c0e5b", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T05:20:43Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:20:43Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 158}
+{"ts": "2026-07-03T05:20:47Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:20:47Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 179}
+{"ts": "2026-07-03T05:20:58Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:20:58Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 158}
+{"ts": "2026-07-03T05:21:09Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-03T05:21:09Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 153}
+{"ts": "2026-07-03T05:21:24Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 67}
+{"ts": "2026-07-03T05:21:32Z", "session": "a240d080ef55f4241", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T05:21:32Z", "session": "a240d080ef55f4241", "mode": null, "event": "subagent_complete", "agent_id": "a240d080ef55f4241", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T05:22:58Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 78}
+{"ts": "2026-07-03T05:23:04Z", "session": "ac7e40524c7f5d818", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T05:23:04Z", "session": "ac7e40524c7f5d818", "mode": null, "event": "subagent_complete", "agent_id": "ac7e40524c7f5d818", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T05:31:00Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "approval_pattern_miss", "prompt": "ok im reorganizing all of them:"}
+{"ts": "2026-07-03T05:31:31Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 93}
+{"ts": "2026-07-03T05:31:36Z", "session": "a3cfb61fda26954b5", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f"}
+{"ts": "2026-07-03T05:31:36Z", "session": "a3cfb61fda26954b5", "mode": null, "event": "subagent_complete", "agent_id": "a3cfb61fda26954b5", "agent_type": "general-purpose", "parent_session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-03T05:31:38Z", "session": "11559", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-03T05:31:38Z", "session": "e5c6e160-f14a-4e35-904e-14f379fd934d", "event": "pressure_audit", "mode": "conversation", "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-03T05:31:38Z", "session": "11559", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 85}
+{"ts": "2026-07-03T05:31:43Z", "session": "14196", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-03T05:31:43Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "event": "pressure_audit", "mode": "conversation", "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-03T05:31:43Z", "session": "14196", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 82}

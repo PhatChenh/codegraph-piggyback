@@ -4,7 +4,7 @@
 > of each tool lives in its own `<tool>/design.md`. The *how* (function names, file
 > plans) belongs in per-phase planning inside `/build-pipeline` — never here.
 >
-> Source of truth for rationale: `~/01_all_projects/BLUEPRINT.md` (§6 build order).
+> Source of truth for rationale: `~/all-projects/vibe-coding-setup/BLUEPRINT.md` (§6 build order).
 > This file is the piggyback-scoped slice of that order. This supersedes the README's
 > legacy "Planned scripts per tool" section.
 
@@ -36,13 +36,58 @@ diagram and its satellites). Delivery rail: `manifest.json` + `piggyback` CLI.
 ## Build Order
 
 Piggyback-scoped slice of BLUEPRINT §6 (cross-project items like CI and the paved-road
-template live in their own projects: `~/01_all_projects/paved-road-template/`,
-`~/01_all_projects/workflow-guardrails/`).
+template live in their own projects: `~/all-projects/vibe-coding-setup/paved-road-template/`,
+`~/all-projects/vibe-coding-setup/workflow-guardrails/`).
 
-### Build-order handoff (to be filled by /architecture-grill Phase 3)
-Dependency DAG (ASCII) · `Phase | Depends on | Parallel with | Risk tier (+ basis)`
-table · Discrete landmines list. /build-pipeline Phase -2 reads this section as its
-standing input. Leave this section empty until the grill runs.
+### Build-order handoff (written by /architecture-grill, 2026-07-03)
+
+Frozen contracts: `docs/roadmap/skeleton-contracts.md` (Blocks 1–5).
+
+**Dependency DAG** (edges = imports, from "Dependency:" lines, not numbering):
+
+```
+A ──→ C ──┬──→ D
+B ────────┤
+B ──┬──→ E ∥ G ∥ H ∥ F(drift half)
+    │         C ──→ F(biography half)
+I ∥ everything
+```
+
+- **Parallel forks:** **A ∥ B** (neither imports the other — start both now;
+  highest-value fork). After B: **E ∥ G ∥ H ∥ F-drift** all parallel. **I**
+  parallel with anything.
+- **Critical path:** A → C → D (D also needs B, but B is off the longest
+  chain). Root to build first: A (P3 extractor) and B side by side.
+
+| Phase | Depends on | Parallel with | Risk tier (+ basis) |
+|---|---|---|---|
+| A ssot P2+P3 | — (P2 user curation in flight) | B, I | **A** — schema-once: `diagram-model.json` is the public intermediate every viz tool reads |
+| B plan-verifier + `_shared` | — | A, I | **A** — schema-once (manifest + verdicts consumed cross-project) + integration-density (`_shared` correctness = whole stack's) |
+| C ssot P4–P6 | A | E, G, H, F-drift, I | **B** — integration-density (renderer L-effort); narrative trust rule is correctness-sensitive but already contract-gated (Block 5b) |
+| D plan-visualizer | B, A, C | E, F, G, H, I | **C** — mechanical composition of frozen parts |
+| E changeset-context | B | C, D, F, G, H, I | **C** — mechanical; budget discipline only |
+| F drift-digest + biography | B (drift) · B+C (biography) | C(drift), D, E, G, H, I | **C** — composes shipped parts |
+| G repo-map | B | C, D, E, F, H, I | **C** — single ranked query |
+| H hygiene (precommit, dead-code, doc-coverage, extensions) | B | C, D, E, F, G, I | **C** — advisory reports |
+| I rail upgrades | — | all | **C**, but see landmine below |
+
+Give the strongest model to tier A (Phases A, B); tier C phases suit cheap
+implementers with standard review.
+
+**Discrete landmines** (decision-level, even inside low-risk phases):
+- **Phase A:** macro component grouping is a human call (config
+  seed-then-curate) — bad grouping degrades every downstream picture; curate
+  before P5 ships, cheap to redo before then, expensive after narratives pin.
+- **Phase B:** `_shared` extraction refactors SHIPPED `decision_index.py` —
+  regression risk on a live tool; its existing tests must pass unchanged
+  (contract Block 1, decision-log note).
+- **Phase C:** renderer's "one self-contained HTML, zero external deps" is
+  hard-to-reverse once P5 template + D reuse land — any CDN/framework
+  temptation breaks the contract two tools share.
+- **Phase I:** per-repo picker-record location is PENDING (Block 1c) — decide
+  there, don't improvise mid-build.
+- **Phase E:** budget unit (lines vs tokens) — settle at build from design.md
+  Q4 recommendation (lines), affects only this tool.
 
 ### Phase A — ssot P2 curation + P3 model extractor
 **Feature description/requirements:** finish the human curation pass on the decision
@@ -129,8 +174,23 @@ design.
 **Done when:** each tool's design.md "Done" behavior observable on a pilot repo.
 **Open questions:** see respective design.md files.
 
+### Phase I — delivery-rail upgrades
+**Feature description/requirements:** three targeted upgrades to `piggyback.py`
+(architecture unchanged, per skeleton-contracts.md Block 1d): durable per-repo
+picker record so `update` offers new tools instead of silently wiring
+(distinguishes "declined" from "never seen"); `status` shows
+wired/available/new per repo; post-pull sanity check (manifest validity +
+optional per-script `--selfcheck`), warn-only.
+**Delivers:** rail quality; no new capability number.
+**Dependency:** none; can run parallel with any phase.
+**Done when:** a new manifest entry shows up as OFFERED (not wired) on `update`
+in a pilot repo; `status` distinguishes the three states; a deliberately broken
+manifest is reported plainly without blocking.
+**Open questions:** per-repo record location/shape (PENDING in contracts 1c).
+
 ## Open questions (cross-phase)
 
-- [Human-judgment] Which repos get which repo-scope hooks by default when `init`
-  gains new tools — all-on or picker-curated per repo?
+- ~~Which repos get which repo-scope hooks by default~~ **Answered 2026-07-03:**
+  picker-curated per repo, never silent — frozen in
+  `docs/roadmap/skeleton-contracts.md` Block 1c.
 - [Technical research] Per-tool questions live in each `<tool>/design.md`.

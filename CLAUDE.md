@@ -14,12 +14,14 @@ FTS, `unresolved_refs`). This repo builds derivative tools on top: hooks that pu
 structural context to agents at the right moment (G1), deterministic verifiers that
 check plans and commits against real code (G2), and non-coder visibility tools
 (G3, flagship: `ssot-diagram/`). Full rationale + specs:
-`~/01_all_projects/BLUEPRINT.md`.
+`~/all-projects/vibe-coding-setup/BLUEPRINT.md`.
 
 ## Reference Docs
 
 Read before changing architecture:
-- `~/01_all_projects/BLUEPRINT.md` — master spec: four principles, ground rules (§0),
+- `docs/roadmap/skeleton-contracts.md` — the 5 FROZEN cross-phase contracts +
+  build-order handoff (architecture-grill 2026-07-03; do not silently redesign)
+- `~/all-projects/vibe-coding-setup/BLUEPRINT.md` — master spec: four principles, ground rules (§0),
   per-tool specs (G1–G3), build order (§6)
 - `docs/roadmap/roadmap.md` — this repo's build order + per-tool design doc index
 - `<tool>/design.md` — the standalone spec for each tool (write/read these, not the
