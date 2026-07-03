@@ -4,7 +4,7 @@
 > of each tool lives in its own `<tool>/design.md`. The *how* (function names, file
 > plans) belongs in per-phase planning inside `/build-pipeline` — never here.
 >
-> Source of truth for rationale: `~/01_all_projects/BLUEPRINT.md` (§6 build order).
+> Source of truth for rationale: `~/all-projects/vibe-coding-setup/skill_library/BLUEPRINT.md` (§6 build order).
 > This file is the piggyback-scoped slice of that order. This supersedes the README's
 > legacy "Planned scripts per tool" section.
 
@@ -36,8 +36,8 @@ diagram and its satellites). Delivery rail: `manifest.json` + `piggyback` CLI.
 ## Build Order
 
 Piggyback-scoped slice of BLUEPRINT §6 (cross-project items like CI and the paved-road
-template live in their own projects: `~/01_all_projects/paved-road-template/`,
-`~/01_all_projects/workflow-guardrails/`).
+template live in their own projects: `~/all-projects/paved-road-template/`,
+`~/all-projects/workflow-guardrails/`).
 
 ### Build-order handoff (to be filled by /architecture-grill Phase 3)
 Dependency DAG (ASCII) · `Phase | Depends on | Parallel with | Risk tier (+ basis)`
