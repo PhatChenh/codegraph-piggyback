@@ -181,5 +181,5 @@ to a wider doc glob once ADR promotion is done.
 | P8 | Decision coverage beyond ADRs | backlog |
 
 Related: sibling tools that reuse these layers (plan verification, plan visualization,
-context briefs) are specced in the repo-root [`BLUEPRINT.md`](../BLUEPRINT.md) — the
+context briefs) are specced in the repo-root [`BLUEPRINT.md`](BLUEPRINT.md) — the
 renderer built in P5 is deliberately reusable by the plan-visualizer there.
