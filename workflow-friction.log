@@ -593,3 +593,171 @@
 {"ts": "2026-07-03T05:31:43Z", "session": "14196", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
 {"ts": "2026-07-03T05:31:43Z", "session": "516db58d-d6d7-45b1-bfb2-85a05c04a74f", "event": "pressure_audit", "mode": "conversation", "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
 {"ts": "2026-07-03T05:31:43Z", "session": "14196", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 82}
+{"ts": "2026-07-04T00:13:25Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T00:13:25Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T00:13:25Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 215}
+{"ts": "2026-07-04T00:13:25Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 228}
+{"ts": "2026-07-04T00:18:57Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-04T00:18:57Z", "session": "75931", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-04T00:18:58Z", "session": "75931", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 436}
+{"ts": "2026-07-04T00:19:14Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T00:19:14Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T00:19:14Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 237}
+{"ts": "2026-07-04T00:19:14Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 251}
+{"ts": "2026-07-04T00:35:45Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T00:35:45Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T00:35:45Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 189}
+{"ts": "2026-07-04T00:35:45Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 193}
+{"ts": "2026-07-04T00:37:48Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "approval_pattern_match", "matched_prompt": "continue", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-04T00:38:05Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-04T00:38:06Z", "session": "97289", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-04T00:38:06Z", "session": "97289", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 341}
+{"ts": "2026-07-04T00:38:56Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T00:38:56Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T00:38:56Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 227}
+{"ts": "2026-07-04T00:38:56Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 218}
+{"ts": "2026-07-04T00:39:03Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T00:39:03Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T00:39:03Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 163}
+{"ts": "2026-07-04T00:39:03Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 162}
+{"ts": "2026-07-04T00:39:08Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "approval_pattern_match", "matched_prompt": "continue", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-04T00:39:17Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "approval_pattern_match", "matched_prompt": "continue", "confirmation_source": "pattern", "outcome": "ask-prompt-emitted"}
+{"ts": "2026-07-04T00:40:40Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T00:40:40Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 178}
+{"ts": "2026-07-04T00:40:40Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T00:40:40Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 182}
+{"ts": "2026-07-04T00:47:05Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T00:47:05Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 180}
+{"ts": "2026-07-04T00:47:22Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 62}
+{"ts": "2026-07-04T00:48:21Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "approval_pattern_miss", "prompt": "ok good, re ask"}
+{"ts": "2026-07-04T01:03:35Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 67}
+{"ts": "2026-07-04T01:16:58Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T01:16:58Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 148}
+{"ts": "2026-07-04T01:24:28Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T01:24:28Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 175}
+{"ts": "2026-07-04T01:26:29Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T01:26:29Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 181}
+{"ts": "2026-07-04T01:28:28Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T01:28:28Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 173}
+{"ts": "2026-07-04T01:37:37Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T01:37:37Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 200}
+{"ts": "2026-07-04T01:37:59Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T01:37:59Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 218}
+{"ts": "2026-07-04T01:38:22Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 74}
+{"ts": "2026-07-04T01:38:42Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 66}
+{"ts": "2026-07-04T01:38:55Z", "session": "a6d71c0df13315b4f", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f"}
+{"ts": "2026-07-04T01:38:55Z", "session": "a6d71c0df13315b4f", "mode": null, "event": "subagent_complete", "agent_id": "a6d71c0df13315b4f", "agent_type": "general-purpose", "parent_session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T01:39:45Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "approval_pattern_miss", "prompt": "ok so what now? u done the curation, but that's just one time process. we did not build anything"}
+{"ts": "2026-07-04T01:41:33Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "approval_pattern_miss", "prompt": "ok now go design"}
+{"ts": "2026-07-04T01:42:53Z", "session": "a9f3c4320b6b2c24c", "mode": "work", "event": "subagent_start", "agent_type": "writ:worker", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T01:42:57Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 81}
+{"ts": "2026-07-04T01:52:34Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T01:52:34Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 199}
+{"ts": "2026-07-04T01:53:18Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T01:53:18Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 172}
+{"ts": "2026-07-04T01:57:09Z", "session": "a9f3c4320b6b2c24c", "mode": "work", "event": "subagent_complete", "agent_id": "a9f3c4320b6b2c24c", "agent_type": "writ:worker", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T01:58:37Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T01:58:37Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 146}
+{"ts": "2026-07-04T01:58:50Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T01:58:51Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 147}
+{"ts": "2026-07-04T02:03:18Z", "session": "a6c585609a781064d", "mode": "work", "event": "subagent_start", "agent_type": "caveman:cavecrew-reviewer", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T02:03:21Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 65}
+{"ts": "2026-07-04T02:03:24Z", "session": "a78464768c6b6636b", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T02:03:24Z", "session": "a78464768c6b6636b", "mode": null, "event": "subagent_complete", "agent_id": "a78464768c6b6636b", "agent_type": "general-purpose", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T02:05:47Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:05:47Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 182}
+{"ts": "2026-07-04T02:06:32Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 66}
+{"ts": "2026-07-04T02:08:42Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "approval_pattern_miss", "prompt": "go 1, also only the skill right? no hook or extra script?"}
+{"ts": "2026-07-04T02:09:44Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:09:44Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 185}
+{"ts": "2026-07-04T02:10:06Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 74}
+{"ts": "2026-07-04T02:11:44Z", "session": "a6c585609a781064d", "mode": "work", "event": "subagent_complete", "agent_id": "a6c585609a781064d", "agent_type": "caveman:cavecrew-reviewer", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T02:13:06Z", "session": "cce14dba-e77b-46bd-96bb-1cc9aa9b379f", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-04T02:13:07Z", "session": "99769", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-04T02:13:07Z", "session": "99769", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 420}
+{"ts": "2026-07-04T02:13:48Z", "session": "a9f3c4320b6b2c24c", "mode": "work", "event": "subagent_start", "agent_type": "writ:worker", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T02:13:59Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 63}
+{"ts": "2026-07-04T02:15:42Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:15:42Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 141}
+{"ts": "2026-07-04T02:16:19Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:16:19Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 143}
+{"ts": "2026-07-04T02:16:53Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:16:53Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 144}
+{"ts": "2026-07-04T02:17:07Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:17:07Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 174}
+{"ts": "2026-07-04T02:17:32Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:17:32Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 142}
+{"ts": "2026-07-04T02:17:58Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:17:58Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 142}
+{"ts": "2026-07-04T02:18:12Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:18:12Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 143}
+{"ts": "2026-07-04T02:20:09Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:20:09Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 147}
+{"ts": "2026-07-04T02:20:37Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:20:37Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 143}
+{"ts": "2026-07-04T02:21:56Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:21:56Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 147}
+{"ts": "2026-07-04T02:22:24Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:22:24Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 175}
+{"ts": "2026-07-04T02:22:48Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:22:48Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 174}
+{"ts": "2026-07-04T02:23:24Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:23:24Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 160}
+{"ts": "2026-07-04T02:24:07Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:24:07Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 178}
+{"ts": "2026-07-04T02:24:55Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:24:55Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 188}
+{"ts": "2026-07-04T02:25:52Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:25:52Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 146}
+{"ts": "2026-07-04T02:26:52Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:26:52Z", "session": "a9f3c4320b6b2c24c", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 163}
+{"ts": "2026-07-04T02:29:16Z", "session": "a9f3c4320b6b2c24c", "mode": "work", "event": "subagent_complete", "agent_id": "a9f3c4320b6b2c24c", "agent_type": "writ:worker", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T02:50:07Z", "session": "a51e6f64150e1c228", "mode": "work", "event": "subagent_start", "agent_type": "writ:worker", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T02:50:12Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 79}
+{"ts": "2026-07-04T02:51:50Z", "session": "a51e6f64150e1c228", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T02:51:50Z", "session": "a51e6f64150e1c228", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 184}
+{"ts": "2026-07-04T02:52:05Z", "session": "a51e6f64150e1c228", "mode": "work", "event": "subagent_complete", "agent_id": "a51e6f64150e1c228", "agent_type": "writ:worker", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T03:11:54Z", "session": "a78f1d3298e8bfc42", "mode": "work", "event": "subagent_start", "agent_type": "writ:worker", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T03:12:09Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 78}
+{"ts": "2026-07-04T03:12:32Z", "session": "a00632662bee81b10", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T03:12:32Z", "session": "a00632662bee81b10", "mode": null, "event": "subagent_complete", "agent_id": "a00632662bee81b10", "agent_type": "general-purpose", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T03:13:08Z", "session": "a97cbdc7fd1accdcb", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T03:13:08Z", "session": "a97cbdc7fd1accdcb", "mode": null, "event": "subagent_complete", "agent_id": "a97cbdc7fd1accdcb", "agent_type": "general-purpose", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T03:13:44Z", "session": "a17f806e835342085", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T03:13:44Z", "session": "a17f806e835342085", "mode": null, "event": "subagent_complete", "agent_id": "a17f806e835342085", "agent_type": "general-purpose", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T03:14:27Z", "session": "ab418b547247ebb91", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T03:14:27Z", "session": "ab418b547247ebb91", "mode": null, "event": "subagent_complete", "agent_id": "ab418b547247ebb91", "agent_type": "general-purpose", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T03:19:02Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T03:19:02Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 196}
+{"ts": "2026-07-04T03:19:37Z", "session": "adb16d46082de338b", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T03:19:37Z", "session": "adb16d46082de338b", "mode": null, "event": "subagent_complete", "agent_id": "adb16d46082de338b", "agent_type": "general-purpose", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T03:20:19Z", "session": "adcfb6becfd2f33bf", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T03:20:19Z", "session": "adcfb6becfd2f33bf", "mode": null, "event": "subagent_complete", "agent_id": "adcfb6becfd2f33bf", "agent_type": "general-purpose", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T03:20:23Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T03:20:23Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 150}
+{"ts": "2026-07-04T03:20:33Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T03:20:33Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 186}
+{"ts": "2026-07-04T03:20:52Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T03:20:52Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 148}
+{"ts": "2026-07-04T03:20:53Z", "session": "a36830d0bd5c00fd4", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T03:20:53Z", "session": "a36830d0bd5c00fd4", "mode": null, "event": "subagent_complete", "agent_id": "a36830d0bd5c00fd4", "agent_type": "general-purpose", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T03:21:06Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T03:21:06Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 172}
+{"ts": "2026-07-04T03:21:09Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T03:21:09Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 146}
+{"ts": "2026-07-04T03:21:11Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T03:21:11Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 147}
+{"ts": "2026-07-04T03:21:14Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T03:21:14Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 177}
+{"ts": "2026-07-04T03:21:23Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T03:21:23Z", "session": "a78f1d3298e8bfc42", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 150}
+{"ts": "2026-07-04T03:21:28Z", "session": "ab0d5d41e6f6b573a", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T03:21:29Z", "session": "ab0d5d41e6f6b573a", "mode": null, "event": "subagent_complete", "agent_id": "ab0d5d41e6f6b573a", "agent_type": "general-purpose", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T03:22:05Z", "session": "ad889ddcefb44b640", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T03:22:05Z", "session": "ad889ddcefb44b640", "mode": null, "event": "subagent_complete", "agent_id": "ad889ddcefb44b640", "agent_type": "general-purpose", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T03:22:35Z", "session": "a78f1d3298e8bfc42", "mode": "work", "event": "subagent_complete", "agent_id": "a78f1d3298e8bfc42", "agent_type": "writ:worker", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T03:24:48Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T03:24:48Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 147}
+{"ts": "2026-07-04T03:24:54Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 67}
+{"ts": "2026-07-04T03:28:06Z", "session": "a37ffabcd0de41c20", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
+{"ts": "2026-07-04T03:28:06Z", "session": "a37ffabcd0de41c20", "mode": null, "event": "subagent_complete", "agent_id": "a37ffabcd0de41c20", "agent_type": "general-purpose", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}

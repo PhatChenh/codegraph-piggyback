@@ -61,6 +61,12 @@ The seed index is only trustworthy after a human pass. In mkt_engine:
 `verified:true`. This curated index is an *input* to P3 — the diagram shows decision
 nodes only for verified anchors, so P3 can start in parallel but ships after P2.
 
+**Curation assist:** `skills/ssot-curate/SKILL.md` is a hand-held, interactive
+walkthrough of this phase (AI judges + proposes each anchor, user confirms,
+then `refresh` flips verified). No new code — it shells out to P1's
+`decision_index.py`. Does NOT cover post-curation drift (verified:true + later
+STALE) — that's P7.
+
 ### P3 — Diagram model extractor · TODO (the deterministic heart)
 One script, `ssot-diagram/graph_model.py`, that turns the codegraph DB + the decision
 index into a single `diagram-model.json` — the only input the renderer ever sees.

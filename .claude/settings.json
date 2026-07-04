@@ -32,6 +32,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $HOME/.codegraph-piggyback/ssot-diagram/decision_hook.py",
+            "timeout": 5
+          }
+        ]
       }
     ]
   }
