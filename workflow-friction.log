@@ -761,3 +761,18 @@
 {"ts": "2026-07-04T03:24:54Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 67}
 {"ts": "2026-07-04T03:28:06Z", "session": "a37ffabcd0de41c20", "mode": null, "event": "subagent_type_fallback", "hook": "writ-subagent-stop", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8"}
 {"ts": "2026-07-04T03:28:06Z", "session": "a37ffabcd0de41c20", "mode": null, "event": "subagent_complete", "agent_id": "a37ffabcd0de41c20", "agent_type": "general-purpose", "parent_session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "files_written": 0, "rules_loaded": 0, "queries": 0, "remaining_budget": 8000, "denial_count": 0}
+{"ts": "2026-07-04T03:42:34Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-04T03:42:34Z", "session": "83736", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-04T03:42:34Z", "session": "83736", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 370}
+{"ts": "2026-07-04T03:42:38Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T03:42:38Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T03:42:38Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 281}
+{"ts": "2026-07-04T03:42:38Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 274}
+{"ts": "2026-07-04T03:42:44Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T03:42:44Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-04T03:42:44Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 179}
+{"ts": "2026-07-04T03:42:44Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 179}
+{"ts": "2026-07-04T03:43:57Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "approval_pattern_miss", "prompt": "writ should be online now, and codegraph hooks also should be online, check them, if they  do, then"}
+{"ts": "2026-07-04T03:49:40Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-04T03:49:40Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 179}
+{"ts": "2026-07-04T03:49:53Z", "session": "644b12b3-bf94-4013-8b7a-03de00a215e8", "mode": null, "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 69}
