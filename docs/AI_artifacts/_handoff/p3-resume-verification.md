@@ -1,4 +1,8 @@
-# P3 — resume at factual-code-verification
+# P3 — resume at factual-code-verification (SUPERSEDED 2026-07-04)
+
+> **SUPERSEDED.** The factual-code-verification + plan steps are now DONE (0
+> invalidated). **The current pick-up point is `STATE.md` at the repo root** — read
+> that instead. This file is kept as a historical record.
 
 Fresh-session handoff for the P3 ssot-diagram extractor build-pipeline.
 Detailed state lives in `p3-pipeline-state.md` (same dir) — read it for the 6

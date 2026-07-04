@@ -49,17 +49,21 @@ read-hook `decision_hook.py`, packaged into `piggyback init`. Anchors carry sign
 snapshots from the codegraph DB; verdicts are `FRESH/STALE/ORPHANED/AMBIGUOUS`, no LLM.
 45 tests passing; verified against the real mkt_engine index (8 ADRs, 25 anchors).
 
-### P2 — Curate the real index · IN PROGRESS (user-owned)
-The seed index is only trustworthy after a human pass. In mkt_engine:
-- [ ] Drop wrong anchors (prose mentions that aren't real dependencies).
-- [ ] Disambiguate `name@path` anchors bootstrap skipped (e.g. `push`).
-- [ ] Re-anchor field/property mentions to their owning type or file.
-- [ ] Set `supersedes` chains; mark superseded ADRs.
-- [ ] `decision_index refresh <id>` each curated decision → `verified:true`.
+### P2 — Curate the real index · DONE (2026-07-04)
+The seed index is only trustworthy after a human pass. In mkt_engine, the curation
+pass is **complete**: 8 ADRs (ADR-0001..ADR-0008), 33 anchors, all `verified:true`,
+all FRESH. `decision_index status` exits 0 against `~/all-projects/mkt_engine`.
 
-**Exit criteria:** `decision_index status` exits 0 (all FRESH) with every anchor
-`verified:true`. This curated index is an *input* to P3 — the diagram shows decision
-nodes only for verified anchors, so P3 can start in parallel but ships after P2.
+Completed curation steps:
+- [x] Dropped wrong anchors (prose mentions that aren't real dependencies).
+- [x] Disambiguated `name@path` anchors bootstrap skipped (e.g. `push`).
+- [x] Re-anchored field/property mentions to their owning type or file.
+- [x] Set `supersedes` chains; marked superseded ADRs.
+- [x] `decision_index refresh <id>` each curated decision → `verified:true`.
+
+**Exit criteria (MET):** `decision_index status` exits 0 (all FRESH) with every
+anchor `verified:true`. This curated index is an *input* to P3 — P3 now has its
+dependency satisfied and is at the plan step (see `STATE.md`).
 
 **Curation assist:** `skills/ssot-curate/SKILL.md` is a hand-held, interactive
 walkthrough of this phase (AI judges + proposes each anchor, user confirms,
@@ -67,10 +71,16 @@ then `refresh` flips verified). No new code — it shells out to P1's
 `decision_index.py`. Does NOT cover post-curation drift (verified:true + later
 STALE) — that's P7.
 
-### P3 — Diagram model extractor · TODO (the deterministic heart)
+### P3 — Diagram model extractor · PLANNED (build-pipeline complete; implement next)
 One script, `ssot-diagram/graph_model.py`, that turns the codegraph DB + the decision
 index into a single `diagram-model.json` — the only input the renderer ever sees.
 Deterministic: same DB + same index + same config ⇒ byte-identical model.
+
+**Pipeline state (2026-07-04):** design → red-team (5 fixes A13–A17) → spec →
+factual-code-verification (23 valid / 0 invalidated / 2 unverifiable-non-blocking) →
+plan, ALL DONE. Verify confirmed the 5 red-team fixes individually against the live
+mkt_engine DB. Ready for code implementation. Full dispatch inputs + 14-step plan:
+`docs/AI_artifacts/4_plans/p3-diagram-model-extractor.md`. Pick-up point: `STATE.md`.
 
 **Three-level hierarchy, derived not invented:**
 - **Macro** = components. Default: top-level directories that contain indexed files.
@@ -178,8 +188,8 @@ to a wider doc glob once ADR promotion is done.
 |---|---|---|
 | P0 | Codegraph foundation | done (external) |
 | P1 | decision-index (records + staleness + hook + packaging) | **done** |
-| P2 | Curate real index | in progress (user) |
-| P3 | Diagram model extractor (`diagram-model.json`) | todo — next up |
+| P2 | Curate real index | **done** (2026-07-04, 8 ADRs / 33 anchors all verified+FRESH) |
+| P3 | Diagram model extractor (`diagram-model.json`) | planned — pipeline done, implement next (see `STATE.md`) |
 | P4 | Narrative sidecar (gated plain language) | todo |
 | P5 | Interactive HTML renderer (macro/micro/nano) | todo |
 | P6 | Regeneration plumbing | todo |

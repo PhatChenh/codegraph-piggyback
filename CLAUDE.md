@@ -95,9 +95,11 @@ python3 -m pytest                   # run all tests
 
 ## Build Progress
 
-Shipped: impact-analyzer, codegraph-gate, decision-index (ssot P1). In progress:
-ssot P2 curation. Everything else: specced in `<tool>/design.md`, build order in
-`docs/roadmap/roadmap.md`.
+Shipped: impact-analyzer, codegraph-gate, decision-index (ssot P1), ssot P2
+curation DONE (2026-07-04). ssot P3 extractor: build-pipeline COMPLETE (design →
+red-team → spec → factual-code-verification → plan), awaiting code implementation —
+see `STATE.md` for the pick-up point. Everything else: specced in
+`<tool>/design.md`, build order in `docs/roadmap/roadmap.md`.
 
 ## What AI Gets Wrong
 

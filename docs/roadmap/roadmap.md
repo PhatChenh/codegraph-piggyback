@@ -21,7 +21,7 @@ diagram and its satellites). Delivery rail: `manifest.json` + `piggyback` CLI.
 |---|---|---|---|---|
 | 1 | impact-analyzer | G1 | ✅ shipped (+3 extensions pending) | `impact-analyzer/design-extensions.md` |
 | 2 | codegraph-gate | G2 | ✅ shipped | `codegraph-gate/` |
-| 3 | decision-index (ssot P1) | G3 | ✅ shipped; P2 curation in progress | `ssot-diagram/roadmap.md` |
+| 3 | decision-index (ssot P1) | G3 | ✅ shipped; P2 curation DONE (2026-07-04); P3 planned → `STATE.md` | `ssot-diagram/roadmap.md` |
 | 4 | _shared | infra | not built | `_shared/design.md` |
 | 5 | plan-verifier ⭐ | G2 | not built | `plan-verifier/design.md` |
 | 6 | plan-visualizer ⭐ | G3 | not built | `plan-visualizer/design.md` |
@@ -95,11 +95,14 @@ index, then build the deterministic extractor that turns the codegraph DB + deci
 index into `diagram-model.json`, the public intermediate every visualization tool
 renders through. Behavior per `ssot-diagram/roadmap.md` (P2, P3).
 **Delivers:** capabilities 3 (P2/P3 slice).
-**Dependency:** ssot P2 is user-owned curation (in progress).
+**Dependency:** ssot P2 curation DONE (2026-07-04 — 8 ADRs / 33 anchors, all verified
++FRESH on `~/all-projects/mkt_engine`). P3 plan step complete; code implementation
+is the remaining work.
 **Outcome:** any tool can render real repo structure without re-deriving it.
-**Scope:** IN: P2 exit criteria, P3 extractor. OUT: narratives, renderer (P4–P5).
-**Done when:** `decision_index status` exits 0 all-FRESH on the pilot repo; P3
-extractor emits a valid model for that repo per its roadmap's exit criteria.
+**Scope:** IN: P2 exit criteria (MET), P3 extractor. OUT: narratives, renderer (P4–P5).
+**Done when:** `decision_index status` exits 0 all-FRESH on the pilot repo (MET for P2);
+P3 extractor emits a valid model for that repo per its roadmap's exit criteria (P2 half DONE,
+P3 half at implement step — see `STATE.md`).
 **Open questions:** none — governed by `ssot-diagram/roadmap.md`.
 
 ### Phase B — plan-verifier (+ `_shared` extraction)

@@ -1,4 +1,8 @@
-# P3 build-pipeline — state handoff
+# P3 build-pipeline — state handoff (SUPERSEDED 2026-07-04)
+
+> **SUPERSEDED.** This handoff was last updated at the spec step. Verify + plan are
+> now DONE. **The current pick-up point is `STATE.md` at the repo root** — read that
+> instead. This file is kept as a historical record of the pipeline's mid-run state.
 
 _Paused 2026-07-04 after spec step, before factual-code-verification._
 _Pipeline: `/build-pipeline` (medium tier). Feature: ssot-diagram P3 extractor._
