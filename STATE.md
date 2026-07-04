@@ -5,22 +5,37 @@
 
 ## What is happening right now
 
-**Phase A — ssot P3 diagram-model extractor.** Code implementation is the next
-action. The `/build-pipeline` (medium tier) run is COMPLETE through its five steps
-(design → red-team → spec → factual-code-verification → plan). The plan is approved
-and on disk. **No code has been written yet** for P3.
+**Phase A — ssot P3 diagram-model extractor: IMPLEMENTED (2026-07-04), awaiting
+merge to main.** Code lives on branch `dsk/p3-diagram-model` (integration worktree
+`.dsk-worktrees/p3-diagram-model`), commit `526227b`. Built via `deepseek-orchestrate`
+(deepseek-v4-flash implemented; Claude reviewed each wave) with three review rounds
+(plan-compliance → code-quality → phase-end adversarial red-team) — all findings
+fixed. **Not yet merged to main; not yet documented in CLAUDE.md build-progress.**
 
-## One-paragraph orientation
+## NEXT: merge `dsk/p3-diagram-model` → main, then P3 is DONE
 
-P3 builds one deterministic script `ssot-diagram/graph_model.py` that reads the
+```sh
+cd /Users/phatchenh/all-projects/vibe-coding-setup/codegraph-piggyback
+git checkout main && git merge --no-ff dsk/p3-diagram-model
+# then: update CLAUDE.md "Build Progress" (P3 ✅), remove integration worktree
+```
+After merge, the next ssot phase is **P4** (narrative sidecar) per `ssot-diagram/roadmap.md`.
+The integration worktree `.dsk-worktrees/p3-diagram-model` can be removed once merged.
+
+## One-paragraph orientation (P3 as shipped)
+
+P3 is one deterministic script `ssot-diagram/graph_model.py` that reads the
 codegraph DB (read-only) + the curated decision index + a config, and emits one
-`diagram-model.json` (3-level: macro components → micro files/classes → nano
-functions, with rolled-up edges, decision nodes from verified anchors, and a content
-signature on every node). Same inputs ⇒ byte-identical JSON. No LLM in any verdict.
-Ships via `manifest.json`, CLI-first. P2 (the curated index it depends on) LANDED
-2026-07-04.
+`diagram-model.json` (3-level NESTED per Block 4a: components → micros → nanos,
+with rolled-up edges `calls`/`imports`/`references`, decision nodes with
+FRESH/STALE/ORPHANED/superseded badges, and a CONTENT signature on every node
+including decisions — pinned to anchor sigs so drift is visible). Same inputs ⇒
+byte-identical JSON. No LLM in any verdict. Ships via `manifest.json` (entry
+`diagram-model`, repo scope, `hooks: []` — CLI-first; P6 owns hook wiring). P2
+(curated index) LANDED 2026-07-04.
 
-## Pipeline state (all DONE — these are inputs to the implement step)
+
+## Pipeline state (all DONE)
 
 | Step | Artifact | Status |
 |---|---|---|
@@ -30,62 +45,67 @@ Ships via `manifest.json`, CLI-first. P2 (the curated index it depends on) LANDE
 | factual-code-verification | `docs/AI_artifacts/3_factual-code-verification/p3-diagram-model-extractor.md` | ✅ 23 valid / 0 invalidated / 2 unverifiable-non-blocking; A13–A17 each verified |
 | ADR | `docs/adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md` | ✅ written |
 | plan | `docs/AI_artifacts/4_plans/p3-diagram-model-extractor.md` | ✅ written (1484 lines, 14 Steps) |
+| **implement** | `ssot-diagram/graph_model.py` (+ tests + golden + config + manifest) | ✅ branch `dsk/p3-diagram-model` commit `526227b` — 32/32 pytest, deterministic (golden sha256 `5a1e2156…`), P1 regression clean |
+| **review** | plan-compliance → code-quality → phase-end red-team (3 rounds) | ✅ all findings fixed; mutation-tested |
 
-## NEXT: implement P3 (`ssot-diagram/graph_model.py`)
+## What was built + deviations from the plan (post-implementation notes)
 
-**Read these first (in order):**
-1. `docs/AI_artifacts/4_plans/p3-diagram-model-extractor.md` — the plan, 14 Steps.
-   This is the primary work document. Follow it.
-2. `docs/AI_artifacts/3_factual-code-verification/p3-diagram-model-extractor.md` —
-   the verified facts. Trust this over the spec on any discrepancy (it was checked
-   against live code/DB; the spec was not).
-3. `docs/AI_artifacts/2_specs/p3-diagram-model-extractor.md` — the spec (component
-   decomposition, 25 assumptions).
-4. `docs/AI_artifacts/1_design/p3-diagram-model-extractor.md` — the design (options,
-   chosen approach, risks).
-5. `docs/roadmap/skeleton-contracts.md` — the 5 FROZEN cross-phase contracts. Do NOT
-   re-litigate.
-6. `CLAUDE.md` (repo root) — project rules. Especially: never write to
-   `.codegraph/codegraph.db` (connect `mode=ro`); every tool registers in
-   `manifest.json`; CLIs run standalone; signatures pin all persisted LLM output.
+The implementer (deepseek-v4-flash via `deepseek-orchestrate`) wrote the initial
+extractor; Claude (orchestrator) ran three review rounds and fixed every finding.
+**Deviations from the plan that the reviews corrected** (the plan text and the code
+disagreed in places; for traceability):
 
-**Reference implementation to build against (P1, shipped — reuse, don't reimplement):**
-- `ssot-diagram/decision_index.py` — P1 engine. P3 reuses `die()` (note: exits 2),
-  `save_index` atomicity pattern (temp + `os.replace`, lines 175–179), `verify_schema`
-  (P3 extends it — see carry-forward #5 below), signature recipe.
-- `_shared/` — `db.py` (mode=ro), `sig.py` (sha256 of source slice), `resolve.py`,
-  `queries.py`, `budget.py`, `hookio.py`. **Deferring `_shared/` extraction to Phase B**
-  per ADR-0001 — P3 sibling-imports `decision_index.py` across the leading underscore
-  for now (the off-limits set in the plan's `## Delegation Authority` enforces the
-  convention).
+- **Model layout: NESTED, not flat.** Plan Step 11 said "flat lists with pointers";
+  Block 4a FROZEN contract says "no flat mode". Code is NESTED (`components[].children`
+  = micros, `micros[].children` = nanos) — contract wins, plan text was wrong.
+- **Default `--config`/`--out` paths**: in `ssot-diagram/` subdir (plan Step 2), not
+  repo-root. deepseek initially placed them at repo-root; fixed.
+- **`--force` on `extract`**: removed (not in plan Step 2's flag surface). `bootstrap-config`
+  keeps its `--force`. `--update-golden` suppressed via `argparse.SUPPRESS`.
+- **Nano `name` field** (Block 4b FROZEN + Step 7 action 6): added (deepseek omitted it).
+- **Pre-extract guard `[:1]` bug** (Step 10 action 4): fixed to scan ALL decisions.
+- **Micro id class-dominant `#qname`** (Step 6 action 5) + **collapsed id
+  `nano:+collapsed@micro:<mid>`** (Step 7 action 8): plan-form applied.
+- **Supersedes → literal `"superseded"`** only when it points at a known ADR (Step 9
+  action 7); deepseek's `final_status = ss if ss else worst` emitted the superseding
+  ADR's id as the status — fixed.
+- **Per-node `decisions[]` sorted** (Block 1 determinism): added (deepseek left them in
+  index-key-order, which leaked when the index JSON was re-serialized).
+- **SystemExit swallow removed**: corrupt index now fail-loud via `di.die` (contract C2);
+  absent index warns + 0 decisions.
+- **EDGE DATA LOSS (Step 8, red-team Critical)**: nano-level edges whose target was a
+  class/interface/type_alias/constant/file were silently dropped (db_id_to_nano covered
+  only function/method). At the pilot: 225 calls-to-constants + 425 type-references +
+  17 class-instantiates vanished. Fixed: resolve non-function targets to the target
+  symbol's FILE's micro (plan Step 8 action 8); the edge attaches on that micro's
+  `edges[]`. Golden micro-level gained 239 references + 65 calls. **A16 test rewritten
+  to use a CLASS target (the real pilot shape — the original used a function target,
+  which masked the bug).**
+- **DECISION SIGNATURE (Step 9 action 6, red-team Critical)**: was `sha256(id)` (string,
+  never changed on drift) — broke the Block 1e/4b/5b pinning chain (P4 narratives would
+  render stale prose as trusted). Fixed: `_sorted_sha256(verified anchors' live sigs via
+  di.current_sig)`; falls back to `sha256(id)` only if no anchor produced a live sig.
+- **`--nano-cap` CLI override (red-team Major)**: config was always overriding the CLI
+  flag (dead code). Fixed: CLI overrides config; config is the fallback.
 
-**Pilot repo (the seed for golden tests):**
-- DB (read-only, `mode=ro&immutable=1`): `~/all-projects/mkt_engine/.codegraph/codegraph.db`
-- Curated index (P2 LANDED): `~/all-projects/mkt_engine/docs/decision-index.json` —
-  8 ADRs (ADR-0001..ADR-0008), 33 anchors, all `verified:true`, all FRESH.
+**Deferred (non-blocking, pilot-n/a):** config curation (seed config shipped as-is;
+owner product-decision). `_shared/` extraction stays Phase B per ADR-0001.
 
-## Carry-forward facts the verify step confirmed (integrate into implementation)
+## Verify command (P3 done-criteria — run from the mkt_engine checkout OR with explicit
+`--db`/`--index` pointing at the pilot; the bare command works once `piggyback install`
+wires the tool into the pilot repo)
 
-1. **A1 nuance — `nodes.id` has two forms.** 226/232 function nodes have
-   `function:<32-hex>` content-hash ids; 6 React-hook nodes have
-   `hook:<path>:<name>:<line>` path-derived ids. The spec's "synthesize your own id;
-   never pass `nodes.id` through" is correct for BOTH forms. **Add a code comment
-   forbidding dispatch-on-source-id.** (Only the rationale "one-line edit changes it"
-   over-claims for the hook case.)
-2. **E1 RESOLVED (planner decision) — exit code 2, not 1.** P3 mirrors P1's `die()`
-   (exits 2 at `decision_index.py:372–374`). P3 reuses `die()` verbatim for fail-loud
-   paths, so exit 2 is inherited automatically. A divergent exit 1 would require P3
-   to write its own `die()` for the same failure — that is the inconsistency.
-3. **Component 8 pin — `edges.line`** is 100% populated for
-   calls/imports/references/instantiates/implements; 0% for `contains` (which P3 does
-   not read as an edge). Plan: "always read `line`; null only for `contains` (unused)."
-4. **Component 12 atomicity — inherit P1's pattern.** `save_index`
-   (`decision_index.py:175–179`) already does atomic temp + `os.replace`. Do not leave
-   atomicity open.
-5. **R4 extended schema guard REQUIRED.** P1's `verify_schema` checks only 5 nodes
-   cols + 2 files cols; the extra cols P3 reads (`kind`, `id`, `docstring`,
-   `is_exported`, `signature`, all `edges.*`) are unguarded by P1. The spec's
-   component-4 extended guard is justified — implement it.
+```sh
+python3 ssot-diagram/graph_model.py extract --db ~/all-projects/mkt_engine/.codegraph/codegraph.db \
+  --index ~/all-projects/mkt_engine/docs/decision-index.json \
+  --config ssot-diagram/ssot-diagram.config.json    # or let it default after install
+python3 -m pytest ssot-diagram/                      # use /Users/phatchenh/.cache/writ/.venv/bin/python if default python3 lacks pytest
+```
+Pass = 32/32 pytest (golden NOT skipped — pilot DB present) AND: byte-identical re-extract
+(sha256 `5a1e2156…`); 11 decision nodes all FRESH; 2 collapsed `+K more` nodes;
+sample_callers `{file,line}` only (0 malformed of 1476); `generated_at: null`; edge kinds
+⊆ {calls,imports,references}; 0 ids leaking `nodes.id` shape; `decision_index status`
+still exits 0 (P1 regression).
 
 ## OPEN human-authority items (deferred — surface, do not decide silently)
 
@@ -113,22 +133,6 @@ implementation.
   subagent_type are BLOCKED (hook bounce). Cast a leaf: writes → `writ:worker` or
   `writ:writ-implementer` (plan-driven); read-only → `writ:writ-explorer`/`Explore`;
   review → `writ:writ-plan-reviewer` then `writ:writ-code-quality-reviewer`.
-
-## Verify command (the proof the implement step is done)
-
-After implementing, run:
-```sh
-python3 ssot-diagram/graph_model.py extract        # on the mkt_engine seed
-python3 -m pytest ssot-diagram/                      # golden + 5 red-team regressions
-```
-**Pass = every step passes AND observed signals:**
-- Re-running `extract` produces byte-identical `diagram-model.json` (determinism).
-- Every verified anchor appears exactly once (decision-node merge).
-- Nano-cap collapse produces `+K more` synthetic nodes (not silent truncation).
-- `sample_callers` top-3 is stable across runs (file:line ascending tiebreak).
-- Pre-extract guard prints a stderr warning (exit 0, not a hard fail) on a
-  stale-or-unverified index — warn-and-continue per contract 5 FROZEN.
-- `decision_index status` still exits 0 against mkt_engine (P2 regression check).
 
 ## Refused alternatives (do not re-debate)
 
