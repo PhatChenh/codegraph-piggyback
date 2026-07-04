@@ -80,7 +80,7 @@ Deterministic: same DB + same index + same config ⇒ byte-identical model.
 factual-code-verification (23 valid / 0 invalidated / 2 unverifiable-non-blocking) →
 plan, ALL DONE. Verify confirmed the 5 red-team fixes individually against the live
 mkt_engine DB. Ready for code implementation. Full dispatch inputs + 14-step plan:
-`docs/AI_artifacts/4_plans/p3-diagram-model-extractor.md`. Pick-up point: `STATE.md`.
+`ai-artifacts/4_plans/p3-diagram-model-extractor.md`. Pick-up point: `STATE.md`.
 
 **Three-level hierarchy, derived not invented:**
 - **Macro** = components. Default: top-level directories that contain indexed files.
@@ -178,7 +178,7 @@ never write to L1/L2 without confirmation. (Deliberately after P5/P6: the diagra
 makes staleness *visible*; this phase only makes resolving it cheaper.)
 
 ### P8 — Decision coverage beyond ADRs · BACKLOG
-Genuine decisions scattered in `docs/AI_artifacts/**` get promoted to ADRs (per
+Genuine decisions scattered in `ai-artifacts/**` get promoted to ADRs (per
 DOC-ARCH-001); working-memory drafts stay out of scope. Optionally extend bootstrap
 to a wider doc glob once ADR promotion is done.
 

@@ -1,8 +1,8 @@
 # Phase 3 — Diagram Model Extractor (`diagram-model.json`)
 
-> **Spec source:** decomposed from `docs/AI_artifacts/1_design/p3-diagram-model-extractor.md`
+> **Spec source:** decomposed from `ai-artifacts/1_design/p3-diagram-model-extractor.md`
 > (Revision 2, post-red-team 2026-07-04) and ADR
-> `docs/adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md`.
+> `adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md`.
 > The design's Option A (sibling import of P1) is FROZEN; the 6 grill contracts
 > are FROZEN; the 5 red-team fixes (assumptions A13-A17) are FROZEN and
 > load-bearing for research. This spec carries the design's `## Assumptions to

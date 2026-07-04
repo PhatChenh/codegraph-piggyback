@@ -19,11 +19,11 @@ build-pipeline SKILL.md (cap 2 auto cycles, escalate on type-c/regression).
 ## Read First
 
 - `CLAUDE.md` (repo root) — esp §3 scope, §7 no-unread-code, §9 no private memory
-- `docs/AI_artifacts/_handoff/p3-pipeline-state.md` — full pipeline state + resume-point dispatch prompt
-- `docs/AI_artifacts/2_specs/p3-diagram-model-extractor.md` — the spec to verify (1076 lines, 14 components, 25 assumptions A1-A25)
-- `docs/AI_artifacts/1_design/p3-diagram-model-extractor.md` — design (1330 lines, revised post-red-team)
-- `docs/adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md` — ADR
-- `docs/roadmap/skeleton-contracts.md` — Block 1e + Block 4 frozen contracts
+- `ai-artifacts/_handoff/p3-pipeline-state.md` — full pipeline state + resume-point dispatch prompt
+- `ai-artifacts/2_specs/p3-diagram-model-extractor.md` — the spec to verify (1076 lines, 14 components, 25 assumptions A1-A25)
+- `ai-artifacts/1_design/p3-diagram-model-extractor.md` — design (1330 lines, revised post-red-team)
+- `adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md` — ADR
+- `../docs/roadmap/skeleton-contracts.md` — Block 1e + Block 4 frozen contracts
 
 ## State
 
@@ -38,7 +38,7 @@ build-pipeline SKILL.md (cap 2 auto cycles, escalate on type-c/regression).
 
 1. **Dispatch factual-code-verification subagent on GLM-5.2 max effort.** Use the `factual-code-verification` dispatch template in `~/.claude/skills/build-pipeline/SKILL.md`. Inputs: spec + design + ADR + repo root + pilot DB/index paths (full prompt ready in `p3-pipeline-state.md` → "Resume point"). Set subagent `model: opus` is wrong — use GLM-5.2 max effort if the harness supports it, else strongest available; the user explicitly asked for GLM-5.2 max. CodeGraph-first for all code reads.
 2. Verify all 25 assumptions at the depth each claim requires (behavior claims = behavior reading, NOT signature grep). Distrust spec's "pre-validated" labels. The 5 red-team fixes (A13-A17) are load-bearing — verify each.
-3. Output to `docs/AI_artifacts/3_factual-code-verification/p3-diagram-model-extractor.md` (Spec Verification table + Invalidated Assumptions section if any).
+3. Output to `ai-artifacts/3_factual-code-verification/p3-diagram-model-extractor.md` (Spec Verification table + Invalidated Assumptions section if any).
 4. Return counts: validated / invalidated / unverifiable + list any invalidated IDs.
 5. Review gate: if any invalidated → loop-back (cap 2; escalate on type-c/regression). If all validated → phase-transition gate to plan step.
 6. **Before plan step:** re-check writ daemon (port 9130). Plan step itself is read-only (no writ dependency), but implement step after it WILL need writ work mode. Surface writ status to user at plan gate.
@@ -51,12 +51,12 @@ build-pipeline SKILL.md (cap 2 auto cycles, escalate on type-c/regression).
 
 ## Files Touched (this session)
 
-- `docs/AI_artifacts/0_scout/macro-component-grouping-prior-art.md` (new)
-- `docs/AI_artifacts/1_design/p3-diagram-model-extractor.md` (new, revised post-red-team)
-- `docs/AI_artifacts/2_specs/p3-diagram-model-extractor.md` (new)
-- `docs/adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md` (new)
-- `docs/AI_artifacts/_handoff/p3-pipeline-state.md` (new, updated to resume-point)
-- `docs/AI_artifacts/_handoff/p3-resume-verification.md` (this file)
+- `ai-artifacts/0_scout/macro-component-grouping-prior-art.md` (new)
+- `ai-artifacts/1_design/p3-diagram-model-extractor.md` (new, revised post-red-team)
+- `ai-artifacts/2_specs/p3-diagram-model-extractor.md` (new)
+- `adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md` (new)
+- `ai-artifacts/_handoff/p3-pipeline-state.md` (new, updated to resume-point)
+- `ai-artifacts/_handoff/p3-resume-verification.md` (this file)
 - `CONTEXT.md` (new, glossary — by design subagent)
 
 ## Suggested Skills

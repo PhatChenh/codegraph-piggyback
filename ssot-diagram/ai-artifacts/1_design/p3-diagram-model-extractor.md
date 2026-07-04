@@ -1050,11 +1050,11 @@ The files actually surveyed for this design:
 - `CLAUDE.md` (repo) — coding patterns, critical rules, build progress.
 - `ssot-diagram/roadmap.md` — P0–P8 + P2 (lines 52-76) + P3 (lines 78-117),
   full.
-- `docs/roadmap/skeleton-contracts.md` — Block 1 (esp. 1e sig/db invariants)
+- `../docs/roadmap/skeleton-contracts.md` — Block 1 (esp. 1e sig/db invariants)
   + Block 4 (the frozen `diagram-model.json` surface) + Block 5a/5b, full.
-- `docs/AI_artifacts/_handoff/p3-pipeline-state.md` — 6 locked contracts + open
+- `ai-artifacts/_handoff/p3-pipeline-state.md` — 6 locked contracts + open
   HOW questions + `mkt_engine` DB reality + refused alternatives, full.
-- `docs/AI_artifacts/0_scout/macro-component-grouping-prior-art.md` —
+- `ai-artifacts/0_scout/macro-component-grouping-prior-art.md` —
   Structurizr / dependency-cruiser / ArchUnit prior art, full.
 - `ssot-diagram/decision_index.py` — full source via codegraph: `find_db`
   (line 53), `repo_root_for` (62), `default_index_path` (67), `open_db` (73),

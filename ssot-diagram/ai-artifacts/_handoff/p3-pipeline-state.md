@@ -12,11 +12,11 @@ _Pipeline: `/build-pipeline` (medium tier). Feature: ssot-diagram P3 extractor._
 **Next step: factual-code-verification subagent.** Dispatch template in
 `~/.claude/skills/build-pipeline/SKILL.md` ("factual-code-verification").
 Inputs to inject:
-- Spec: `docs/AI_artifacts/2_specs/p3-diagram-model-extractor.md` (1076 lines,
+- Spec: `ai-artifacts/2_specs/p3-diagram-model-extractor.md` (1076 lines,
   14 components, 25 assumptions A1-A25)
-- Design: `docs/AI_artifacts/1_design/p3-diagram-model-extractor.md` (1330 lines,
+- Design: `ai-artifacts/1_design/p3-diagram-model-extractor.md` (1330 lines,
   revised post-red-team)
-- ADR: `docs/adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md`
+- ADR: `adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md`
 - Repo root: `/Users/phatchenh/all-projects/vibe-coding-setup/codegraph-piggyback`
 - Pilot DB: `~/all-projects/mkt_engine/.codegraph/codegraph.db` (read-only,
   `mode=ro&immutable=1`); curated index: `~/all-projects/mkt_engine/docs/decision-index.json`
@@ -24,7 +24,7 @@ Inputs to inject:
 - Verify all 25 assumptions at the depth each claim requires (behavior claims =
   behavior reading, not signature grep). Distrust the spec's own "pre-validated"
   labels. The 5 red-team fixes (A13-A17) are load-bearing — verify each. Output
-  to `docs/AI_artifacts/3_factual-code-verification/p3-diagram-model-extractor.md`
+  to `ai-artifacts/3_factual-code-verification/p3-diagram-model-extractor.md`
   with Spec Verification table + Invalidated Assumptions section.
 - Return counts: validated / invalidated / unverifiable + list any invalidated IDs.
 - CodeGraph-first (repo is indexed): use codegraph MCP tools / shell.
@@ -90,7 +90,7 @@ identical JSON. No LLM in any verdict. Ships via `manifest.json`, CLI-first.
 
 Macro component grouping = human call. `bootstrap-config` seeds from top-level
 dirs; human curates `ssot-diagram.config.json` (glob→name) before any narrative
-pinning (P4). Prior art: `docs/AI_artifacts/0_scout/macro-component-grouping-prior-art.md`
+pinning (P4). Prior art: `ai-artifacts/0_scout/macro-component-grouping-prior-art.md`
 (Structurizr, dependency-cruiser, ArchUnit — all converge on dir-as-default +
 curated override).
 

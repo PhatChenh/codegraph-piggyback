@@ -30,7 +30,7 @@ What this build connects to and why:
   that would lift these 11 symbols into `_shared/db.py` + `_shared/sig.py` is
   deferred to Phase B as a separate, single-shot task — it is NOT this plan.
 - **Connects DOWN to P4/P5/plan-visualizer** via the FROZEN Block 4 contract
-  (`docs/roadmap/skeleton-contracts.md`): three-level hierarchy
+  (`../docs/roadmap/skeleton-contracts.md`): three-level hierarchy
   (component → micro → nano), per-node `edges[]` with counts and a stable
   3-row `sample_callers[{file,line}]`, decision nodes with a
   `FRESH|STALE|ORPHANED|superseded` badge, content `signature` on every node.
@@ -143,7 +143,7 @@ additive `manifest.json` entry. Nothing outside this set is in scope.
     Rule). The live `~/all-projects/mkt_engine/docs/decision-index.json`
     is a read-only input too; P3 reads it, never writes it.
   - Frozen contracts and source-of-truth docs —
-    `docs/roadmap/skeleton-contracts.md` (Block 1, 4, 5), `docs/adrs/0001-…md`,
+    `../docs/roadmap/skeleton-contracts.md` (Block 1, 4, 5), `adrs/0001-…md`,
     `CLAUDE.md`, the design + spec + verification artifacts under
     `docs/AI_artifacts/`. Doc-sync is the pipeline-end job, not the
     implementer's.

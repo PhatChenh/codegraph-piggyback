@@ -26,7 +26,8 @@ Read before changing architecture:
 - `docs/roadmap/roadmap.md` — this repo's build order + per-tool design doc index
 - `<tool>/design.md` — the standalone spec for each tool (write/read these, not the
   README's legacy "Planned scripts per tool" section, which BLUEPRINT supersedes)
-- `ssot-diagram/roadmap.md` — flagship G3 roadmap (P0–P6 layered model)
+- `ssot-diagram/CLAUDE.md` — flagship G3 tool's rules + layered model (P0–P6),
+  cross-references `ssot-diagram/roadmap.md`. Read when working ssot-diagram phases.
 
 ## Tech Stack
 
@@ -46,7 +47,7 @@ manifest.json       # SSOT: script + hook events + scope (global|repo) per tool
 _shared/            # extracted common code (db, sig, resolve, queries, budget, hookio) — see _shared/design.md
 impact-analyzer/    # SHIPPED — PostToolUse:Read blast-radius hook (+ design-extensions.md)
 codegraph-gate/     # SHIPPED — codegraph-first exploration ordering gate
-ssot-diagram/       # SHIPPED P1 (decision-index engine + hook); P2–P6 per its roadmap.md
+ssot-diagram/       # SHIPPED P1 (decision-index) + P3 (diagram-model extractor); P2-P6 per ssot-diagram/CLAUDE.md
 plan-verifier/      # G2 star — verify plan claims against DB (design.md)
 plan-visualizer/    # G3 star — render a plan as a picture over the code map (design.md)
 changeset-context/  # branch brief: touched symbols + one-hop neighborhood (design.md)
@@ -96,10 +97,10 @@ python3 -m pytest                   # run all tests
 ## Build Progress
 
 Shipped: impact-analyzer, codegraph-gate, decision-index (ssot P1), ssot P2
-curation DONE (2026-07-04). ssot P3 extractor: build-pipeline COMPLETE (design →
-red-team → spec → factual-code-verification → plan), awaiting code implementation —
-see `STATE.md` for the pick-up point. Everything else: specced in
-`<tool>/design.md`, build order in `docs/roadmap/roadmap.md`.
+curation DONE (2026-07-04), **ssot P3 diagram-model extractor DONE (merged main
+`ba02a56`, 2026-07-04; 32/32 pytest, byte-deterministic), P4 next — see
+`ssot-diagram/STATE.md`**. Everything else: specced in `<tool>/design.md`, build
+order in `docs/roadmap/roadmap.md`.
 
 ## What AI Gets Wrong
 

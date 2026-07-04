@@ -6,7 +6,7 @@ _Last updated: 2026-07-04_
 This document verifies the spec for the next phase of the ssot-diagram pipeline:
 a script (`ssot-diagram/graph_model.py`) that turns the codegraph SQLite database
 plus the curated decision index into one deterministic diagram-model JSON file. The
-spec is at `docs/AI_artifacts/2_specs/p3-diagram-model-extractor.md` and carries 25
+spec is at `ai-artifacts/2_specs/p3-diagram-model-extractor.md` and carries 25
 falsifiable assumptions (A1–A25), five of them (A13–A17) explicitly flagged as
 load-bearing "red-team fixes."
 
@@ -54,12 +54,12 @@ Source code:
 - `docs/roadmap/skeleton-contracts.md` — Block 1 (incl. 1e module invariants),
   Block 4 (the frozen `diagram-model.json` surface: 4a hierarchy, 4b node fields,
   4c edges, 4d decision nodes, 4e resolvability), Block 5a/5b.
-- `docs/adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md`
+- `adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md`
   (ADR 0001, accepted 2026-07-04; Phase B consolidation table enumerates the 11
   symbols).
-- `docs/AI_artifacts/1_design/p3-diagram-model-extractor.md` (design, Revision 2
+- `ai-artifacts/1_design/p3-diagram-model-extractor.md` (design, Revision 2
   post-red-team; the carried-forward Assumptions-to-verify #1-17).
-- `docs/AI_artifacts/2_specs/p3-diagram-model-extractor.md` (the spec under
+- `ai-artifacts/2_specs/p3-diagram-model-extractor.md` (the spec under
   verification).
 - `CLAUDE.md` (repo + global). No STATE.md exists in this repo — its function is
   served by CLAUDE.md and skeleton-contracts.md (the constraint-preload was empty).
@@ -126,7 +126,7 @@ was opened and read; no "pre-validated" label was trusted.
 | A22 | The `files` table contains every indexed file (`path` = repo-relative) and `nodes.file_path` joins to `files.path`. `files` is the authoritative file list. | ✅ Validated | Live DB: 148 distinct `nodes.file_path` values, 0 of them missing a `files.path` row. `files` table has 150 rows (148 source-tracked files + 2 root-level special paths `.claude/hooks/fal-spend-warn.py` and others — actually 150 distinct paths, all of which are the indexed surface; two file_paths in `nodes` are JSON config files that have a `files` row but no nodes). P3 building the micro set from `files.path` is correct. |
 | A23 | `nodes.is_exported` / `nodes.docstring` columns exist (P1's `verify_schema` does NOT check them; P3's extended schema guard does). Both present and populated (may be null). | ✅ Validated | Schema: `is_exported` (INTEGER notnull=0), `docstring` (TEXT notnull=0) both exist. P1's `verify_schema` (lines 90-92) only checks `need_nodes = {name, qualified_name, file_path, start_line, end_line}` and `need_files = {path, content_hash}` — it does NOT check `is_exported`, `docstring`, `kind`, `signature`, `id`, `start_column`, `end_column`, `language`. P3's `_verify_model_schema` (component 4) extending P1's check is justified. Population: 153/252 fn/method exported, 123/252 with non-empty docstring. |
 | A24 | The pilot DB at `~/all-projects/mkt_engine/.codegraph/codegraph.db` is the golden-test fixture source. CI does not need a fixture DB copy (skip-if-absent). | ✅ Validated (fixture strategy is sound) + ⚠️ OPEN (CI environment possession) | The live DB exists and opens read-only with `mode=ro&immutable=1` from this repo's tooling (verified: returns 150 for `COUNT(*) FROM files`). The golden-test fixture strategy (committed `mkt_engine.model.json` re-recorded only via `--update-golden`; tests run against the live DB read-only with `pytest.mark.skipif` on the DB path) is implementable. **OPEN:** whether the CI environment has the pilot repo checked out is NOT verifiable from this repo's code alone — it depends on CI configuration, which I did not inspect. Mark OPEN (human-authority: CI environment) — does not block spec; the skip-if-absent posture means CI without the DB still passes (the golden test is skipped, the hermetic determinism + red-team tests still run). |
-| A25 | ADR 0001 is on disk and accepted; it supersedes design OQ-ADR-1. P3 deliverables list does NOT include writing a new ADR. | ✅ Validated | `docs/adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md` exists (verified via `find docs/adrs/`). Status: "Accepted (2026-07-04)". The ADR enumerates the exact Phase B `_shared/` consolidation targets (11 symbols with line numbers matching `decision_index.py`). P3 deliverables list correctly excludes "write ADR". |
+| A25 | ADR 0001 is on disk and accepted; it supersedes design OQ-ADR-1. P3 deliverables list does NOT include writing a new ADR. | ✅ Validated | `adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md` exists (verified via `find docs/adrs/`). Status: "Accepted (2026-07-04)". The ADR enumerates the exact Phase B `_shared/` consolidation targets (11 symbols with line numbers matching `decision_index.py`). P3 deliverables list correctly excludes "write ADR". |
 
 ### Extra assumptions I found while reading (not in the spec's A1–A25)
 
@@ -377,7 +377,7 @@ are mechanical/verified.
 6. **Voice rule compliance?** Every section leads with a plain-English sentence
    before any file:line or query citation.
 
-✅ Factual code verification complete → docs/AI_artifacts/3_factual-code-verification/p3-diagram-model-extractor.md
+✅ Factual code verification complete → ai-artifacts/3_factual-code-verification/p3-diagram-model-extractor.md
 Spec assumptions: 23 ✅ Validated  2 ⚠️ Unverifiable (A18 cross-build, A24 CI-env)  0 ❌ Invalidated
 A13 ✅ Validated  A14 ✅ Validated  A15 ✅ Validated  A16 ✅ Validated  A17 ✅ Validated
 Open questions remaining: 4 (folder naming, A18 cross-build, A24 CI-env, E1 exit code)

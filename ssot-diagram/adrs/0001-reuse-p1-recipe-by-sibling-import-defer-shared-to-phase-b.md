@@ -15,7 +15,7 @@ diagram-model extractor (`graph_model.py`) and needs exactly that same DB /
 signature / resolve recipe to build `diagram-model.json`.
 
 The clean place for shared plumbing is a `_shared/` library (Block 1 of
-`docs/roadmap/skeleton-contracts.md`). But right now only the design exists on
+`../docs/roadmap/skeleton-contracts.md`). But right now only the design exists on
 disk — there is no `_shared/db.py`, no `_shared/sig.py`. The contract explicitly
 schedules the lift-and-cutover as a separate "Phase B" task: "decision_index.py
 refactors to import `_shared/` via clean cutover — no back-compat aliases; its
@@ -148,9 +148,9 @@ back-compat aliases).
 
 ## References
 
-- Design doc: `docs/AI_artifacts/1_design/p3-diagram-model-extractor.md`
+- Design doc: `ai-artifacts/1_design/p3-diagram-model-extractor.md`
   (Option A chosen; Option B/C rejected; OQ-ADR-1 resolved "write the ADR")
-- Contract: `docs/roadmap/skeleton-contracts.md` Block 1 (the `_shared/`
+- Contract: `../docs/roadmap/skeleton-contracts.md` Block 1 (the `_shared/`
   extraction scheduled as "Phase B" clean cutover) and Block 5b (the trust rule
   that signatures must match — the reason Option B's drift is fatal)
 - Sibling-import precedent: `ssot-diagram/decision_hook.py` lines 22-23
