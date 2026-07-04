@@ -5,22 +5,21 @@
 
 ## What is happening right now
 
-**Phase A — ssot P3 diagram-model extractor: IMPLEMENTED (2026-07-04), awaiting
-merge to main.** Code lives on branch `dsk/p3-diagram-model` (integration worktree
-`.dsk-worktrees/p3-diagram-model`), commit `526227b`. Built via `deepseek-orchestrate`
-(deepseek-v4-flash implemented; Claude reviewed each wave) with three review rounds
-(plan-compliance → code-quality → phase-end adversarial red-team) — all findings
-fixed. **Not yet merged to main; not yet documented in CLAUDE.md build-progress.**
+**Phase A — ssot P3 diagram-model extractor: DONE (2026-07-04), merged to main.**
+Commit `ba02a56` (merge) + `b0b82b4` (run-report). NOT pushed to origin. Built via
+`deepseek-orchestrate` (deepseek-v4-flash implemented; Claude reviewed each wave) with
+three review rounds (plan-compliance → code-quality → phase-end adversarial red-team)
+— all findings fixed. Run report: `docs/AI_artifacts/9_runs/2026-07-04-p3-diagram-model-extractor.md`;
+scoreboard: `docs/model-scoreboard.csv`. **CLAUDE.md "Build Progress" still says
+"awaiting code implementation" — update on next touch.**
 
-## NEXT: merge `dsk/p3-diagram-model` → main, then P3 is DONE
+## NEXT: P4 (narrative sidecar) per `ssot-diagram/roadmap.md`
 
-```sh
-cd /Users/phatchenh/all-projects/vibe-coding-setup/codegraph-piggyback
-git checkout main && git merge --no-ff dsk/p3-diagram-model
-# then: update CLAUDE.md "Build Progress" (P3 ✅), remove integration worktree
-```
-After merge, the next ssot phase is **P4** (narrative sidecar) per `ssot-diagram/roadmap.md`.
-The integration worktree `.dsk-worktrees/p3-diagram-model` can be removed once merged.
+P3 substrate is live: golden `ssot-diagram/testdata/mkt_engine.model.json` (sha256
+`5a1e2156…`) + Block 4 contract. The content-pinned decision signature (red-team
+Critical 2 fix) is what makes P4's staleness trust-gate actually work — P4 narratives
+pin to `decision.signature`; if it doesn't change on drift, stale prose renders as
+trusted. Before P4: optionally push main to origin, update CLAUDE.md build-progress.
 
 ## One-paragraph orientation (P3 as shipped)
 
