@@ -26,6 +26,12 @@
       "hooks": [
         { "event": "PostToolUse", "matcher": "Read" }
       ]
+    },
+    "diagram-model": {
+      "script": "ssot-diagram/graph_model.py",
+      "scope": "repo",
+      "desc": "ssot-diagram P3 — extract diagram-model.json from codegraph DB + decision index",
+      "hooks": []
     }
   }
 }
