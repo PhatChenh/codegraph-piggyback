@@ -1,0 +1,5 @@
+date,model,role,risk_tier,outcome,note
+2026-07-04,deepseek-v4-flash,implement,B,needed-fixes,P3 graph_model.py + tests + golden + config + manifest (14-step plan)
+2026-07-04,writ:writ-plan-reviewer,review,B,findings-confirmed,Stage 1 plan-compliance — 6 issues (default paths, --force, nano name, guard [:1], micro/collapsed id forms)
+2026-07-04,writ:writ-code-quality-reviewer,review,B,findings-confirmed,Stage 2 code-quality — supersedes literal, decisions[] sort, SystemExit swallow
+2026-07-04,writ:writ-red-team,red-team,B,findings-confirmed,Phase-end adversarial — edge data loss (660+ edges), decision sig sha256(id), --nano-cap dead code
