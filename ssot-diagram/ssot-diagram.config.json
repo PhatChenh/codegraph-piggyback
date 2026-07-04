@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "components": [
+    {
+      "id": "cmp-app",
+      "name": "app",
+      "glob": "app/**"
+    },
+    {
+      "id": "cmp-components",
+      "name": "components",
+      "glob": "components/**"
+    },
+    {
+      "id": "cmp-dist",
+      "name": "dist",
+      "glob": "dist/**"
+    },
+    {
+      "id": "cmp-docs",
+      "name": "docs",
+      "glob": "docs/**"
+    },
+    {
+      "id": "cmp-invoice-cost",
+      "name": "invoice_cost",
+      "glob": "invoice_cost/**"
+    },
+    {
+      "id": "cmp-lib",
+      "name": "lib",
+      "glob": "lib/**"
+    },
+    {
+      "id": "cmp-prisma",
+      "name": "prisma",
+      "glob": "prisma/**"
+    },
+    {
+      "id": "cmp-scripts",
+      "name": "scripts",
+      "glob": "scripts/**"
+    },
+    {
+      "id": "cmp-tests",
+      "name": "tests",
+      "glob": "tests/**"
+    },
+    {
+      "id": "cmp-misc",
+      "name": "Other",
+      "glob": "**"
+    }
+  ],
+  "default_component": "cmp-misc",
+  "nano_cap": 8
+}
