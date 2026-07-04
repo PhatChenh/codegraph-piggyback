@@ -227,6 +227,18 @@
           "edges": [
             {
               "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "app/api/events/route.ts",
+                  "line": 41
+                }
+              ],
+              "source": "nano:POST@app/api/events/route.ts",
+              "target": "micro:app/api/events/route.ts"
+            },
+            {
+              "count": 1,
               "kind": "imports",
               "sample_callers": [
                 {
@@ -460,6 +472,18 @@
           "decisions": [],
           "dominant_class": null,
           "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "app/api/generate/route.ts",
+                  "line": 59
+                }
+              ],
+              "source": "nano:POST@app/api/generate/route.ts",
+              "target": "micro:app/api/generate/route.ts"
+            },
             {
               "count": 1,
               "kind": "imports",
@@ -712,6 +736,18 @@
           "decisions": [],
           "dominant_class": null,
           "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "app/api/resize/route.ts",
+                  "line": 56
+                }
+              ],
+              "source": "nano:POST@app/api/resize/route.ts",
+              "target": "micro:app/api/resize/route.ts"
+            },
             {
               "count": 2,
               "kind": "imports",
@@ -1035,7 +1071,20 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "app/edit/page.tsx",
+                  "line": 35
+                }
+              ],
+              "source": "nano:EditPage@app/edit/page.tsx",
+              "target": "micro:app/edit/page.tsx"
+            }
+          ],
           "id": "micro:app/edit/page.tsx",
           "kind": "micro",
           "name": "page.tsx",
@@ -1184,6 +1233,54 @@
       ],
       "decisions": [],
       "edges": [
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "app/api/events/route.ts",
+              "line": 41
+            }
+          ],
+          "source": "cmp-app",
+          "target": "micro:app/api/events/route.ts"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "app/api/generate/route.ts",
+              "line": 59
+            }
+          ],
+          "source": "cmp-app",
+          "target": "micro:app/api/generate/route.ts"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "app/api/resize/route.ts",
+              "line": 56
+            }
+          ],
+          "source": "cmp-app",
+          "target": "micro:app/api/resize/route.ts"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "app/edit/page.tsx",
+              "line": 35
+            }
+          ],
+          "source": "cmp-app",
+          "target": "micro:app/edit/page.tsx"
+        },
         {
           "count": 3,
           "kind": "imports",
@@ -1483,6 +1580,18 @@
           "edges": [
             {
               "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/edit/EditTopBar.tsx",
+                  "line": 31
+                }
+              ],
+              "source": "nano:EditTopBar@components/edit/EditTopBar.tsx",
+              "target": "micro:components/edit/EditTopBar.tsx"
+            },
+            {
+              "count": 1,
               "kind": "imports",
               "sample_callers": [
                 {
@@ -1558,6 +1667,18 @@
           "decisions": [],
           "dominant_class": null,
           "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/edit/EditView.tsx",
+                  "line": 60
+                }
+              ],
+              "source": "nano:EditView@components/edit/EditView.tsx",
+              "target": "micro:components/edit/EditView.tsx"
+            },
             {
               "count": 1,
               "kind": "imports",
@@ -1737,6 +1858,30 @@
           "edges": [
             {
               "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/edit/KonvaStage.tsx",
+                  "line": 82
+                }
+              ],
+              "source": "nano:KonvaStage@components/edit/KonvaStage.tsx",
+              "target": "micro:components/edit/KonvaStage.tsx"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/edit/KonvaStage.tsx",
+                  "line": 65
+                }
+              ],
+              "source": "nano:computeFitView@components/edit/KonvaStage.tsx",
+              "target": "micro:components/edit/KonvaStage.tsx"
+            },
+            {
+              "count": 1,
               "kind": "imports",
               "sample_callers": [
                 {
@@ -1821,7 +1966,20 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/edit/KonvaStageClient.tsx",
+                  "line": 35
+                }
+              ],
+              "source": "nano:KonvaStageClient@components/edit/KonvaStageClient.tsx",
+              "target": "micro:components/edit/KonvaStageClient.tsx"
+            }
+          ],
           "id": "micro:components/edit/KonvaStageClient.tsx",
           "kind": "micro",
           "name": "KonvaStageClient.tsx",
@@ -1955,6 +2113,18 @@
           "decisions": [],
           "dominant_class": null,
           "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/edit/resize/ResizeOverlay.tsx",
+                  "line": 62
+                }
+              ],
+              "source": "nano:computeVisibleRect@components/edit/resize/ResizeOverlay.tsx",
+              "target": "micro:components/edit/resize/ResizeOverlay.tsx"
+            },
             {
               "count": 1,
               "kind": "imports",
@@ -2619,6 +2789,18 @@
           "edges": [
             {
               "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/DownloadButton.tsx",
+                  "line": 11
+                }
+              ],
+              "source": "nano:DownloadButton@components/generate/DownloadButton.tsx",
+              "target": "micro:components/generate/DownloadButton.tsx"
+            },
+            {
+              "count": 1,
               "kind": "imports",
               "sample_callers": [
                 {
@@ -2667,7 +2849,20 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/EditButton.tsx",
+                  "line": 18
+                }
+              ],
+              "source": "nano:EditButton@components/generate/EditButton.tsx",
+              "target": "micro:components/generate/EditButton.tsx"
+            }
+          ],
           "id": "micro:components/generate/EditButton.tsx",
           "kind": "micro",
           "name": "EditButton.tsx",
@@ -2705,7 +2900,20 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/EnhanceButton.tsx",
+                  "line": 11
+                }
+              ],
+              "source": "nano:EnhanceButton@components/generate/EnhanceButton.tsx",
+              "target": "micro:components/generate/EnhanceButton.tsx"
+            }
+          ],
           "id": "micro:components/generate/EnhanceButton.tsx",
           "kind": "micro",
           "name": "EnhanceButton.tsx",
@@ -2860,6 +3068,18 @@
           "edges": [
             {
               "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/GenerateButton.tsx",
+                  "line": 27
+                }
+              ],
+              "source": "nano:GenerateButton@components/generate/GenerateButton.tsx",
+              "target": "micro:components/generate/GenerateButton.tsx"
+            },
+            {
+              "count": 1,
               "kind": "imports",
               "sample_callers": [
                 {
@@ -2920,7 +3140,20 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/InspectPopout.tsx",
+                  "line": 20
+                }
+              ],
+              "source": "nano:InspectPopout@components/generate/InspectPopout.tsx",
+              "target": "micro:components/generate/InspectPopout.tsx"
+            }
+          ],
           "id": "micro:components/generate/InspectPopout.tsx",
           "kind": "micro",
           "name": "InspectPopout.tsx",
@@ -3054,7 +3287,20 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/PromptBubble.tsx",
+                  "line": 11
+                }
+              ],
+              "source": "nano:PromptBubble@components/generate/PromptBubble.tsx",
+              "target": "micro:components/generate/PromptBubble.tsx"
+            }
+          ],
           "id": "micro:components/generate/PromptBubble.tsx",
           "kind": "micro",
           "name": "PromptBubble.tsx",
@@ -3157,6 +3403,18 @@
           "decisions": [],
           "dominant_class": null,
           "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/PromptInput.tsx",
+                  "line": 19
+                }
+              ],
+              "source": "nano:PromptInput@components/generate/PromptInput.tsx",
+              "target": "micro:components/generate/PromptInput.tsx"
+            },
             {
               "count": 1,
               "kind": "imports",
@@ -3346,6 +3604,58 @@
           "edges": [
             {
               "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/RefImgTray.tsx",
+                  "line": 83
+                }
+              ],
+              "source": "nano:RefImgTray::handleDrop@components/generate/RefImgTray.tsx",
+              "target": "micro:components/generate/RefImgTray.tsx"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/RefImgTray.tsx",
+                  "line": 94
+                }
+              ],
+              "source": "nano:RefImgTray::handleFilePick@components/generate/RefImgTray.tsx",
+              "target": "micro:components/generate/RefImgTray.tsx"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/RefImgTray.tsx",
+                  "line": 108
+                },
+                {
+                  "file": "components/generate/RefImgTray.tsx",
+                  "line": 109
+                }
+              ],
+              "source": "nano:RefImgTray::renderZone@components/generate/RefImgTray.tsx",
+              "target": "micro:components/generate/RefImgTray.tsx"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/RefImgTray.tsx",
+                  "line": 47
+                }
+              ],
+              "source": "nano:RefImgTray::uploadAndAdd@components/generate/RefImgTray.tsx",
+              "target": "micro:components/generate/RefImgTray.tsx"
+            },
+            {
+              "count": 1,
               "kind": "imports",
               "sample_callers": [
                 {
@@ -3447,6 +3757,18 @@
           "edges": [
             {
               "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/ResultCard.tsx",
+                  "line": 16
+                }
+              ],
+              "source": "nano:ResultCard@components/generate/ResultCard.tsx",
+              "target": "micro:components/generate/ResultCard.tsx"
+            },
+            {
+              "count": 1,
               "kind": "imports",
               "sample_callers": [
                 {
@@ -3532,6 +3854,18 @@
           "decisions": [],
           "dominant_class": null,
           "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/ResultCardList.tsx",
+                  "line": 18
+                }
+              ],
+              "source": "nano:ResultCardList@components/generate/ResultCardList.tsx",
+              "target": "micro:components/generate/ResultCardList.tsx"
+            },
             {
               "count": 1,
               "kind": "imports",
@@ -3636,6 +3970,46 @@
       "edges": [
         {
           "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/edit/EditTopBar.tsx",
+              "line": 31
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/edit/EditTopBar.tsx"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/edit/EditView.tsx",
+              "line": 60
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/edit/EditView.tsx"
+        },
+        {
+          "count": 3,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/edit/KonvaStage.tsx",
+              "line": 65
+            },
+            {
+              "file": "components/edit/KonvaStage.tsx",
+              "line": 82
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/edit/KonvaStage.tsx"
+        },
+        {
+          "count": 1,
           "kind": "imports",
           "sample_callers": [
             {
@@ -3648,11 +4022,35 @@
         },
         {
           "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/edit/KonvaStageClient.tsx",
+              "line": 35
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/edit/KonvaStageClient.tsx"
+        },
+        {
+          "count": 1,
           "kind": "imports",
           "sample_callers": [
             {
               "file": "components/edit/KonvaStage.tsx",
               "line": 22
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/edit/resize/ResizeOverlay.tsx"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/edit/resize/ResizeOverlay.tsx",
+              "line": 62
             }
           ],
           "source": "cmp-components",
@@ -3684,6 +4082,42 @@
         },
         {
           "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/generate/DownloadButton.tsx",
+              "line": 11
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/generate/DownloadButton.tsx"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/generate/EditButton.tsx",
+              "line": 18
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/generate/EditButton.tsx"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/generate/EnhanceButton.tsx",
+              "line": 11
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/generate/EnhanceButton.tsx"
+        },
+        {
+          "count": 1,
           "kind": "imports",
           "sample_callers": [
             {
@@ -3693,6 +4127,18 @@
           ],
           "source": "cmp-components",
           "target": "micro:components/generate/FeedRow.tsx"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/generate/GenerateButton.tsx",
+              "line": 27
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/generate/GenerateButton.tsx"
         },
         {
           "count": 1,
@@ -3708,6 +4154,30 @@
         },
         {
           "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/generate/InspectPopout.tsx",
+              "line": 20
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/generate/InspectPopout.tsx"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/generate/PromptBubble.tsx",
+              "line": 11
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/generate/PromptBubble.tsx"
+        },
+        {
+          "count": 1,
           "kind": "imports",
           "sample_callers": [
             {
@@ -3717,6 +4187,62 @@
           ],
           "source": "cmp-components",
           "target": "micro:components/generate/PromptInput.tsx"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/generate/PromptInput.tsx",
+              "line": 19
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/generate/PromptInput.tsx"
+        },
+        {
+          "count": 5,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/generate/RefImgTray.tsx",
+              "line": 47
+            },
+            {
+              "file": "components/generate/RefImgTray.tsx",
+              "line": 83
+            },
+            {
+              "file": "components/generate/RefImgTray.tsx",
+              "line": 94
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/generate/RefImgTray.tsx"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/generate/ResultCard.tsx",
+              "line": 16
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/generate/ResultCard.tsx"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/generate/ResultCardList.tsx",
+              "line": 18
+            }
+          ],
+          "source": "cmp-components",
+          "target": "micro:components/generate/ResultCardList.tsx"
         },
         {
           "count": 2,
@@ -4497,6 +5023,50 @@
           ],
           "dominant_class": "CapabilitySlot",
           "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 59
+                }
+              ],
+              "source": "micro:lib/ai/image/index.ts#CapabilitySlot",
+              "target": "micro:lib/ai/image/index.ts#CapabilitySlot"
+            },
+            {
+              "count": 3,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 206
+                },
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 213
+                },
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 219
+                }
+              ],
+              "source": "nano:getCapability@lib/ai/image/index.ts",
+              "target": "micro:lib/ai/image/index.ts#CapabilitySlot"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 202
+                }
+              ],
+              "source": "nano:getCapability@lib/ai/image/index.ts",
+              "target": "micro:lib/ai/image/index.ts#CapabilitySlot"
+            },
             {
               "count": 1,
               "kind": "imports",
@@ -5359,7 +5929,44 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/size.ts",
+                  "line": 29
+                }
+              ],
+              "source": "micro:lib/ai/image/size.ts",
+              "target": "micro:lib/ai/image/size.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/size.test.ts",
+                  "line": 13
+                }
+              ],
+              "source": "micro:tests/size.test.ts",
+              "target": "micro:lib/ai/image/size.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/size.ts",
+                  "line": 46
+                }
+              ],
+              "source": "nano:mapSize@lib/ai/image/size.ts",
+              "target": "micro:lib/ai/image/size.ts"
+            }
+          ],
           "id": "micro:lib/ai/image/size.ts",
           "kind": "micro",
           "name": "size.ts",
@@ -5501,7 +6108,416 @@
             "decision:ADR-0007@cmp-lib"
           ],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "app/api/generate/route.ts",
+                  "line": 44
+                }
+              ],
+              "source": "micro:app/api/generate/route.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/GenerateButton.tsx",
+                  "line": 12
+                },
+                {
+                  "file": "components/generate/GenerateButton.tsx",
+                  "line": 13
+                }
+              ],
+              "source": "micro:components/generate/GenerateButton.tsx",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 6,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 46
+                },
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 48
+                },
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 114
+                }
+              ],
+              "source": "micro:lib/ai/image/index.ts#CapabilitySlot",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/models.ts",
+                  "line": 23
+                }
+              ],
+              "source": "micro:lib/ai/image/models.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 11,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/types.ts",
+                  "line": 27
+                },
+                {
+                  "file": "lib/ai/image/types.ts",
+                  "line": 66
+                },
+                {
+                  "file": "lib/ai/image/types.ts",
+                  "line": 67
+                }
+              ],
+              "source": "micro:lib/ai/image/types.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 8,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/image-router.test.ts",
+                  "line": 121
+                },
+                {
+                  "file": "tests/image-router.test.ts",
+                  "line": 146
+                },
+                {
+                  "file": "tests/image-router.test.ts",
+                  "line": 164
+                }
+              ],
+              "source": "micro:tests/image-router.test.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 124
+                }
+              ],
+              "source": "nano:CapabilitySlot::constructor@lib/ai/image/index.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 174
+                }
+              ],
+              "source": "nano:CapabilitySlot::listModels@lib/ai/image/index.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 4,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 128
+                },
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 133
+                }
+              ],
+              "source": "nano:CapabilitySlot::run@lib/ai/image/index.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/providers/fal/index.ts",
+                  "line": 59
+                }
+              ],
+              "source": "nano:FalText2imgProvider::run@lib/ai/image/providers/fal/index.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/providers/fal/flux-general.ts",
+                  "line": 85
+                },
+                {
+                  "file": "lib/ai/image/providers/fal/flux-general.ts",
+                  "line": 87
+                }
+              ],
+              "source": "nano:FluxGeneralProvider::run@lib/ai/image/providers/fal/flux-general.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/providers/fal/flux-outpaint.ts",
+                  "line": 92
+                },
+                {
+                  "file": "lib/ai/image/providers/fal/flux-outpaint.ts",
+                  "line": 94
+                }
+              ],
+              "source": "nano:FluxOutpaintProvider::run@lib/ai/image/providers/fal/flux-outpaint.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/RefImgTray.tsx",
+                  "line": 105
+                }
+              ],
+              "source": "nano:RefImgTray::renderZone@components/generate/RefImgTray.tsx",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/providers/fal/flux-general.ts",
+                  "line": 28
+                }
+              ],
+              "source": "nano:buildFluxGeneralInput@lib/ai/image/providers/fal/flux-general.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/providers/fal/flux-outpaint.ts",
+                  "line": 38
+                }
+              ],
+              "source": "nano:buildOutpaintInput@lib/ai/image/providers/fal/flux-outpaint.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/providers/fal/_shared.ts",
+                  "line": 58
+                }
+              ],
+              "source": "nano:classifyFalError@lib/ai/image/providers/fal/_shared.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/providers/replicate/index.ts",
+                  "line": 41
+                }
+              ],
+              "source": "nano:classifyReplicateError@lib/ai/image/providers/replicate/index.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/providers/fal/_shared.ts",
+                  "line": 95
+                }
+              ],
+              "source": "nano:extractBilledUnits@lib/ai/image/providers/fal/_shared.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/image-router.test.ts",
+                  "line": 71
+                }
+              ],
+              "source": "nano:failProvider@tests/image-router.test.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 203
+                }
+              ],
+              "source": "nano:getCapability@lib/ai/image/index.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/models.ts",
+                  "line": 98
+                }
+              ],
+              "source": "nano:getCuratedModels@lib/ai/image/models.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/models.ts",
+                  "line": 116
+                },
+                {
+                  "file": "lib/ai/image/models.ts",
+                  "line": 117
+                }
+              ],
+              "source": "nano:getDefaultModel@lib/ai/image/models.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/models.ts",
+                  "line": 108
+                }
+              ],
+              "source": "nano:isInCuratedSet@lib/ai/image/models.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/types.ts",
+                  "line": 140
+                }
+              ],
+              "source": "nano:isTransientProviderError@lib/ai/image/types.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/types.ts",
+                  "line": 109
+                }
+              ],
+              "source": "nano:kindToMessage@lib/ai/image/types.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/types.ts",
+                  "line": 124
+                },
+                {
+                  "file": "lib/ai/image/types.ts",
+                  "line": 128
+                }
+              ],
+              "source": "nano:makeProviderError@lib/ai/image/types.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 92
+                }
+              ],
+              "source": "nano:makeProviderRun@lib/ai/image/index.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/image-router.test.ts",
+                  "line": 66
+                }
+              ],
+              "source": "nano:okProvider@tests/image-router.test.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/providers/fal/_shared.ts",
+                  "line": 128
+                }
+              ],
+              "source": "nano:runFalQueue@lib/ai/image/providers/fal/_shared.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/models.ts",
+                  "line": 128
+                }
+              ],
+              "source": "nano:validateModelsInCuratedSet@lib/ai/image/models.ts",
+              "target": "micro:lib/ai/image/types.ts"
+            }
+          ],
           "id": "micro:lib/ai/image/types.ts",
           "kind": "micro",
           "name": "types.ts",
@@ -5767,7 +6783,20 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/upload-validate.ts",
+                  "line": 27
+                }
+              ],
+              "source": "nano:sniffType@lib/ai/image/upload-validate.ts",
+              "target": "micro:lib/ai/image/upload-validate.ts"
+            }
+          ],
           "id": "micro:lib/ai/image/upload-validate.ts",
           "kind": "micro",
           "name": "upload-validate.ts",
@@ -5899,6 +6928,18 @@
           "edges": [
             {
               "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/llm/index.ts",
+                  "line": 44
+                }
+              ],
+              "source": "nano:getLLMProvider@lib/ai/llm/index.ts",
+              "target": "micro:lib/ai/llm/index.ts#ConfiguredLlmProvider"
+            },
+            {
+              "count": 1,
               "kind": "imports",
               "sample_callers": [
                 {
@@ -6022,7 +7063,20 @@
           ],
           "decisions": [],
           "dominant_class": "OpenAiCompatClient",
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/llm/index.ts",
+                  "line": 43
+                }
+              ],
+              "source": "nano:getLLMProvider@lib/ai/llm/index.ts",
+              "target": "micro:lib/ai/llm/providers/openai-compat/index.ts#OpenAiCompatClient"
+            }
+          ],
           "id": "micro:lib/ai/llm/providers/openai-compat/index.ts#OpenAiCompatClient",
           "kind": "micro",
           "name": "index.ts",
@@ -6033,7 +7087,96 @@
           "children": [],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 6,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/llm/types.ts",
+                  "line": 17
+                },
+                {
+                  "file": "lib/ai/llm/types.ts",
+                  "line": 27
+                },
+                {
+                  "file": "lib/ai/llm/types.ts",
+                  "line": 36
+                }
+              ],
+              "source": "micro:lib/ai/llm/types.ts",
+              "target": "micro:lib/ai/llm/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/llm.test.ts",
+                  "line": 25
+                },
+                {
+                  "file": "tests/llm.test.ts",
+                  "line": 44
+                },
+                {
+                  "file": "tests/llm.test.ts",
+                  "line": 45
+                }
+              ],
+              "source": "micro:tests/llm.test.ts",
+              "target": "micro:lib/ai/llm/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/llm/index.ts",
+                  "line": 31
+                }
+              ],
+              "source": "nano:ConfiguredLlmProvider::chat@lib/ai/llm/index.ts",
+              "target": "micro:lib/ai/llm/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/llm/index.ts",
+                  "line": 29
+                }
+              ],
+              "source": "nano:ConfiguredLlmProvider::constructor@lib/ai/llm/index.ts",
+              "target": "micro:lib/ai/llm/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/enhance/index.ts",
+                  "line": 51
+                }
+              ],
+              "source": "nano:callLlm@lib/ai/enhance/index.ts",
+              "target": "micro:lib/ai/llm/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/llm/index.ts",
+                  "line": 42
+                }
+              ],
+              "source": "nano:getLLMProvider@lib/ai/llm/index.ts",
+              "target": "micro:lib/ai/llm/types.ts"
+            }
+          ],
           "id": "micro:lib/ai/llm/types.ts",
           "kind": "micro",
           "name": "types.ts",
@@ -6134,6 +7277,18 @@
           ],
           "dominant_class": null,
           "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/analytics/index.ts",
+                  "line": 21
+                }
+              ],
+              "source": "micro:lib/analytics/index.ts",
+              "target": "micro:lib/analytics/index.ts"
+            },
             {
               "count": 1,
               "kind": "imports",
@@ -6261,6 +7416,54 @@
           "dominant_class": "NoOpSink",
           "edges": [
             {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/analytics.test.ts",
+                  "line": 103
+                }
+              ],
+              "source": "micro:tests/analytics.test.ts",
+              "target": "micro:lib/analytics/sinks/noop.ts#NoOpSink"
+            },
+            {
+              "count": 3,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/noop.test.ts",
+                  "line": 35
+                },
+                {
+                  "file": "tests/noop.test.ts",
+                  "line": 40
+                },
+                {
+                  "file": "tests/noop.test.ts",
+                  "line": 45
+                }
+              ],
+              "source": "micro:tests/noop.test.ts",
+              "target": "micro:lib/analytics/sinks/noop.ts#NoOpSink"
+            },
+            {
+              "count": 2,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "lib/analytics/index.ts",
+                  "line": 28
+                },
+                {
+                  "file": "lib/analytics/index.ts",
+                  "line": 32
+                }
+              ],
+              "source": "nano:selectSink@lib/analytics/index.ts",
+              "target": "micro:lib/analytics/sinks/noop.ts#NoOpSink"
+            },
+            {
               "count": 2,
               "kind": "imports",
               "sample_callers": [
@@ -6283,7 +7486,172 @@
           "children": [],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/analytics/index.ts",
+                  "line": 37
+                }
+              ],
+              "source": "micro:lib/analytics/index.ts",
+              "target": "micro:lib/analytics/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/analytics/types.ts",
+                  "line": 53
+                },
+                {
+                  "file": "lib/analytics/types.ts",
+                  "line": 62
+                },
+                {
+                  "file": "lib/analytics/types.ts",
+                  "line": 76
+                }
+              ],
+              "source": "micro:lib/analytics/types.ts",
+              "target": "micro:lib/analytics/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 55
+                }
+              ],
+              "source": "micro:lib/jobs/worker.ts",
+              "target": "micro:lib/analytics/types.ts"
+            },
+            {
+              "count": 5,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/analytics.test.ts",
+                  "line": 41
+                },
+                {
+                  "file": "tests/analytics.test.ts",
+                  "line": 61
+                },
+                {
+                  "file": "tests/analytics.test.ts",
+                  "line": 88
+                }
+              ],
+              "source": "micro:tests/analytics.test.ts",
+              "target": "micro:lib/analytics/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/analytics/sinks/noop.ts",
+                  "line": 12
+                }
+              ],
+              "source": "nano:NoOpSink::write@lib/analytics/sinks/noop.ts",
+              "target": "micro:lib/analytics/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "app/api/enhance/route.ts",
+                  "line": 64
+                }
+              ],
+              "source": "nano:POST@app/api/enhance/route.ts",
+              "target": "micro:lib/analytics/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "app/api/events/route.ts",
+                  "line": 61
+                }
+              ],
+              "source": "nano:POST@app/api/events/route.ts",
+              "target": "micro:lib/analytics/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/analytics/index.ts",
+                  "line": 45
+                }
+              ],
+              "source": "nano:emit@lib/analytics/index.ts",
+              "target": "micro:lib/analytics/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/noop.test.ts",
+                  "line": 13
+                }
+              ],
+              "source": "nano:event@tests/noop.test.ts",
+              "target": "micro:lib/analytics/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/analytics.test.ts",
+                  "line": 19
+                }
+              ],
+              "source": "nano:makeProviderCallEvent@tests/analytics.test.ts",
+              "target": "micro:lib/analytics/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 82
+                },
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 83
+                }
+              ],
+              "source": "nano:providerCallEvent@lib/jobs/worker.ts",
+              "target": "micro:lib/analytics/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/analytics/index.ts",
+                  "line": 24
+                }
+              ],
+              "source": "nano:selectSink@lib/analytics/index.ts",
+              "target": "micro:lib/analytics/types.ts"
+            }
+          ],
           "id": "micro:lib/analytics/types.ts",
           "kind": "micro",
           "name": "types.ts",
@@ -6830,7 +8198,84 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/mask.ts",
+                  "line": 37
+                },
+                {
+                  "file": "lib/canvas/mask.ts",
+                  "line": 41
+                }
+              ],
+              "source": "micro:lib/canvas/mask.ts",
+              "target": "micro:lib/canvas/mask.ts"
+            },
+            {
+              "count": 4,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/fill/store.ts",
+                  "line": 11
+                },
+                {
+                  "file": "lib/fill/store.ts",
+                  "line": 12
+                },
+                {
+                  "file": "lib/fill/store.ts",
+                  "line": 18
+                }
+              ],
+              "source": "micro:lib/fill/store.ts",
+              "target": "micro:lib/canvas/mask.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/mask.ts",
+                  "line": 58
+                }
+              ],
+              "source": "nano:defaultCreateCanvas@lib/canvas/mask.ts",
+              "target": "micro:lib/canvas/mask.ts"
+            },
+            {
+              "count": 4,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/mask.ts",
+                  "line": 50
+                }
+              ],
+              "source": "nano:mapStageToImage@lib/canvas/mask.ts",
+              "target": "micro:lib/canvas/mask.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/mask.ts",
+                  "line": 79
+                },
+                {
+                  "file": "lib/canvas/mask.ts",
+                  "line": 82
+                }
+              ],
+              "source": "nano:rasterizeMask@lib/canvas/mask.ts",
+              "target": "micro:lib/canvas/mask.ts"
+            }
+          ],
           "id": "micro:lib/canvas/mask.ts",
           "kind": "micro",
           "name": "mask.ts",
@@ -7383,6 +8828,218 @@
           "dominant_class": null,
           "edges": [
             {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 87
+                }
+              ],
+              "source": "micro:lib/canvas/store.ts",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 55,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/canvasStore.test.ts",
+                  "line": 228
+                },
+                {
+                  "file": "tests/canvasStore.test.ts",
+                  "line": 230
+                },
+                {
+                  "file": "tests/canvasStore.test.ts",
+                  "line": 247
+                }
+              ],
+              "source": "micro:tests/canvasStore.test.ts",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 4,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/EditTopBar.tsx",
+                  "line": 35
+                },
+                {
+                  "file": "components/edit/EditTopBar.tsx",
+                  "line": 36
+                },
+                {
+                  "file": "components/edit/EditTopBar.tsx",
+                  "line": 37
+                }
+              ],
+              "source": "nano:EditTopBar@components/edit/EditTopBar.tsx",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 2,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/EditView.tsx",
+                  "line": 61
+                },
+                {
+                  "file": "components/edit/EditView.tsx",
+                  "line": 67
+                }
+              ],
+              "source": "nano:EditView@components/edit/EditView.tsx",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 2,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/tools/FillTool.tsx",
+                  "line": 36
+                },
+                {
+                  "file": "components/edit/tools/FillTool.tsx",
+                  "line": 132
+                }
+              ],
+              "source": "nano:FillTool@components/edit/tools/FillTool.tsx",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/resize/ResizeOverlay.tsx",
+                  "line": 114
+                }
+              ],
+              "source": "nano:ResizeOverlay@components/edit/resize/ResizeOverlay.tsx",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/edit/EditView.tsx",
+                  "line": 39
+                }
+              ],
+              "source": "nano:activeImageUrlOf@components/edit/EditView.tsx",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 77
+                }
+              ],
+              "source": "nano:canRedo@lib/canvas/store.ts",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 72
+                }
+              ],
+              "source": "nano:canUndo@lib/canvas/store.ts",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/canvasStore.test.ts",
+                  "line": 47
+                }
+              ],
+              "source": "nano:freshSession@tests/canvasStore.test.ts",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 47
+                }
+              ],
+              "source": "nano:push@lib/canvas/store.ts",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 66
+                }
+              ],
+              "source": "nano:redo@lib/canvas/store.ts",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 2,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/canvasStore.test.ts",
+                  "line": 219
+                },
+                {
+                  "file": "tests/canvasStore.test.ts",
+                  "line": 315
+                }
+              ],
+              "source": "nano:resetStore@tests/canvasStore.test.ts",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 60
+                }
+              ],
+              "source": "nano:undo@lib/canvas/store.ts",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
+              "count": 2,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/tools/ResizeTool.tsx",
+                  "line": 85
+                },
+                {
+                  "file": "components/edit/tools/ResizeTool.tsx",
+                  "line": 113
+                }
+              ],
+              "source": "nano:useResizeJob@components/edit/tools/ResizeTool.tsx",
+              "target": "micro:lib/canvas/store.ts"
+            },
+            {
               "count": 2,
               "kind": "imports",
               "sample_callers": [
@@ -7410,7 +9067,196 @@
             "decision:ADR-0008@cmp-lib"
           ],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 32
+                },
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 90
+                },
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 104
+                }
+              ],
+              "source": "micro:lib/canvas/store.ts",
+              "target": "micro:lib/canvas/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/types.ts",
+                  "line": 23
+                },
+                {
+                  "file": "lib/canvas/types.ts",
+                  "line": 52
+                },
+                {
+                  "file": "lib/canvas/types.ts",
+                  "line": 54
+                }
+              ],
+              "source": "micro:lib/canvas/types.ts",
+              "target": "micro:lib/canvas/types.ts"
+            },
+            {
+              "count": 4,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/EditView.test.tsx",
+                  "line": 37
+                },
+                {
+                  "file": "tests/EditView.test.tsx",
+                  "line": 55
+                },
+                {
+                  "file": "tests/EditView.test.tsx",
+                  "line": 69
+                }
+              ],
+              "source": "micro:tests/EditView.test.tsx",
+              "target": "micro:lib/canvas/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/ResizeTool.test.tsx",
+                  "line": 183
+                },
+                {
+                  "file": "tests/ResizeTool.test.tsx",
+                  "line": 194
+                },
+                {
+                  "file": "tests/ResizeTool.test.tsx",
+                  "line": 221
+                }
+              ],
+              "source": "micro:tests/ResizeTool.test.tsx",
+              "target": "micro:lib/canvas/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/edit/EditView.tsx",
+                  "line": 85
+                }
+              ],
+              "source": "nano:EditView@components/edit/EditView.tsx",
+              "target": "micro:lib/canvas/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/edit/tools/FillTool.tsx",
+                  "line": 113
+                }
+              ],
+              "source": "nano:FillTool@components/edit/tools/FillTool.tsx",
+              "target": "micro:lib/canvas/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/canvasStore.test.ts",
+                  "line": 29
+                },
+                {
+                  "file": "tests/canvasStore.test.ts",
+                  "line": 32
+                }
+              ],
+              "source": "nano:fakeEnvelope@tests/canvasStore.test.ts",
+              "target": "micro:lib/canvas/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/canvasStore.test.ts",
+                  "line": 24
+                }
+              ],
+              "source": "nano:fakeImageRef@tests/canvasStore.test.ts",
+              "target": "micro:lib/canvas/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/canvasStore.test.ts",
+                  "line": 46
+                }
+              ],
+              "source": "nano:freshSession@tests/canvasStore.test.ts",
+              "target": "micro:lib/canvas/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 47
+                },
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 152
+                }
+              ],
+              "source": "nano:push@lib/canvas/store.ts",
+              "target": "micro:lib/canvas/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 122
+                },
+                {
+                  "file": "lib/canvas/store.ts",
+                  "line": 124
+                }
+              ],
+              "source": "nano:seed@lib/canvas/store.ts",
+              "target": "micro:lib/canvas/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/edit/tools/ResizeTool.tsx",
+                  "line": 93
+                }
+              ],
+              "source": "nano:useResizeJob@components/edit/tools/ResizeTool.tsx",
+              "target": "micro:lib/canvas/types.ts"
+            }
+          ],
           "id": "micro:lib/canvas/types.ts",
           "kind": "micro",
           "name": "types.ts",
@@ -7421,7 +9267,100 @@
           "children": [],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 3,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/dev-routes.test.ts",
+                  "line": 52
+                },
+                {
+                  "file": "tests/dev-routes.test.ts",
+                  "line": 129
+                },
+                {
+                  "file": "tests/dev-routes.test.ts",
+                  "line": 228
+                }
+              ],
+              "source": "micro:tests/dev-routes.test.ts",
+              "target": "micro:lib/db.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/enhance-route.test.ts",
+                  "line": 62
+                }
+              ],
+              "source": "micro:tests/enhance-route.test.ts",
+              "target": "micro:lib/db.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/events.test.ts",
+                  "line": 52
+                }
+              ],
+              "source": "micro:tests/events.test.ts",
+              "target": "micro:lib/db.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/generate.test.ts",
+                  "line": 58
+                }
+              ],
+              "source": "micro:tests/generate.test.ts",
+              "target": "micro:lib/db.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/resize.test.ts",
+                  "line": 49
+                }
+              ],
+              "source": "micro:tests/resize.test.ts",
+              "target": "micro:lib/db.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/status.test.ts",
+                  "line": 48
+                }
+              ],
+              "source": "micro:tests/status.test.ts",
+              "target": "micro:lib/db.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/upload.test.ts",
+                  "line": 66
+                }
+              ],
+              "source": "micro:tests/upload.test.ts",
+              "target": "micro:lib/db.ts"
+            }
+          ],
           "id": "micro:lib/db.ts",
           "kind": "micro",
           "name": "db.ts",
@@ -7480,6 +9419,46 @@
           "decisions": [],
           "dominant_class": null,
           "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/edit/entry.ts",
+                  "line": 34
+                }
+              ],
+              "source": "micro:lib/edit/entry.ts",
+              "target": "micro:lib/edit/entry.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/canvasEntry.test.ts",
+                  "line": 20
+                }
+              ],
+              "source": "nano:makeTicket@tests/canvasEntry.test.ts",
+              "target": "micro:lib/edit/entry.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/edit/entry.ts",
+                  "line": 54
+                },
+                {
+                  "file": "lib/edit/entry.ts",
+                  "line": 55
+                }
+              ],
+              "source": "nano:resolveEditRef@lib/edit/entry.ts",
+              "target": "micro:lib/edit/entry.ts"
+            },
             {
               "count": 1,
               "kind": "imports",
@@ -7714,7 +9693,160 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "app/api/resize/route.ts",
+                  "line": 39
+                },
+                {
+                  "file": "app/api/resize/route.ts",
+                  "line": 40
+                }
+              ],
+              "source": "micro:app/api/resize/route.ts",
+              "target": "micro:lib/edit/resize-core.ts"
+            },
+            {
+              "count": 8,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 49
+                },
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 52
+                },
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 56
+                }
+              ],
+              "source": "micro:lib/edit/resize-core.ts",
+              "target": "micro:lib/edit/resize-core.ts"
+            },
+            {
+              "count": 21,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/resize-core.test.ts",
+                  "line": 23
+                },
+                {
+                  "file": "tests/resize-core.test.ts",
+                  "line": 29
+                },
+                {
+                  "file": "tests/resize-core.test.ts",
+                  "line": 35
+                }
+              ],
+              "source": "micro:tests/resize-core.test.ts",
+              "target": "micro:lib/edit/resize-core.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 127
+                },
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 128
+                }
+              ],
+              "source": "nano:buildResizeRequest@lib/edit/resize-core.ts",
+              "target": "micro:lib/edit/resize-core.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 291
+                },
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 292
+                }
+              ],
+              "source": "nano:deriveExpand@lib/edit/resize-core.ts",
+              "target": "micro:lib/edit/resize-core.ts"
+            },
+            {
+              "count": 5,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 240
+                },
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 241
+                },
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 242
+                }
+              ],
+              "source": "nano:deriveVisibleRect@lib/edit/resize-core.ts",
+              "target": "micro:lib/edit/resize-core.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 85
+                }
+              ],
+              "source": "nano:parseRatio@lib/edit/resize-core.ts",
+              "target": "micro:lib/edit/resize-core.ts"
+            },
+            {
+              "count": 5,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 174
+                },
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 175
+                },
+                {
+                  "file": "lib/edit/resize-core.ts",
+                  "line": 176
+                }
+              ],
+              "source": "nano:resolveTargetPixels@lib/edit/resize-core.ts",
+              "target": "micro:lib/edit/resize-core.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "app/api/resize/route.ts",
+                  "line": 254
+                }
+              ],
+              "source": "nano:validateVisibleRect@app/api/resize/route.ts",
+              "target": "micro:lib/edit/resize-core.ts"
+            }
+          ],
           "id": "micro:lib/edit/resize-core.ts",
           "kind": "micro",
           "name": "resize-core.ts",
@@ -7951,7 +10083,128 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 4,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/edit/resize-store.ts",
+                  "line": 39
+                },
+                {
+                  "file": "lib/edit/resize-store.ts",
+                  "line": 45
+                },
+                {
+                  "file": "lib/edit/resize-store.ts",
+                  "line": 68
+                }
+              ],
+              "source": "micro:lib/edit/resize-store.ts",
+              "target": "micro:lib/edit/resize-store.ts"
+            },
+            {
+              "count": 2,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/KonvaStage.tsx",
+                  "line": 107
+                },
+                {
+                  "file": "components/edit/KonvaStage.tsx",
+                  "line": 108
+                }
+              ],
+              "source": "nano:KonvaStage@components/edit/KonvaStage.tsx",
+              "target": "micro:lib/edit/resize-store.ts"
+            },
+            {
+              "count": 6,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/resize/ResizeOverlay.tsx",
+                  "line": 121
+                },
+                {
+                  "file": "components/edit/resize/ResizeOverlay.tsx",
+                  "line": 122
+                },
+                {
+                  "file": "components/edit/resize/ResizeOverlay.tsx",
+                  "line": 123
+                }
+              ],
+              "source": "nano:ResizeOverlay@components/edit/resize/ResizeOverlay.tsx",
+              "target": "micro:lib/edit/resize-store.ts"
+            },
+            {
+              "count": 6,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/tools/ResizeTool.tsx",
+                  "line": 239
+                },
+                {
+                  "file": "components/edit/tools/ResizeTool.tsx",
+                  "line": 241
+                },
+                {
+                  "file": "components/edit/tools/ResizeTool.tsx",
+                  "line": 242
+                }
+              ],
+              "source": "nano:ResizeTool@components/edit/tools/ResizeTool.tsx",
+              "target": "micro:lib/edit/resize-store.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/edit/resize/ResizeOverlay.tsx",
+                  "line": 62
+                }
+              ],
+              "source": "nano:computeVisibleRect@components/edit/resize/ResizeOverlay.tsx",
+              "target": "micro:lib/edit/resize-store.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/edit/tools/ResizeTool.tsx",
+                  "line": 44
+                }
+              ],
+              "source": "nano:ratioToFrame@components/edit/tools/ResizeTool.tsx",
+              "target": "micro:lib/edit/resize-store.ts"
+            },
+            {
+              "count": 5,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/tools/ResizeTool.tsx",
+                  "line": 181
+                },
+                {
+                  "file": "components/edit/tools/ResizeTool.tsx",
+                  "line": 193
+                },
+                {
+                  "file": "components/edit/tools/ResizeTool.tsx",
+                  "line": 194
+                }
+              ],
+              "source": "nano:useResizeJob@components/edit/tools/ResizeTool.tsx",
+              "target": "micro:lib/edit/resize-store.ts"
+            }
+          ],
           "id": "micro:lib/edit/resize-store.ts",
           "kind": "micro",
           "name": "resize-store.ts",
@@ -7976,7 +10229,96 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/fill/store.ts",
+                  "line": 10
+                },
+                {
+                  "file": "lib/fill/store.ts",
+                  "line": 17
+                }
+              ],
+              "source": "micro:lib/fill/store.ts",
+              "target": "micro:lib/fill/store.ts"
+            },
+            {
+              "count": 3,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/EditView.tsx",
+                  "line": 70
+                },
+                {
+                  "file": "components/edit/EditView.tsx",
+                  "line": 71
+                },
+                {
+                  "file": "components/edit/EditView.tsx",
+                  "line": 72
+                }
+              ],
+              "source": "nano:EditView@components/edit/EditView.tsx",
+              "target": "micro:lib/fill/store.ts"
+            },
+            {
+              "count": 14,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/tools/FillTool.tsx",
+                  "line": 23
+                },
+                {
+                  "file": "components/edit/tools/FillTool.tsx",
+                  "line": 24
+                },
+                {
+                  "file": "components/edit/tools/FillTool.tsx",
+                  "line": 25
+                }
+              ],
+              "source": "nano:FillTool@components/edit/tools/FillTool.tsx",
+              "target": "micro:lib/fill/store.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/KonvaStage.tsx",
+                  "line": 140
+                }
+              ],
+              "source": "nano:KonvaStage@components/edit/KonvaStage.tsx",
+              "target": "micro:lib/fill/store.ts"
+            },
+            {
+              "count": 7,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/tools/LassoOverlay.tsx",
+                  "line": 10
+                },
+                {
+                  "file": "components/edit/tools/LassoOverlay.tsx",
+                  "line": 11
+                },
+                {
+                  "file": "components/edit/tools/LassoOverlay.tsx",
+                  "line": 12
+                }
+              ],
+              "source": "nano:LassoOverlay@components/edit/tools/LassoOverlay.tsx",
+              "target": "micro:lib/fill/store.ts"
+            }
+          ],
           "id": "micro:lib/fill/store.ts",
           "kind": "micro",
           "name": "store.ts",
@@ -8196,7 +10538,44 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/config.ts",
+                  "line": 25
+                }
+              ],
+              "source": "micro:lib/jobs/config.ts",
+              "target": "micro:lib/jobs/config.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/job.ts",
+                  "line": 43
+                }
+              ],
+              "source": "micro:lib/jobs/job.ts",
+              "target": "micro:lib/jobs/config.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/config.ts",
+                  "line": 28
+                }
+              ],
+              "source": "nano:isTransient@lib/jobs/config.ts",
+              "target": "micro:lib/jobs/config.ts"
+            }
+          ],
           "id": "micro:lib/jobs/config.ts",
           "kind": "micro",
           "name": "config.ts",
@@ -8691,6 +11070,326 @@
           "dominant_class": null,
           "edges": [
             {
+              "count": 8,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/job.ts",
+                  "line": 28
+                },
+                {
+                  "file": "lib/jobs/job.ts",
+                  "line": 67
+                },
+                {
+                  "file": "lib/jobs/job.ts",
+                  "line": 73
+                }
+              ],
+              "source": "micro:lib/jobs/job.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 4,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 49
+                },
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 53
+                },
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 56
+                }
+              ],
+              "source": "micro:lib/jobs/poll.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/status.ts",
+                  "line": 21
+                },
+                {
+                  "file": "lib/jobs/status.ts",
+                  "line": 45
+                }
+              ],
+              "source": "micro:lib/jobs/status.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 4,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 36
+                },
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 38
+                },
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 39
+                }
+              ],
+              "source": "micro:lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 79
+                }
+              ],
+              "source": "nano:asJobError@lib/jobs/poll.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/job.test.ts",
+                  "line": 110
+                }
+              ],
+              "source": "nano:children@tests/job.test.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 67
+                }
+              ],
+              "source": "nano:costRecordFor@lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/poll.test.ts",
+                  "line": 44
+                }
+              ],
+              "source": "nano:flakyThenOk@tests/poll.test.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/job.ts",
+                  "line": 193
+                }
+              ],
+              "source": "nano:groupTerminalStatus@lib/jobs/job.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/job.ts",
+                  "line": 179
+                }
+              ],
+              "source": "nano:isGroupTerminal@lib/jobs/job.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/job.ts",
+                  "line": 31
+                }
+              ],
+              "source": "nano:isTerminal@lib/jobs/job.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/worker.test.ts",
+                  "line": 21
+                }
+              ],
+              "source": "nano:job@tests/worker.test.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/job.ts",
+                  "line": 142
+                }
+              ],
+              "source": "nano:makeGroup@lib/jobs/job.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/job.ts",
+                  "line": 105
+                }
+              ],
+              "source": "nano:makeJob@lib/jobs/job.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 87
+                }
+              ],
+              "source": "nano:makeProviderRun@lib/ai/image/index.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/persist.ts",
+                  "line": 52
+                }
+              ],
+              "source": "nano:persistAndEnqueueGroup@lib/jobs/persist.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 114
+                }
+              ],
+              "source": "nano:processJob@lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 79
+                },
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 81
+                }
+              ],
+              "source": "nano:providerCallEvent@lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/poll.test.ts",
+                  "line": 38
+                }
+              ],
+              "source": "nano:providerError@tests/poll.test.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/dev-routes.test.ts",
+                  "line": 159
+                }
+              ],
+              "source": "nano:row@tests/dev-routes.test.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 132
+                },
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 135
+                }
+              ],
+              "source": "nano:runAttempt@lib/jobs/poll.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 188
+                },
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 208
+                },
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 282
+                }
+              ],
+              "source": "nano:runJob@lib/jobs/poll.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 201
+                }
+              ],
+              "source": "nano:startWorker@lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/job.ts"
+            },
+            {
               "count": 2,
               "kind": "imports",
               "sample_callers": [
@@ -8820,6 +11519,34 @@
           "decisions": [],
           "dominant_class": "GroupPersistError",
           "edges": [
+            {
+              "count": 2,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/persist.ts",
+                  "line": 72
+                },
+                {
+                  "file": "lib/jobs/persist.ts",
+                  "line": 93
+                }
+              ],
+              "source": "nano:persistAndEnqueueGroup@lib/jobs/persist.ts",
+              "target": "micro:lib/jobs/persist.ts#GroupPersistError"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/persist.ts",
+                  "line": 52
+                }
+              ],
+              "source": "nano:persistAndEnqueueGroup@lib/jobs/persist.ts",
+              "target": "micro:lib/jobs/persist.ts#GroupPersistError"
+            },
             {
               "count": 1,
               "kind": "imports",
@@ -8998,6 +11725,182 @@
           "dominant_class": null,
           "edges": [
             {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 49
+                },
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 75
+                }
+              ],
+              "source": "micro:lib/jobs/poll.ts",
+              "target": "micro:lib/jobs/poll.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 49
+                },
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 61
+                }
+              ],
+              "source": "micro:lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/poll.ts"
+            },
+            {
+              "count": 8,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/poll.test.ts",
+                  "line": 77
+                },
+                {
+                  "file": "tests/poll.test.ts",
+                  "line": 123
+                },
+                {
+                  "file": "tests/poll.test.ts",
+                  "line": 140
+                }
+              ],
+              "source": "micro:tests/poll.test.ts",
+              "target": "micro:lib/jobs/poll.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 67
+                }
+              ],
+              "source": "nano:costRecordFor@lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/poll.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/poll.test.ts",
+                  "line": 46
+                },
+                {
+                  "file": "tests/poll.test.ts",
+                  "line": 48
+                }
+              ],
+              "source": "nano:flakyThenOk@tests/poll.test.ts",
+              "target": "micro:lib/jobs/poll.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/ai/image/index.ts",
+                  "line": 87
+                }
+              ],
+              "source": "nano:makeProviderRun@lib/ai/image/index.ts",
+              "target": "micro:lib/jobs/poll.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/poll.test.ts",
+                  "line": 34
+                }
+              ],
+              "source": "nano:ok@tests/poll.test.ts",
+              "target": "micro:lib/jobs/poll.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 116
+                }
+              ],
+              "source": "nano:processJob@lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/poll.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 80
+                }
+              ],
+              "source": "nano:providerCallEvent@lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/poll.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 133
+                },
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 135
+                }
+              ],
+              "source": "nano:runAttempt@lib/jobs/poll.ts",
+              "target": "micro:lib/jobs/poll.ts"
+            },
+            {
+              "count": 4,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 189
+                },
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 190
+                },
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 191
+                }
+              ],
+              "source": "nano:runJob@lib/jobs/poll.ts",
+              "target": "micro:lib/jobs/poll.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 190
+                }
+              ],
+              "source": "nano:startWorker@lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/poll.ts"
+            },
+            {
               "count": 3,
               "kind": "imports",
               "sample_callers": [
@@ -9160,7 +12063,44 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/queue.ts",
+                  "line": 57
+                }
+              ],
+              "source": "micro:lib/jobs/queue.ts",
+              "target": "micro:lib/jobs/queue.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/queue.ts",
+                  "line": 78
+                }
+              ],
+              "source": "nano:enqueueJob@lib/jobs/queue.ts",
+              "target": "micro:lib/jobs/queue.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/queue.ts",
+                  "line": 64
+                }
+              ],
+              "source": "nano:getQueue@lib/jobs/queue.ts",
+              "target": "micro:lib/jobs/queue.ts"
+            }
+          ],
           "id": "micro:lib/jobs/queue.ts",
           "kind": "micro",
           "name": "queue.ts",
@@ -9254,7 +12194,20 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/result.ts",
+                  "line": 25
+                }
+              ],
+              "source": "nano:getDoneRef@lib/jobs/result.ts",
+              "target": "micro:lib/jobs/result.ts"
+            }
+          ],
           "id": "micro:lib/jobs/result.ts",
           "kind": "micro",
           "name": "result.ts",
@@ -9386,6 +12339,130 @@
           ],
           "dominant_class": null,
           "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/ResultCard.tsx",
+                  "line": 10
+                }
+              ],
+              "source": "micro:components/generate/ResultCard.tsx",
+              "target": "micro:lib/jobs/status.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "components/generate/ResultCardList.tsx",
+                  "line": 7
+                }
+              ],
+              "source": "micro:components/generate/ResultCardList.tsx",
+              "target": "micro:lib/jobs/status.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/status.ts",
+                  "line": 38
+                }
+              ],
+              "source": "micro:lib/jobs/status.ts",
+              "target": "micro:lib/jobs/status.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/store/feed.ts",
+                  "line": 27
+                },
+                {
+                  "file": "lib/store/feed.ts",
+                  "line": 39
+                },
+                {
+                  "file": "lib/store/feed.ts",
+                  "line": 41
+                }
+              ],
+              "source": "micro:lib/store/feed.ts",
+              "target": "micro:lib/jobs/status.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/store.test.ts",
+                  "line": 52
+                },
+                {
+                  "file": "tests/store.test.ts",
+                  "line": 66
+                }
+              ],
+              "source": "micro:tests/store.test.ts",
+              "target": "micro:lib/jobs/status.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/status.ts",
+                  "line": 138
+                }
+              ],
+              "source": "nano:jobStatus@lib/jobs/status.ts",
+              "target": "micro:lib/jobs/status.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/status.ts",
+                  "line": 83
+                }
+              ],
+              "source": "nano:status@lib/jobs/status.ts",
+              "target": "micro:lib/jobs/status.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/status.ts",
+                  "line": 114
+                }
+              ],
+              "source": "nano:statusForUser@lib/jobs/status.ts",
+              "target": "micro:lib/jobs/status.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/status.ts",
+                  "line": 57
+                },
+                {
+                  "file": "lib/jobs/status.ts",
+                  "line": 58
+                }
+              ],
+              "source": "nano:summarizeGroup@lib/jobs/status.ts",
+              "target": "micro:lib/jobs/status.ts"
+            },
             {
               "count": 1,
               "kind": "imports",
@@ -9571,6 +12648,42 @@
           ],
           "dominant_class": null,
           "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 53
+                }
+              ],
+              "source": "micro:lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/worker.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 162
+                }
+              ],
+              "source": "nano:defaultPersist@lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/worker.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 115
+                }
+              ],
+              "source": "nano:processJob@lib/jobs/worker.ts",
+              "target": "micro:lib/jobs/worker.ts"
+            },
             {
               "count": 2,
               "kind": "imports",
@@ -9759,6 +12872,18 @@
           "dominant_class": null,
           "edges": [
             {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/storage/index.ts",
+                  "line": 18
+                }
+              ],
+              "source": "micro:lib/storage/index.ts",
+              "target": "micro:lib/storage/index.ts"
+            },
+            {
               "count": 3,
               "kind": "imports",
               "sample_callers": [
@@ -9935,7 +13060,148 @@
           "children": [],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/job.ts",
+                  "line": 72
+                }
+              ],
+              "source": "micro:lib/jobs/job.ts",
+              "target": "micro:lib/storage/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 34
+                },
+                {
+                  "file": "lib/jobs/poll.ts",
+                  "line": 55
+                }
+              ],
+              "source": "micro:lib/jobs/poll.ts",
+              "target": "micro:lib/storage/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/jobs/worker.ts",
+                  "line": 51
+                }
+              ],
+              "source": "micro:lib/jobs/worker.ts",
+              "target": "micro:lib/storage/types.ts"
+            },
+            {
+              "count": 3,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/storage/types.ts",
+                  "line": 27
+                },
+                {
+                  "file": "lib/storage/types.ts",
+                  "line": 33
+                }
+              ],
+              "source": "micro:lib/storage/types.ts",
+              "target": "micro:lib/storage/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/types.test.ts",
+                  "line": 36
+                }
+              ],
+              "source": "nano:InMemoryStorage::getUrl@tests/types.test.ts",
+              "target": "micro:lib/storage/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/types.test.ts",
+                  "line": 29
+                }
+              ],
+              "source": "nano:InMemoryStorage::upload@tests/types.test.ts",
+              "target": "micro:lib/storage/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/storage/s3.ts",
+                  "line": 87
+                }
+              ],
+              "source": "nano:S3Storage::getUrl@lib/storage/s3.ts",
+              "target": "micro:lib/storage/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/storage/s3.ts",
+                  "line": 75
+                }
+              ],
+              "source": "nano:S3Storage::upload@lib/storage/s3.ts",
+              "target": "micro:lib/storage/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/storage/index.ts",
+                  "line": 20
+                }
+              ],
+              "source": "nano:getStorage@lib/storage/index.ts",
+              "target": "micro:lib/storage/types.ts"
+            },
+            {
+              "count": 2,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/storage/s3.ts",
+                  "line": 36
+                }
+              ],
+              "source": "nano:makeRef@lib/storage/s3.ts",
+              "target": "micro:lib/storage/types.ts"
+            },
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/storage/s3.ts",
+                  "line": 40
+                }
+              ],
+              "source": "nano:parseRef@lib/storage/s3.ts",
+              "target": "micro:lib/storage/types.ts"
+            }
+          ],
           "id": "micro:lib/storage/types.ts",
           "kind": "micro",
           "name": "types.ts",
@@ -10318,6 +13584,182 @@
           "dominant_class": null,
           "edges": [
             {
+              "count": 5,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/store/feed.ts",
+                  "line": 35
+                },
+                {
+                  "file": "lib/store/feed.ts",
+                  "line": 36
+                },
+                {
+                  "file": "lib/store/feed.ts",
+                  "line": 77
+                }
+              ],
+              "source": "micro:lib/store/feed.ts",
+              "target": "micro:lib/store/feed.ts"
+            },
+            {
+              "count": 73,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/store.test.ts",
+                  "line": 15
+                },
+                {
+                  "file": "tests/store.test.ts",
+                  "line": 19
+                },
+                {
+                  "file": "tests/store.test.ts",
+                  "line": 26
+                }
+              ],
+              "source": "micro:tests/store.test.ts",
+              "target": "micro:lib/store/feed.ts"
+            },
+            {
+              "count": 2,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/generate/AspectDrawer.tsx",
+                  "line": 16
+                },
+                {
+                  "file": "components/generate/AspectDrawer.tsx",
+                  "line": 17
+                }
+              ],
+              "source": "nano:AspectDrawer@components/generate/AspectDrawer.tsx",
+              "target": "micro:lib/store/feed.ts"
+            },
+            {
+              "count": 5,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/generate/ChatBar.tsx",
+                  "line": 23
+                },
+                {
+                  "file": "components/generate/ChatBar.tsx",
+                  "line": 24
+                },
+                {
+                  "file": "components/generate/ChatBar.tsx",
+                  "line": 25
+                }
+              ],
+              "source": "nano:ChatBar@components/generate/ChatBar.tsx",
+              "target": "micro:lib/store/feed.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/generate/Feed.tsx",
+                  "line": 7
+                }
+              ],
+              "source": "nano:Feed@components/generate/Feed.tsx",
+              "target": "micro:lib/store/feed.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/generate/GenerateButton.tsx",
+                  "line": 29
+                }
+              ],
+              "source": "nano:GenerateButton@components/generate/GenerateButton.tsx",
+              "target": "micro:lib/store/feed.ts"
+            },
+            {
+              "count": 4,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/generate/ModelPicker.tsx",
+                  "line": 16
+                },
+                {
+                  "file": "components/generate/ModelPicker.tsx",
+                  "line": 17
+                },
+                {
+                  "file": "components/generate/ModelPicker.tsx",
+                  "line": 18
+                }
+              ],
+              "source": "nano:ModelPicker@components/generate/ModelPicker.tsx",
+              "target": "micro:lib/store/feed.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/generate/PromptInput.tsx",
+                  "line": 26
+                }
+              ],
+              "source": "nano:PromptInput::handleImageFile@components/generate/PromptInput.tsx",
+              "target": "micro:lib/store/feed.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/generate/PromptInput.tsx",
+                  "line": 20
+                }
+              ],
+              "source": "nano:PromptInput@components/generate/PromptInput.tsx",
+              "target": "micro:lib/store/feed.ts"
+            },
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/generate/RefImgTray.tsx",
+                  "line": 50
+                }
+              ],
+              "source": "nano:RefImgTray::uploadAndAdd@components/generate/RefImgTray.tsx",
+              "target": "micro:lib/store/feed.ts"
+            },
+            {
+              "count": 5,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/generate/RefImgTray.tsx",
+                  "line": 28
+                },
+                {
+                  "file": "components/generate/RefImgTray.tsx",
+                  "line": 29
+                },
+                {
+                  "file": "components/generate/RefImgTray.tsx",
+                  "line": 30
+                }
+              ],
+              "source": "nano:RefImgTray@components/generate/RefImgTray.tsx",
+              "target": "micro:lib/store/feed.ts"
+            },
+            {
               "count": 1,
               "kind": "imports",
               "sample_callers": [
@@ -10476,7 +13918,20 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "lib/store/useGroupPoll.ts",
+                  "line": 54
+                }
+              ],
+              "source": "nano:pollGroupStatus@lib/store/useGroupPoll.ts",
+              "target": "micro:lib/store/useGroupPoll.ts"
+            }
+          ],
           "id": "micro:lib/store/useGroupPoll.ts",
           "kind": "micro",
           "name": "useGroupPoll.ts",
@@ -10496,12 +13951,48 @@
       ],
       "edges": [
         {
+          "count": 3,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "lib/ai/image/index.ts",
+              "line": 206
+            },
+            {
+              "file": "lib/ai/image/index.ts",
+              "line": 213
+            },
+            {
+              "file": "lib/ai/image/index.ts",
+              "line": 219
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/ai/image/index.ts#CapabilitySlot"
+        },
+        {
           "count": 2,
           "kind": "imports",
           "sample_callers": [
             {
               "file": "lib/jobs/worker.ts",
               "line": 23
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/ai/image/index.ts#CapabilitySlot"
+        },
+        {
+          "count": 2,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/ai/image/index.ts",
+              "line": 59
+            },
+            {
+              "file": "lib/ai/image/index.ts",
+              "line": 202
             }
           ],
           "source": "cmp-lib",
@@ -10592,6 +14083,26 @@
           "target": "micro:lib/ai/image/providers/replicate/index.ts"
         },
         {
+          "count": 5,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/ai/image/size.ts",
+              "line": 29
+            },
+            {
+              "file": "lib/ai/image/size.ts",
+              "line": 46
+            },
+            {
+              "file": "tests/size.test.ts",
+              "line": 13
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/ai/image/size.ts"
+        },
+        {
           "count": 23,
           "kind": "imports",
           "sample_callers": [
@@ -10612,6 +14123,50 @@
           "target": "micro:lib/ai/image/types.ts"
         },
         {
+          "count": 77,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "app/api/generate/route.ts",
+              "line": 44
+            },
+            {
+              "file": "components/generate/GenerateButton.tsx",
+              "line": 12
+            },
+            {
+              "file": "components/generate/GenerateButton.tsx",
+              "line": 13
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/ai/image/types.ts"
+        },
+        {
+          "count": 2,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/ai/image/upload-validate.ts",
+              "line": 27
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/ai/image/upload-validate.ts"
+        },
+        {
+          "count": 1,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "lib/ai/llm/index.ts",
+              "line": 44
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/ai/llm/index.ts#ConfiguredLlmProvider"
+        },
+        {
           "count": 1,
           "kind": "imports",
           "sample_callers": [
@@ -10622,6 +14177,18 @@
           ],
           "source": "cmp-lib",
           "target": "micro:lib/ai/llm/index.ts#ConfiguredLlmProvider"
+        },
+        {
+          "count": 1,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "lib/ai/llm/index.ts",
+              "line": 43
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/ai/llm/providers/openai-compat/index.ts#OpenAiCompatClient"
         },
         {
           "count": 1,
@@ -10656,6 +14223,26 @@
           "target": "micro:lib/ai/llm/types.ts"
         },
         {
+          "count": 17,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/ai/enhance/index.ts",
+              "line": 51
+            },
+            {
+              "file": "lib/ai/llm/index.ts",
+              "line": 29
+            },
+            {
+              "file": "lib/ai/llm/index.ts",
+              "line": 31
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/ai/llm/types.ts"
+        },
+        {
           "count": 1,
           "kind": "imports",
           "sample_callers": [
@@ -10666,6 +14253,38 @@
           ],
           "source": "cmp-lib",
           "target": "micro:lib/analytics/index.ts"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/analytics/index.ts",
+              "line": 21
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/analytics/index.ts"
+        },
+        {
+          "count": 6,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "lib/analytics/index.ts",
+              "line": 28
+            },
+            {
+              "file": "lib/analytics/index.ts",
+              "line": 32
+            },
+            {
+              "file": "tests/analytics.test.ts",
+              "line": 103
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/analytics/sinks/noop.ts#NoOpSink"
         },
         {
           "count": 1,
@@ -10700,6 +14319,26 @@
           "target": "micro:lib/analytics/types.ts"
         },
         {
+          "count": 24,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "app/api/enhance/route.ts",
+              "line": 64
+            },
+            {
+              "file": "app/api/events/route.ts",
+              "line": 61
+            },
+            {
+              "file": "lib/analytics/index.ts",
+              "line": 24
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/analytics/types.ts"
+        },
+        {
           "count": 4,
           "kind": "imports",
           "sample_callers": [
@@ -10712,6 +14351,66 @@
           "target": "micro:lib/auth/session.ts"
         },
         {
+          "count": 15,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/canvas/mask.ts",
+              "line": 37
+            },
+            {
+              "file": "lib/canvas/mask.ts",
+              "line": 41
+            },
+            {
+              "file": "lib/canvas/mask.ts",
+              "line": 50
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/canvas/mask.ts"
+        },
+        {
+          "count": 68,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "components/edit/EditTopBar.tsx",
+              "line": 35
+            },
+            {
+              "file": "components/edit/EditTopBar.tsx",
+              "line": 36
+            },
+            {
+              "file": "components/edit/EditTopBar.tsx",
+              "line": 37
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/canvas/store.ts"
+        },
+        {
+          "count": 15,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/edit/EditView.tsx",
+              "line": 39
+            },
+            {
+              "file": "lib/canvas/store.ts",
+              "line": 47
+            },
+            {
+              "file": "lib/canvas/store.ts",
+              "line": 60
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/canvas/store.ts"
+        },
+        {
           "count": 2,
           "kind": "imports",
           "sample_callers": [
@@ -10722,6 +14421,46 @@
           ],
           "source": "cmp-lib",
           "target": "micro:lib/canvas/types.ts"
+        },
+        {
+          "count": 26,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/edit/EditView.tsx",
+              "line": 85
+            },
+            {
+              "file": "components/edit/tools/FillTool.tsx",
+              "line": 113
+            },
+            {
+              "file": "components/edit/tools/ResizeTool.tsx",
+              "line": 93
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/canvas/types.ts"
+        },
+        {
+          "count": 9,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "tests/dev-routes.test.ts",
+              "line": 52
+            },
+            {
+              "file": "tests/dev-routes.test.ts",
+              "line": 129
+            },
+            {
+              "file": "tests/dev-routes.test.ts",
+              "line": 228
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/db.ts"
         },
         {
           "count": 3,
@@ -10744,6 +14483,122 @@
           "target": "micro:lib/db.ts"
         },
         {
+          "count": 5,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/edit/entry.ts",
+              "line": 34
+            },
+            {
+              "file": "lib/edit/entry.ts",
+              "line": 54
+            },
+            {
+              "file": "lib/edit/entry.ts",
+              "line": 55
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/edit/entry.ts"
+        },
+        {
+          "count": 49,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "app/api/resize/route.ts",
+              "line": 39
+            },
+            {
+              "file": "app/api/resize/route.ts",
+              "line": 40
+            },
+            {
+              "file": "app/api/resize/route.ts",
+              "line": 254
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/edit/resize-core.ts"
+        },
+        {
+          "count": 19,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "components/edit/KonvaStage.tsx",
+              "line": 107
+            },
+            {
+              "file": "components/edit/KonvaStage.tsx",
+              "line": 108
+            },
+            {
+              "file": "components/edit/resize/ResizeOverlay.tsx",
+              "line": 121
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/edit/resize-store.ts"
+        },
+        {
+          "count": 8,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/edit/resize/ResizeOverlay.tsx",
+              "line": 62
+            },
+            {
+              "file": "components/edit/tools/ResizeTool.tsx",
+              "line": 44
+            },
+            {
+              "file": "lib/edit/resize-store.ts",
+              "line": 39
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/edit/resize-store.ts"
+        },
+        {
+          "count": 25,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "components/edit/EditView.tsx",
+              "line": 70
+            },
+            {
+              "file": "components/edit/EditView.tsx",
+              "line": 71
+            },
+            {
+              "file": "components/edit/EditView.tsx",
+              "line": 72
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/fill/store.ts"
+        },
+        {
+          "count": 2,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/fill/store.ts",
+              "line": 10
+            },
+            {
+              "file": "lib/fill/store.ts",
+              "line": 17
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/fill/store.ts"
+        },
+        {
           "count": 13,
           "kind": "imports",
           "sample_callers": [
@@ -10758,6 +14613,26 @@
             {
               "file": "lib/jobs/index.ts",
               "line": 9
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/jobs/config.ts"
+        },
+        {
+          "count": 3,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/jobs/config.ts",
+              "line": 25
+            },
+            {
+              "file": "lib/jobs/config.ts",
+              "line": 28
+            },
+            {
+              "file": "lib/jobs/job.ts",
+              "line": 43
             }
           ],
           "source": "cmp-lib",
@@ -10784,6 +14659,42 @@
           "target": "micro:lib/jobs/job.ts"
         },
         {
+          "count": 57,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/ai/image/index.ts",
+              "line": 87
+            },
+            {
+              "file": "lib/jobs/job.ts",
+              "line": 28
+            },
+            {
+              "file": "lib/jobs/job.ts",
+              "line": 31
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/jobs/job.ts"
+        },
+        {
+          "count": 2,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "lib/jobs/persist.ts",
+              "line": 72
+            },
+            {
+              "file": "lib/jobs/persist.ts",
+              "line": 93
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/jobs/persist.ts#GroupPersistError"
+        },
+        {
           "count": 3,
           "kind": "imports",
           "sample_callers": [
@@ -10798,6 +14709,18 @@
             {
               "file": "lib/jobs/index.ts",
               "line": 48
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/jobs/persist.ts#GroupPersistError"
+        },
+        {
+          "count": 2,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/jobs/persist.ts",
+              "line": 52
             }
           ],
           "source": "cmp-lib",
@@ -10824,6 +14747,46 @@
           "target": "micro:lib/jobs/poll.ts"
         },
         {
+          "count": 31,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/ai/image/index.ts",
+              "line": 87
+            },
+            {
+              "file": "lib/jobs/poll.ts",
+              "line": 49
+            },
+            {
+              "file": "lib/jobs/poll.ts",
+              "line": 75
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/jobs/poll.ts"
+        },
+        {
+          "count": 4,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/jobs/queue.ts",
+              "line": 57
+            },
+            {
+              "file": "lib/jobs/queue.ts",
+              "line": 64
+            },
+            {
+              "file": "lib/jobs/queue.ts",
+              "line": 78
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/jobs/queue.ts"
+        },
+        {
           "count": 5,
           "kind": "imports",
           "sample_callers": [
@@ -10838,6 +14801,18 @@
             {
               "file": "lib/jobs/status.ts",
               "line": 163
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/jobs/result.ts"
+        },
+        {
+          "count": 2,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/jobs/result.ts",
+              "line": 25
             }
           ],
           "source": "cmp-lib",
@@ -10864,6 +14839,26 @@
           "target": "micro:lib/jobs/status.ts"
         },
         {
+          "count": 17,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "components/generate/ResultCard.tsx",
+              "line": 10
+            },
+            {
+              "file": "components/generate/ResultCardList.tsx",
+              "line": 7
+            },
+            {
+              "file": "lib/jobs/status.ts",
+              "line": 38
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/jobs/status.ts"
+        },
+        {
           "count": 4,
           "kind": "imports",
           "sample_callers": [
@@ -10884,12 +14879,44 @@
           "target": "micro:lib/jobs/worker.ts"
         },
         {
+          "count": 3,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/jobs/worker.ts",
+              "line": 53
+            },
+            {
+              "file": "lib/jobs/worker.ts",
+              "line": 115
+            },
+            {
+              "file": "lib/jobs/worker.ts",
+              "line": 162
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/jobs/worker.ts"
+        },
+        {
           "count": 1,
           "kind": "imports",
           "sample_callers": [
             {
               "file": "lib/jobs/worker.ts",
               "line": 21
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/storage/index.ts"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/storage/index.ts",
+              "line": 18
             }
           ],
           "source": "cmp-lib",
@@ -10914,6 +14941,78 @@
           ],
           "source": "cmp-lib",
           "target": "micro:lib/storage/types.ts"
+        },
+        {
+          "count": 18,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/jobs/job.ts",
+              "line": 72
+            },
+            {
+              "file": "lib/jobs/poll.ts",
+              "line": 34
+            },
+            {
+              "file": "lib/jobs/poll.ts",
+              "line": 55
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/storage/types.ts"
+        },
+        {
+          "count": 94,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "components/generate/AspectDrawer.tsx",
+              "line": 16
+            },
+            {
+              "file": "components/generate/AspectDrawer.tsx",
+              "line": 17
+            },
+            {
+              "file": "components/generate/ChatBar.tsx",
+              "line": 23
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/store/feed.ts"
+        },
+        {
+          "count": 5,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/store/feed.ts",
+              "line": 35
+            },
+            {
+              "file": "lib/store/feed.ts",
+              "line": 36
+            },
+            {
+              "file": "lib/store/feed.ts",
+              "line": 77
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/store/feed.ts"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "lib/store/useGroupPoll.ts",
+              "line": 54
+            }
+          ],
+          "source": "cmp-lib",
+          "target": "micro:lib/store/useGroupPoll.ts"
         }
       ],
       "id": "cmp-lib",
@@ -10955,7 +15054,20 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "prisma/seed.ts",
+                  "line": 35
+                }
+              ],
+              "source": "nano:main@prisma/seed.ts",
+              "target": "micro:prisma/seed.ts"
+            }
+          ],
           "id": "micro:prisma/seed.ts",
           "kind": "micro",
           "name": "seed.ts",
@@ -10964,7 +15076,20 @@
         }
       ],
       "decisions": [],
-      "edges": [],
+      "edges": [
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "prisma/seed.ts",
+              "line": 35
+            }
+          ],
+          "source": "cmp-prisma",
+          "target": "micro:prisma/seed.ts"
+        }
+      ],
       "id": "cmp-prisma",
       "kind": "component",
       "name": "prisma",
@@ -10977,7 +15102,44 @@
           "children": [],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "scripts/probes/p5_gen_mask.mjs",
+                  "line": 18
+                }
+              ],
+              "source": "micro:scripts/probes/p5_gen_mask.mjs",
+              "target": "micro:scripts/probes/p5_gen_mask.mjs"
+            },
+            {
+              "count": 2,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/KonvaStage.tsx",
+                  "line": 226
+                }
+              ],
+              "source": "nano:KonvaStage@components/edit/KonvaStage.tsx",
+              "target": "micro:scripts/probes/p5_gen_mask.mjs"
+            },
+            {
+              "count": 2,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "components/edit/resize/ResizeOverlay.tsx",
+                  "line": 221
+                }
+              ],
+              "source": "nano:ResizeOverlay@components/edit/resize/ResizeOverlay.tsx",
+              "target": "micro:scripts/probes/p5_gen_mask.mjs"
+            }
+          ],
           "id": "micro:scripts/probes/p5_gen_mask.mjs",
           "kind": "micro",
           "name": "p5_gen_mask.mjs",
@@ -11008,7 +15170,28 @@
         }
       ],
       "decisions": [],
-      "edges": [],
+      "edges": [
+        {
+          "count": 5,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "components/edit/KonvaStage.tsx",
+              "line": 226
+            },
+            {
+              "file": "components/edit/resize/ResizeOverlay.tsx",
+              "line": 221
+            },
+            {
+              "file": "scripts/probes/p5_gen_mask.mjs",
+              "line": 18
+            }
+          ],
+          "source": "cmp-scripts",
+          "target": "micro:scripts/probes/p5_gen_mask.mjs"
+        }
+      ],
       "id": "cmp-scripts",
       "kind": "component",
       "name": "scripts",
@@ -11381,6 +15564,26 @@
           "decisions": [],
           "dominant_class": null,
           "edges": [
+            {
+              "count": 6,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/canvasEntry.test.ts",
+                  "line": 38
+                },
+                {
+                  "file": "tests/canvasEntry.test.ts",
+                  "line": 53
+                },
+                {
+                  "file": "tests/canvasEntry.test.ts",
+                  "line": 66
+                }
+              ],
+              "source": "micro:tests/canvasEntry.test.ts",
+              "target": "micro:tests/canvasEntry.test.ts"
+            },
             {
               "count": 2,
               "kind": "imports",
@@ -11864,6 +16067,18 @@
           "dominant_class": null,
           "edges": [
             {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/enhance.test.ts",
+                  "line": 22
+                }
+              ],
+              "source": "micro:tests/enhance.test.ts",
+              "target": "micro:tests/enhance.test.ts"
+            },
+            {
               "count": 2,
               "kind": "imports",
               "sample_callers": [
@@ -11969,7 +16184,20 @@
           "children": [],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/fal-integration.test.ts",
+                  "line": 18
+                }
+              ],
+              "source": "micro:tests/fal-integration.test.ts",
+              "target": "micro:tests/fal-integration.test.ts"
+            }
+          ],
           "id": "micro:tests/fal-integration.test.ts",
           "kind": "micro",
           "name": "fal-integration.test.ts",
@@ -12605,6 +16833,18 @@
           "edges": [
             {
               "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/llm.test.ts",
+                  "line": 71
+                }
+              ],
+              "source": "micro:tests/llm.test.ts",
+              "target": "micro:tests/llm.test.ts"
+            },
+            {
+              "count": 1,
               "kind": "imports",
               "sample_callers": [
                 {
@@ -13176,7 +17416,20 @@
           "children": [],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/s3.test.ts",
+                  "line": 29
+                }
+              ],
+              "source": "micro:tests/s3.test.ts",
+              "target": "micro:tests/s3.test.ts"
+            }
+          ],
           "id": "micro:tests/s3.test.ts",
           "kind": "micro",
           "name": "s3.test.ts",
@@ -13619,6 +17872,26 @@
           "dominant_class": "InMemoryStorage",
           "edges": [
             {
+              "count": 4,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/types.test.ts",
+                  "line": 59
+                },
+                {
+                  "file": "tests/types.test.ts",
+                  "line": 66
+                },
+                {
+                  "file": "tests/types.test.ts",
+                  "line": 73
+                }
+              ],
+              "source": "micro:tests/types.test.ts#InMemoryStorage",
+              "target": "micro:tests/types.test.ts#InMemoryStorage"
+            },
+            {
               "count": 2,
               "kind": "imports",
               "sample_callers": [
@@ -13808,6 +18081,18 @@
           "edges": [
             {
               "count": 1,
+              "kind": "references",
+              "sample_callers": [
+                {
+                  "file": "tests/useGroupPoll.test.ts",
+                  "line": 22
+                }
+              ],
+              "source": "nano:statusResponse@tests/useGroupPoll.test.ts",
+              "target": "micro:tests/useGroupPoll.test.ts"
+            },
+            {
+              "count": 1,
               "kind": "imports",
               "sample_callers": [
                 {
@@ -13882,7 +18167,20 @@
           ],
           "decisions": [],
           "dominant_class": null,
-          "edges": [],
+          "edges": [
+            {
+              "count": 1,
+              "kind": "calls",
+              "sample_callers": [
+                {
+                  "file": "tests/worker.test.ts",
+                  "line": 235
+                }
+              ],
+              "source": "micro:tests/worker.test.ts",
+              "target": "micro:tests/worker.test.ts"
+            }
+          ],
           "id": "micro:tests/worker.test.ts",
           "kind": "micro",
           "name": "worker.test.ts",
@@ -14351,6 +18649,118 @@
           ],
           "source": "cmp-tests",
           "target": "micro:lib/store/useGroupPoll.ts"
+        },
+        {
+          "count": 6,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "tests/canvasEntry.test.ts",
+              "line": 38
+            },
+            {
+              "file": "tests/canvasEntry.test.ts",
+              "line": 53
+            },
+            {
+              "file": "tests/canvasEntry.test.ts",
+              "line": 66
+            }
+          ],
+          "source": "cmp-tests",
+          "target": "micro:tests/canvasEntry.test.ts"
+        },
+        {
+          "count": 1,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "tests/enhance.test.ts",
+              "line": 22
+            }
+          ],
+          "source": "cmp-tests",
+          "target": "micro:tests/enhance.test.ts"
+        },
+        {
+          "count": 1,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "tests/fal-integration.test.ts",
+              "line": 18
+            }
+          ],
+          "source": "cmp-tests",
+          "target": "micro:tests/fal-integration.test.ts"
+        },
+        {
+          "count": 1,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "tests/llm.test.ts",
+              "line": 71
+            }
+          ],
+          "source": "cmp-tests",
+          "target": "micro:tests/llm.test.ts"
+        },
+        {
+          "count": 1,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "tests/s3.test.ts",
+              "line": 29
+            }
+          ],
+          "source": "cmp-tests",
+          "target": "micro:tests/s3.test.ts"
+        },
+        {
+          "count": 4,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "tests/types.test.ts",
+              "line": 59
+            },
+            {
+              "file": "tests/types.test.ts",
+              "line": 66
+            },
+            {
+              "file": "tests/types.test.ts",
+              "line": 73
+            }
+          ],
+          "source": "cmp-tests",
+          "target": "micro:tests/types.test.ts#InMemoryStorage"
+        },
+        {
+          "count": 1,
+          "kind": "references",
+          "sample_callers": [
+            {
+              "file": "tests/useGroupPoll.test.ts",
+              "line": 22
+            }
+          ],
+          "source": "cmp-tests",
+          "target": "micro:tests/useGroupPoll.test.ts"
+        },
+        {
+          "count": 1,
+          "kind": "calls",
+          "sample_callers": [
+            {
+              "file": "tests/worker.test.ts",
+              "line": 235
+            }
+          ],
+          "source": "cmp-tests",
+          "target": "micro:tests/worker.test.ts"
         }
       ],
       "id": "cmp-tests",
@@ -14479,7 +18889,7 @@
       "id": "decision:ADR-0001@cmp-components",
       "kind": "decision",
       "name": "ADR-0001",
-      "signature": "cab3025a24333c0ffafe58a2628677e8bc536928f802aba84a5ed98e82f885eb",
+      "signature": "19a2236755b3f21a3b7648a3194c41ad6208292b06c28999c7c787aeb4d1fa98",
       "status": "FRESH"
     },
     {
@@ -14487,7 +18897,7 @@
       "id": "decision:ADR-0001@cmp-lib",
       "kind": "decision",
       "name": "ADR-0001",
-      "signature": "b8621747261da6d4aa4d53284e95c269fb809b1016e63c702b294bece9b372be",
+      "signature": "19a2236755b3f21a3b7648a3194c41ad6208292b06c28999c7c787aeb4d1fa98",
       "status": "FRESH"
     },
     {
@@ -14495,7 +18905,7 @@
       "id": "decision:ADR-0002@cmp-lib",
       "kind": "decision",
       "name": "ADR-0002",
-      "signature": "2e4acd1f2459dd24633a90aeeca9fe075924671062ad15e4daa2cb22be2fc9cd",
+      "signature": "8c8d68b3ed235c12c209fbbcb76bf192f57fe948a6198b8a7aa5b43a31e712c7",
       "status": "FRESH"
     },
     {
@@ -14503,7 +18913,7 @@
       "id": "decision:ADR-0003@cmp-components",
       "kind": "decision",
       "name": "ADR-0003",
-      "signature": "d099699c5436a59a01793f82ca041395fc9124a167c89920b79eb870cca1df88",
+      "signature": "b43295865414ce5ac5790e19f598cebb94e01ae7272b7d4cf83fb39d01e873a6",
       "status": "FRESH"
     },
     {
@@ -14511,7 +18921,7 @@
       "id": "decision:ADR-0003@cmp-lib",
       "kind": "decision",
       "name": "ADR-0003",
-      "signature": "ce0a99631d7c8265a558d96ebe940eed1ba26f1cf8f916da0a2516f162599a96",
+      "signature": "b43295865414ce5ac5790e19f598cebb94e01ae7272b7d4cf83fb39d01e873a6",
       "status": "FRESH"
     },
     {
@@ -14519,7 +18929,7 @@
       "id": "decision:ADR-0004@cmp-lib",
       "kind": "decision",
       "name": "ADR-0004",
-      "signature": "805ea20fb854f9b9068a42868a7ec6b64997c5d3168e59c99bad299a0e3a49d3",
+      "signature": "1d55762af0e8a54073dcde54505e847c79c4344ee950863f5dfb02a4ff59eecd",
       "status": "FRESH"
     },
     {
@@ -14527,7 +18937,7 @@
       "id": "decision:ADR-0005@cmp-lib",
       "kind": "decision",
       "name": "ADR-0005",
-      "signature": "9489cf9f6675d2d4312a0beea1a8e84da41753e9def637e1674fd1746c3317bb",
+      "signature": "4a25bb46b486722f3c6b243c9a02620028c564aa59c9b8794612b139135b6330",
       "status": "FRESH"
     },
     {
@@ -14535,7 +18945,7 @@
       "id": "decision:ADR-0006@cmp-lib",
       "kind": "decision",
       "name": "ADR-0006",
-      "signature": "288902025f6b982804f3f3c800a342f7edb1a96a0fdc0a4102b4c17d76c86c11",
+      "signature": "4826f17a2bafebf0e1a74f38d5b76dff167aaac4f7684a1f8ffa986506e968db",
       "status": "FRESH"
     },
     {
@@ -14543,7 +18953,7 @@
       "id": "decision:ADR-0007@cmp-components",
       "kind": "decision",
       "name": "ADR-0007",
-      "signature": "5764d936d181d52526dee29fd25d50f0e7e971ab891bae6acb24020ebafe9e06",
+      "signature": "6a8f871fc2d87268f1d4bddd777dd5eeff91408f43f2d5efb294eae5a2e02be3",
       "status": "FRESH"
     },
     {
@@ -14551,7 +18961,7 @@
       "id": "decision:ADR-0007@cmp-lib",
       "kind": "decision",
       "name": "ADR-0007",
-      "signature": "15b094074c455b6b4cba5e4e455d8f4d58df15bcdb704e76c619cf7de83be17f",
+      "signature": "6a8f871fc2d87268f1d4bddd777dd5eeff91408f43f2d5efb294eae5a2e02be3",
       "status": "FRESH"
     },
     {
@@ -14559,7 +18969,7 @@
       "id": "decision:ADR-0008@cmp-lib",
       "kind": "decision",
       "name": "ADR-0008",
-      "signature": "f776158d3f5d9428cb2e9ddc6bd85107bc5855503059871d3a410ecd7e499239",
+      "signature": "8fa3134d9e1861be6f2ad538de7f34e5e30952e6242b5990d27be786fabe81f3",
       "status": "FRESH"
     }
   ],

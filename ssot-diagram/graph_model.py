@@ -427,23 +427,26 @@ def _roll_up_edges(con: sqlite3.Connection, root: Path,
     ).fetchall()
 
     # --- Nano-level edges ---
-    # Collect incoming edges per nano
+    # Collect incoming edges per nano (target IS a function/method nano) AND
+    # per micro (target is a class/interface/type_alias/constant/file — resolved
+    # to the target symbol's FILE's micro per plan Step 8 action 8). Without the
+    # micro fallback, every edge into a non-function target is silently dropped
+    # (at the pilot: 225 calls-to-constants + 425 type-references + 17 class
+    # instantiates). A15 (references kept as edges) + A16 (instantiates folds to
+    # calls) both ride on this fallback.
     nano_incoming: dict[str, list[tuple[str, str, dict]]] = {}
     for nid in nano_by_id:
         nano_incoming[nid] = []
+    micro_incoming: dict[str, list[tuple[str, str, dict]]] = {}
 
     for source, target, kind_raw, line in edge_rows:
-        target_nano = db_id_to_nano.get(target)
-        if target_nano is None:
-            continue
-
-        # Determine aggregated kind
+        # Determine aggregated kind first
         if kind_raw in ("calls", "instantiates"):
             agg_kind = "calls"
         elif kind_raw == "references":
             agg_kind = "references"
         elif kind_raw == "imports":
-            # Handled separately at micro level
+            # Handled separately at micro level (the imports block below)
             continue
         elif kind_raw == "implements":
             continue  # dropped entirely (A16)
@@ -475,7 +478,19 @@ def _roll_up_edges(con: sqlite3.Connection, root: Path,
             if line is not None:
                 caller["line"] = int(line)
 
-        nano_incoming.setdefault(target_nano, []).append((source_entity, agg_kind, caller))
+        # Resolve target: function/method nano if the target IS one; otherwise
+        # the target symbol's FILE's micro (plan Step 8 action 8).
+        target_nano = db_id_to_nano.get(target)
+        if target_nano is not None:
+            nano_incoming[target_nano].append((source_entity, agg_kind, caller))
+        else:
+            target_file = node_info.get(target, (None, None))[1]
+            target_micro = file_path_to_micro_id.get(target_file) if target_file else None
+            if target_micro:
+                micro_incoming.setdefault(target_micro, []).append(
+                    (source_entity, agg_kind, caller))
+            # else: target resolves to nothing indexed (external/stdlib) -> drop
+
 
     # Group and aggregate per nano
     for nid, incoming in nano_incoming.items():
@@ -505,6 +520,32 @@ def _roll_up_edges(con: sqlite3.Connection, root: Path,
 
         if edges:
             nano_by_id[nid]["edges"] = edges
+
+    # Aggregate non-function-target edges (calls/references/instantiates into a
+    # class/interface/type/constant/file) onto the target's owning micro.
+    for mid, incoming in micro_incoming.items():
+        groups: dict[tuple[str, str], dict] = {}
+        for source_entity, agg_kind, caller in incoming:
+            key = (source_entity, agg_kind)
+            if key not in groups:
+                groups[key] = {
+                    "source": source_entity,
+                    "target": mid,
+                    "kind": agg_kind,
+                    "count": 0,
+                    "sample_callers": {},
+                }
+            groups[key]["count"] += 1
+            if caller:
+                cf = (caller.get("file", ""), caller.get("line", 0))
+                groups[key]["sample_callers"][cf] = caller
+        for key in sorted(groups):
+            g = groups[key]
+            sorted_callers = sorted(g["sample_callers"].values(),
+                                    key=lambda x: (x.get("file", ""), x.get("line", 0)))
+            g["sample_callers"] = sorted_callers[:3]
+            micro_by_id[mid]["edges"].append(g)
+
 
     # --- Micro-level import edges ---
     # Drop self-micro (same-file) placeholders (A14).
@@ -598,6 +639,7 @@ def _merge_decisions(con: sqlite3.Connection, root: Path,
 
         # Evaluate each anchor
         anchor_statuses: list[str] = []
+        anchor_sigs: list[str] = []  # live content sigs for the decision signature (Step 9 action 6)
         # Map component_id -> list of (model_node_id, component_id)
         comp_to_nodes: dict[str, list[str]] = {}
 
@@ -605,6 +647,11 @@ def _merge_decisions(con: sqlite3.Connection, root: Path,
             ref = a["ref"]
             state = di.anchor_status(con, root, a)
             anchor_statuses.append(state)
+            # Live content sig (None if ORPHANED/AMBIGUOUS) — pins the decision
+            # signature to anchor CONTENT so drift is visible (Block 1e/4b/5b).
+            _, live_sig = di.current_sig(con, root, ref)
+            if live_sig:
+                anchor_sigs.append(live_sig)
 
             # Find which micro this anchor resolves to
             parsed = di.parse_ref(ref)
@@ -639,13 +686,18 @@ def _merge_decisions(con: sqlite3.Connection, root: Path,
 
         for cid, node_ids in comp_to_nodes.items():
             decision_id = f"decision:{did}@{cid}"
+            # Signature = sha256 over sorted live anchor sigs (plan Step 9 action 6,
+            # Block 1e content-pinning). Changes when anchor code drifts so P4
+            # narratives detect staleness via signature mismatch (Block 5b). Falls
+            # back to the id hash only if no anchor produced a live sig.
+            decision_sig = _sorted_sha256(anchor_sigs) if anchor_sigs else _sha256(decision_id)
             decision_node = {
                 "id": decision_id,
                 "kind": "decision",
                 "name": did,
                 "doc": dec.get("doc", ""),
                 "status": final_status,
-                "signature": _sha256(decision_id),
+                "signature": decision_sig,
             }
             decision_nodes[decision_id] = decision_node
             decision_attachments[decision_id] = node_ids
@@ -766,7 +818,8 @@ def cmd_extract(args) -> None:
 
     # Config (Step 3)
     config = load_config(config_path)
-    nano_cap = config.get("nano_cap", args.nano_cap if args.nano_cap is not None else DEFAULT_NANO_CAP)
+    # CLI --nano-cap overrides config; config is the fallback (plan Step 2).
+    nano_cap = args.nano_cap if args.nano_cap is not None else config.get("nano_cap", DEFAULT_NANO_CAP)
     out_path = Path(args.out) if args.out else root / DEFAULT_OUTPUT_REL
 
     # Open DB read-only

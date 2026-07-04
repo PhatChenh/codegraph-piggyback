@@ -150,6 +150,27 @@ class TestCLIImport:
         except SystemExit:
             pass  # argparse exits 0 on --help
 
+    @pytest.mark.skipif(not PILOT_DB.is_file(), reason="pilot DB not available")
+    def test_nano_cap_cli_overrides_config(self, tmp_path):
+        """MAJOR 3 (red-team): --nano-cap CLI overrides the config's nano_cap.
+
+        Config sets nano_cap=8; CLI passes 3. Model's nano_cap field must be 3
+        (CLI wins), not 8 (the dead-flag behavior the red-team caught)."""
+        if not SHIPPED_CONFIG.is_file():
+            pytest.skip("shipped config missing")
+        out = tmp_path / "model.json"
+        import subprocess
+        r = subprocess.run(
+            [sys.executable, str(HERE / "graph_model.py"), "extract",
+             "--db", str(PILOT_DB), "--config", str(SHIPPED_CONFIG),
+             "--out", str(out), "--nano-cap", "3"],
+            capture_output=True, text=True, cwd=str(PROJECT_ROOT),
+        )
+        assert r.returncode == 0, f"extract failed: {r.stderr}"
+        model = json.loads(out.read_text())
+        assert model.get("nano_cap") == 3, \
+            f"CLI --nano-cap 3 must override config; got {model.get('nano_cap')}"
+
 
 # ── 2. Config validation tests ──────────────────────────────────────────────────
 
@@ -502,6 +523,46 @@ class TestDecisionMerge:
         assert out1.read_bytes() == out2.read_bytes(), "decisions[] not sorted → non-deterministic"
 
 
+    def test_decision_signature_is_content_pinned_not_id(self, tmp_path):
+        """CRIT 2 (red-team): decision signature = sha256 over anchor sigs, NOT sha256(id).
+
+        When anchor code drifts (live sig changes) the decision signature MUST change;
+        the id stays stable. P4 narratives pin to this — id-based sig would render
+        stale prose as trusted (Block 5b trust gate)."""
+        con, _ = _synthetic_db()
+        root_dir = tmp_path / "root"
+        (root_dir / "src").mkdir(parents=True)
+        a_ts = root_dir / "src" / "a.ts"
+        a_ts.write_text("VERSION_ONE\n")  # real file so file content_hash is live
+        _add_file(con, "src/a.ts", content_hash=hashlib.sha256(b"VERSION_ONE\n").hexdigest())
+        _add_node(con, "func:a", "function", "a", "a", "src/a.ts", start_line=1, end_line=1)
+        cfg = _minimal_config(tmp_path)
+        config = json.loads(cfg.read_text())
+        assigned = gm._assign_components([{"path": "src/a.ts"}], config)
+        micro_by_id, f2m = gm._build_micros(con, assigned, config)
+        nano_by_id = gm._build_nanos(con, root_dir, micro_by_id, f2m, config)
+
+        decisions = {
+            "ADR-X": {"doc": "d", "status": "accepted", "supersedes": None,
+                      "anchors": [{"ref": "file:src/a.ts", "sig": "stale", "verified": True}]},
+        }
+        dn, _ = gm._merge_decisions(con, root_dir, decisions, assigned, micro_by_id, nano_by_id, f2m)
+        node = list(dn.values())[0]
+        sig1, id_str = node["signature"], node["id"]
+        # Must NOT equal sha256(id) — that's the bug being guarded.
+        assert sig1 != hashlib.sha256(id_str.encode()).hexdigest(), \
+            "decision signature is sha256(id) — must be content-pinned"
+        # Drift the anchor content (file changes) → live sig changes → decision sig changes.
+        a_ts.write_text("VERSION_TWO_DIFFERENT\n")
+        new_hash = hashlib.sha256(b"VERSION_TWO_DIFFERENT\n").hexdigest()
+        con.execute("UPDATE files SET content_hash = ? WHERE path = ?", (new_hash, "src/a.ts"))
+        con.commit()
+        dn2, _ = gm._merge_decisions(con, root_dir, decisions, assigned, micro_by_id, nano_by_id, f2m)
+        node2 = list(dn2.values())[0]
+        assert node2["signature"] != sig1, "decision signature must change when anchor content drifts"
+        assert node2["id"] == id_str, "id must be stable across drift"
+
+
 class TestRedTeamRegressions:
     """Each test FAILS if its corresponding red-team fix is reverted."""
 
@@ -654,6 +715,8 @@ class TestRedTeamRegressions:
         # 2 instantiates: caller -> callee (a function) — must fold to kind="calls"
         _add_edge(con, "func:caller", "func:callee", "instantiates", line=10)
         _add_edge(con, "func:caller", "func:callee", "instantiates", line=12)
+        # 1 instantiates into a CLASS target (the real pilot shape: all 17 target classes)
+        _add_edge(con, "func:caller", "cls:c", "instantiates", line=20)
         # 1 implements: cls:c -> iface:i (dropped — must appear NOWHERE)
         _add_edge(con, "cls:c", "iface:i", "implements", line=3)
 
@@ -675,6 +738,16 @@ class TestRedTeamRegressions:
         all_kinds = {e.get("kind") for n in nano_by_id.values() for e in n.get("edges", [])}
         all_kinds |= {e.get("kind") for m in micro_by_id.values() for e in m.get("edges", [])}
         assert "implements" not in all_kinds, "implements must be dropped entirely"
+
+        # CLASS-target instantiates (the real pilot shape — all 17 instantiates target
+        # classes, not functions). The edge must fold to a 'calls' edge on the class's
+        # owning micro (src/b.ts), NOT be dropped.
+        cls_micro_id = file_path_to_micro_id.get("src/b.ts")
+        assert cls_micro_id in micro_by_id, "class's file must have a micro"
+        cls_micro_edges = micro_by_id[cls_micro_id].get("edges", [])
+        cls_calls = [e for e in cls_micro_edges if e.get("kind") == "calls"
+                     and e.get("target") == cls_micro_id]
+        assert cls_calls, "class-target instantiates must fold to a 'calls' edge on the owning micro"
 
     # A17: deterministic sort — caller_count DESC, qname ASC, path ASC
     def test_A17_deterministic_sort_zero_callers(self, tmp_path):
