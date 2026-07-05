@@ -5,9 +5,24 @@
 
 ## What is happening right now (repo-wide)
 
-Last action: **ssot-diagram P3 merged to main** (`ba02a56`, 2026-07-04) — NOT pushed
-to origin. All other tools specced in `<tool>/design.md`, build order in
-`docs/roadmap/roadmap.md`.
+Last action: **plan-verifier + diff-verifier + `_shared/` BUILT 2026-07-05** on
+branch `fable/plan-verifier-diff-verifier` (NOT merged — owner HITL). Built by
+Claude Fable 5 (owner-approved queue, see `~/all-projects/vibe-coding-setup/ATLAS.md`):
+- `_shared/` extracted (db/sig/resolve/queries/budget/hookio + manifest.py);
+  `decision_index.py` clean-cutover per Block 1 — all pre-existing tests green.
+- `plan-verifier/plan_verify.py` — 24 tests; CLI `--strict` + PostToolUse hook;
+  manifest incl. `tier:/gates:/qualifiers:` extension (Block 2a AMENDED, dated).
+- `diff-verifier/` (NEW dir) — design.md + `diff_verify.py`, 14 tests; wave-end
+  verdicts OUT-OF-SCOPE-TOUCH / QUALIFIER-FAIL / NOT-DELIVERED / NOT-REMOVED /
+  TESTS-MISSING; restricted qualifier verb grammar (no raw shell).
+- `manifest.json` + `piggyback.py` gained optional `args` field (hook `--hook`).
+- Full suite 67 pass + 3 PRE-EXISTING TestGoldenLive failures (golden vs LIVE
+  mkt_engine pilot DB drifted after mkt_engine P8/P14 merges — needs a golden
+  refresh via ssot P6 regeneration path, NOT a P3 bug; fails identically on main).
+
+Before that: **ssot-diagram P3 merged to main** (`ba02a56`, 2026-07-04) — pushed
+to origin (verified 2026-07-05). All other tools specced in `<tool>/design.md`,
+build order in `docs/roadmap/roadmap.md`.
 
 ## Per-tool state pointers
 

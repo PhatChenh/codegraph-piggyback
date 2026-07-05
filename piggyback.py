@@ -115,7 +115,8 @@ def hook_command(entry: dict) -> str:
     abs_path = (ROOT / entry["script"]).resolve()
     if not abs_path.exists():
         warn(f"script file missing (registering anyway): {abs_path}")
-    return f"python3 {_portable_path(abs_path)}"
+    args = entry.get("args", "")
+    return f"python3 {_portable_path(abs_path)}" + (f" {args}" if args else "")
 
 
 def is_owned(command: str) -> bool:

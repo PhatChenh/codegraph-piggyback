@@ -22,9 +22,10 @@ diagram and its satellites). Delivery rail: `manifest.json` + `piggyback` CLI.
 | 1 | impact-analyzer | G1 | ✅ shipped (+3 extensions pending) | `impact-analyzer/design-extensions.md` |
 | 2 | codegraph-gate | G2 | ✅ shipped | `codegraph-gate/` |
 | 3 | decision-index (ssot P1) | G3 | ✅ shipped; P2 curation DONE (2026-07-04); P3 planned → `STATE.md` | `ssot-diagram/roadmap.md` |
-| 4 | _shared | infra | not built | `_shared/design.md` |
-| 5 | plan-verifier ⭐ | G2 | not built | `plan-verifier/design.md` |
-| 6 | plan-visualizer ⭐ | G3 | not built | `plan-visualizer/design.md` |
+| 4 | _shared | infra | ✅ BUILT 2026-07-05 (db/sig/resolve/queries/budget/hookio/manifest; decision_index cut over, tests green) | `_shared/design.md` |
+| 5 | plan-verifier ⭐ | G2 | ✅ BUILT 2026-07-05 (24 tests; hook + CLI; sweep noise measured — see design.md) | `plan-verifier/design.md` |
+| 5b | diff-verifier | G2 | ✅ BUILT 2026-07-05 (14 tests; wave-end diff-vs-manifest; restricted qualifier DSL) | `diff-verifier/design.md` |
+| 6 | plan-visualizer ⭐ | G3 | not built (import `_shared/manifest.py`, do NOT re-parse) | `plan-visualizer/design.md` |
 | 7 | changeset-context | G1 | not built | `changeset-context/design.md` |
 | 8 | repo-map | G1 | not built | `repo-map/design.md` |
 | 9 | drift-digest | G3 | not built | `drift-digest/design.md` |

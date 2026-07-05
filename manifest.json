@@ -32,6 +32,21 @@
       "scope": "repo",
       "desc": "ssot-diagram P3 — extract diagram-model.json from codegraph DB + decision index",
       "hooks": []
+    },
+    "plan-verifier": {
+      "script": "plan-verifier/plan_verify.py",
+      "args": "--hook",
+      "scope": "repo",
+      "desc": "verify plan code-claims vs codegraph on Write|Edit of *plan*.md (advisory; strict gate = CLI in build-pipeline)",
+      "hooks": [
+        { "event": "PostToolUse", "matcher": "Write|Edit" }
+      ]
+    },
+    "diff-verifier": {
+      "script": "diff-verifier/diff_verify.py",
+      "scope": "repo",
+      "desc": "wave-end diff-vs-plan mechanical compliance (CLI only; orchestrate skill calls it)",
+      "hooks": []
     }
   }
 }
