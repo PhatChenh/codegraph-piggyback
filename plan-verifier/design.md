@@ -1,8 +1,10 @@
 # plan-verifier — Design
 
-**Status:** not built. **Effort:** M. **Build order:** #3 (after CI + test-count-guard and
-ssot P2/P3; it is the first tool that triggers the `_shared/` extraction — see
-`_shared/design.md`). The star tool of the "enforce careful planning" group.
+**Status:** BUILT 2026-07-05 (`plan_verify.py` + 24 tests; `_shared/` extraction done in
+the same change — db/sig/resolve/queries/budget/hookio/manifest, decision_index cut over,
+all existing tests green). **Build order:** #3. The star tool of the "enforce careful
+planning" group. Implementation notes appended at the bottom ("Measured sweep noise",
+"Build deviations").
 
 ---
 
@@ -210,19 +212,56 @@ Ships as a `manifest.json` entry (script + hook events + scope) so
 - Blocking in hook mode. Blocking is opt-in via `--strict` in the pipeline step only.
 - Cross-repo claims — one DB, one repo per run.
 
-## Open questions
+## Open questions — ALL RESOLVED (2026-07-03 grill + 2026-07-05 build)
 
-- **[Human-judgment]** `UNACKNOWLEDGED-BLAST` threshold: is "HIGH (≥6 callers) with zero
-  callers named in the plan" the right trigger, or only CRITICAL (>15)? Too low and every
-  plan yells; too high and the guard misses real exposure.
-- **[Human-judgment]** Should `AMBIGUOUS` fail `--strict`? Argument for: an ambiguous
-  claim means the implementer may edit the wrong symbol. Argument against (current
-  choice): many repos legitimately reuse names and plans carry enough path context.
-- **[Technical research]** Heuristic-sweep noise rate: on real plans in this workspace,
-  what fraction of backticked tokens resolve? If `MISSING` from swept claims is mostly
-  noise (pseudo-code, planned-but-undeclared names), swept claims may need to warn-only
-  even in strict mode.
-- **[Technical research]** How to detect "plan mentions the callers" for
-  `UNACKNOWLEDGED-BLAST` — substring match of caller file/symbol names in plan text is
-  the obvious deterministic choice; measure its false-negative rate before shipping
-  anything fancier.
+- ~~`UNACKNOWLEDGED-BLAST` threshold~~ → **≥6 callers** (impact-analyzer HIGH tier),
+  frozen as config-not-contract in skeleton-contracts Block 3b.
+- ~~Should `AMBIGUOUS` fail `--strict`?~~ → **No**, warn-only even in strict
+  (frozen, Block 3b).
+- ~~Heuristic-sweep noise rate~~ → **measured 2026-07-05, see below**; swept claims
+  are warn-only in strict (never gate).
+- ~~Caller-mention detection~~ → deterministic substring match shipped: a caller is
+  "acknowledged" when its symbol name OR its file basename appears anywhere in the
+  plan text. Known false-negative: a plan acknowledging callers via a directory
+  ("all of src/jobs/") without naming files. Acceptable — the verdict is warn-only.
+
+## Measured sweep noise (2026-07-05, real plans)
+
+Ran the sweep against 3 real mkt_engine plans (pre-manifest era, so ALL tokens are
+swept) with mkt_engine's live codegraph DB:
+
+| Plan | swept | MISSING | OK | AMBIGUOUS |
+|---|---|---|---|---|
+| p7-canvas-persistence | 169 | 85 (50%) | 72 | 12 |
+| p8-review-link | 262 | 155 (59%) | 102 | 5 |
+| p6.5-usage-visibility | 201 | 106 (52%) | 90 | 3 |
+
+**Conclusion (decision, owner-delegated 2026-07-05):** swept-MISSING is ~50-60%
+noise and it is STRUCTURAL — a plan legitimately names code that doesn't exist yet
+(to-be-created components, DB tables, routes). No deterministic filter can know
+"future name" from "ghost". Therefore:
+1. **Swept claims never fail `--strict`** (implemented; manifest claims only gate).
+2. The sweep's real value is the OK/AMBIGUOUS/BLAST rows (claims about EXISTING
+   code) — swept-OK rows are suppressed from output as noise; MISSING rows print
+   as low-confidence hints.
+3. Once plans adopt the manifest (Block 2c authoring duty), future names get
+   declared under `new:` and leave the sweep entirely — the noise self-heals with
+   adoption.
+Deterministic filters shipped from the measurement: strip `:N[-M]` line suffixes
+(so `worker.ts:165-180` resolves as `worker.ts`), skip `://` URLs + doc extensions
+(.md/.json/…), TS/JS keyword stopwords.
+
+## Build deviations (2026-07-05)
+
+- Manifest parser lives in `_shared/manifest.py`, not in this tool — diff-verifier
+  became the second consumer the same day (extraction rule fired immediately).
+  plan-visualizer should import THAT, not re-parse.
+- Extended fields `tier:` / `gates:` / `qualifiers:` (BLUEPRINT §2.2, M3-fleet
+  2026-07-04) are parsed + shape-validated here, EXECUTED only by diff-verifier.
+  Qualifier grammar is the restricted-verb DSL (see `diff-verifier/design.md`) —
+  raw shell rejected 2026-07-05 (owner-approved).
+- Blast-radius edge kinds include `instantiates` (present in real codegraph DBs;
+  deleting a class with live instantiators breaks them) — superset of the design's
+  calls/references/imports.
+- Hook wiring: `piggyback.py hook_command` gained an optional manifest `args`
+  field (`"args": "--hook"`) — one line, backwards compatible.

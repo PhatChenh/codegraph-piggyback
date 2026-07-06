@@ -34,7 +34,6 @@ Commands:
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import re
@@ -42,84 +41,46 @@ import sqlite3
 import sys
 from pathlib import Path
 
+# Phase B cutover (skeleton-contracts Block 1): the DB / signature / resolve
+# core now lives in _shared/ — this module imports it (repo root on sys.path
+# derived from __file__, per Block 1b) and keeps only decision-doc semantics
+# (anchor notation, staleness verdicts, index io, CLI).
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from _shared.db import SchemaError, find_db, repo_root_for  # noqa: E402
+from _shared import db as _db                                # noqa: E402
+from _shared import resolve as _rs                           # noqa: E402
+from _shared.sig import (                                    # noqa: E402
+    file_content_hash,
+    sha256_text as _sha256,
+    slice_hash,
+    symbol_spans,
+)
+
 DEFAULT_DOCS_GLOB = "docs/adrs/*.md"
 DEFAULT_INDEX_REL = "docs/decision-index.json"
 
 FRESH, STALE, ORPHANED, AMBIGUOUS = "FRESH", "STALE", "ORPHANED", "AMBIGUOUS"
 
 
-# ── discovery ──────────────────────────────────────────────────────────────────
-
-def find_db(start: Path) -> Path | None:
-    """Walk up from `start` for a .codegraph/codegraph.db."""
-    for d in [start, *start.parents]:
-        cand = d / ".codegraph" / "codegraph.db"
-        if cand.is_file():
-            return cand
-    return None
-
-
-def repo_root_for(db: Path) -> Path:
-    """The indexed repo root is the parent of the .codegraph/ dir."""
-    return db.parent.parent
-
-
 def default_index_path(root: Path) -> Path:
     return root / DEFAULT_INDEX_REL
 
 
-# ── codegraph db (read-only) ────────────────────────────────────────────────────
+# ── codegraph db (CLI-flavored wrappers over _shared.db) ────────────────────────
+# _shared raises; this CLI dies with exit 2. Same guard, same message.
 
 def open_db(path: Path) -> sqlite3.Connection:
-    if not path.is_file():
-        die(f"codegraph index not found: {path} (run `codegraph init` first)")
-    # immutable=1: codegraph now uses WAL journal mode; a WAL db cannot be opened
-    # pure mode=ro (SQLite must create a -shm file → "unable to open database file").
-    # immutable promises the file is not being written, so reads skip wal/shm and
-    # touch nothing in the source repo — preserving the zero-write coupling.
-    con = sqlite3.connect(f"file:{path}?mode=ro&immutable=1", uri=True)
-    verify_schema(con, path)
-    return con
+    try:
+        return _db.open_db(path)
+    except (FileNotFoundError, SchemaError) as e:
+        die(str(e))
 
 
 def verify_schema(con: sqlite3.Connection, path: Path) -> None:
-    """Guard against an unexpected codegraph schema — read-only coupling to its
-    internals, so fail loudly rather than emit wrong signatures."""
-    node_cols = {r[1] for r in con.execute("PRAGMA table_info(nodes)")}
-    file_cols = {r[1] for r in con.execute("PRAGMA table_info(files)")}
-    need_nodes = {"name", "qualified_name", "file_path", "start_line", "end_line"}
-    need_files = {"path", "content_hash"}
-    if not need_nodes <= node_cols or not need_files <= file_cols:
-        die(f"{path} schema not recognized (codegraph version drift?); refusing to guess.")
-
-
-def file_content_hash(con: sqlite3.Connection, relpath: str) -> str | None:
-    row = con.execute("SELECT content_hash FROM files WHERE path = ?", (relpath,)).fetchone()
-    return row[0] if row else None
-
-
-def symbol_spans(con: sqlite3.Connection, qname: str, relpath: str) -> list[tuple[int, int]]:
-    rows = con.execute(
-        "SELECT start_line, end_line FROM nodes WHERE qualified_name = ? AND file_path = ?",
-        (qname, relpath),
-    ).fetchall()
-    return [(int(a), int(b)) for a, b in rows]
-
-
-# ── signatures ──────────────────────────────────────────────────────────────────
-
-def _sha256(text: str) -> str:
-    return hashlib.sha256(text.encode("utf-8", "replace")).hexdigest()
-
-
-def slice_hash(root: Path, relpath: str, start: int, end: int) -> str | None:
-    """sha256 of a symbol's source lines [start,end] (1-based inclusive). Hashes
-    CONTENT, not line numbers, so edits elsewhere in the file don't trip it."""
-    p = root / relpath
-    if not p.is_file():
-        return None
-    lines = p.read_text(errors="replace").splitlines()
-    return _sha256("\n".join(lines[start - 1:end]))
+    try:
+        _db.verify_schema(con, path)
+    except SchemaError as e:
+        die(str(e))
 
 
 def parse_ref(ref: str) -> tuple:
@@ -205,21 +166,15 @@ def extract_candidates(text: str) -> list[str]:
 def resolve_token(con: sqlite3.Connection, token: str) -> str | None:
     """Map a doc token to a unique anchor ref, or None if it doesn't resolve to
     exactly one file/symbol. Conservative: ambiguous tokens are dropped (and
-    reported), never guessed."""
-    if _PATHISH.match(token):
-        rows = con.execute("SELECT path FROM files WHERE path = ?", (token,)).fetchall()
-        if not rows:
-            rows = con.execute("SELECT path FROM files WHERE path LIKE ?",
-                               ("%/" + token,)).fetchall()
-        if len(rows) == 1:
-            return "file:" + rows[0][0]
+    reported), never guessed. Lookup core is _shared.resolve (Block 1a seam);
+    the anchor-ref NOTATION (`file:` / `qname@path`) stays here, per-tool."""
+    res = _rs.resolve(con, token)
+    if res.state != _rs.UNIQUE:
         return None
-    rows = con.execute(
-        "SELECT qualified_name, file_path FROM nodes WHERE name = ?", (token,)
-    ).fetchall()
-    if len(rows) == 1:
-        return f"{rows[0][0]}@{rows[0][1]}"
-    return None
+    c = res.node
+    if c.kind == "file":
+        return "file:" + c.file_path
+    return f"{c.qualified_name}@{c.file_path}"
 
 
 def decision_id_for(doc_path: Path) -> str:

@@ -70,20 +70,37 @@ run-reports (cross-project).
 
 ### Decisions
 
-**2a. Syntax (FROZEN, verbatim from `plan-verifier/design.md`):**
+**2a. Syntax (FROZEN; AMENDED 2026-07-05 — was: touch/new/remove only; now: +
+`tier:`/`gates:`/`qualifiers:` per-block fields; why: M3-fleet workflow decision
+2026-07-04, BLUEPRINT §7 — fold the extension in BEFORE plan-verifier is built,
+cheaper than retrofit. Both consumers checked per 2b: plan-visualizer and
+workflow-guardrails ledger parsing are not built yet — no breakage. Canonical
+parser: `_shared/manifest.py`):**
 
 ```markdown
 <!-- plan-verify
 touch: src/auth.py::validate_token, src/db.py::get_conn
 new:   src/auth.py::refresh_token
 remove: src/auth.py::legacy_check
+tier: A
+gates: research:bullmq-remove-api, human:merge-signoff
+qualifiers: grep-absent "lib/db" src/api/*.py ; byte-unchanged lib/store.ts
 -->
 ```
 
 - Opens with `<!-- plan-verify` on its own line, closes with `-->`.
-- Three line kinds: `touch:` / `new:` / `remove:`, comma-separated lists.
+- Claim lines: `touch:` / `new:` / `remove:`, comma-separated lists.
 - Entry forms: `path::symbol` · bare `path` · bare `symbol` (repo-wide,
-  AMBIGUOUS-prone). Multiple blocks per document allowed; lists concatenate.
+  AMBIGUOUS-prone). Multiple blocks per document allowed (one per plan Step);
+  lists concatenate.
+- Per-Step metadata (2026-07-05): `tier:` ∈ A/B/C (wave-end review depth) ·
+  `gates:` comma list, each prefixed `research:` or `human:` (orchestrator may
+  not cross without recorded sign-off) · `qualifiers:` semicolon list in the
+  **restricted verb grammar** (`grep-absent "<literal>" <glob>` ·
+  `byte-unchanged <path>` · `diff-only-within <dir>…`) — no raw shell, decided
+  2026-07-05 (owner-approved; a cheap-model-authored plan must never carry
+  arbitrary shell into the wave-end gate). plan-verifier validates shape;
+  diff-verifier executes.
 
 **2b. Change control (FROZEN):** syntax changes require checking both
 downstream consumers (plan-visualizer chips, workflow-guardrails ledger
