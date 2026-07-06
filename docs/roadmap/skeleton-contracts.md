@@ -194,6 +194,15 @@ because `stale` is never stored, every consumer (P5 renderer, biography) MUST co
 the derived status itself via the signature comparison — reading the stored `status`
 field literally and trusting `approved` without the signature check will render drifted
 prose as current.** Biography obeys the same rule when quoting narratives.
+**Empty-signature quarantine (AMENDED 2026-07-06, owner-ratified — TD-P4-1 close):**
+sha256 of the empty string is shared by every zero-member node (e.g. a component
+with no in-model members), so signature equality proves nothing there — an id reused
+for new code with the same empty hash would render old approved prose as fresh.
+Any node whose CURRENT signature is sha256("") derives **`unnarratable`**: never
+trusted, never narratable (P4 worklist skips it, ingest rejects it, approve refuses
+it; the node renders deterministic fallback text only). `unnarratable` joins
+`none`/`orphaned` as derived display states; the persisted status set stays
+`proposed|approved`.
 
 **RESOLVED (P4 design 2026-07-06):** worklist format = JSON array; approval CLI =
 `narrate worklist|ingest|approve|reject|status` (per-id, deny-by-default). Signature is

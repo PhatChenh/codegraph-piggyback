@@ -12,7 +12,7 @@ three review rounds (plan-compliance → code-quality → phase-end adversarial 
 scoreboard: `../docs/model-scoreboard.csv`. `../CLAUDE.md` "Build Progress" updated
 (P3 DONE / P4 next). Pushed to origin `99a4c11` (2026-07-06).
 
-## IN PROGRESS: P4 (narrative sidecar) — implementation DONE 2026-07-06; pending owner review/merge
+## P4 (narrative sidecar) — implementation DONE 2026-07-06; MERGED to main `65f3982`; TD-P4-1 closed same day (see Open Questions)
 
 **Started 2026-07-06.** Stage 1-3 done (roadmap read; grill locked 2 decisions:
 command-per-id approval, scope = components+micros+important nanos). **Design step
@@ -89,16 +89,19 @@ across two ingests), 0 `stale` in narratives.json, `piggyback status` lists
 `narrative-sidecar` + `diagram-model`.
 
 ## Open Questions / tracked tech-debt (deferred — not blocking merge)
-- **TD-P4-1 [MAJOR, KNOWN-LIMIT]: empty-signature laundering hole.** The F6 close is NOT
-  airtight for nodes that share an empty-body content signature: `cmp-dist` +
-  `cmp-invoice-cost` both = sha256 of empty source (`e3b0c442…`), and 3 empty test-body
-  nanos collide too. If an id is REUSED for new code with the same empty hash, old
-  approved text about old code renders approved-and-fresh for new code. Narrow (needs both
-  id-reuse AND identical empty hash), solo-builder low-probability. **Owner decision
-  2026-07-06: ACCEPTED as documented known-limit** — ship P4; revisit only if laundering
-  becomes a real risk. Fillet fix (compound `node_id` into the pinned signature) would
-  change Block 5a entry semantics → touches FROZEN contract + spec central claim + may
-  still not close the empty-body-reuse sub-case; deferred. Logged here as TD-P4-1.
+- **TD-P4-1: CLOSED 2026-07-06 (empty-signature quarantine).** Was: nodes sharing the
+  empty-source signature (`cmp-dist` + `cmp-invoice-cost` both = sha256("") =
+  `e3b0c442…`) could launder old approved prose onto a reused id — signature equality
+  proves nothing when the signature pins nothing. Owner reopened the 2026-07-06
+  known-limit acceptance and ratified the quarantine fix (AskUserQuestion, same day):
+  any node whose current signature is `EMPTY_SIG` derives **`unnarratable`** — worklist
+  skips it, ingest batch-rejects it, approve refuses it (covers legacy entries),
+  `--node` dies, status displays `unnarratable`; the node renders fallback text only.
+  Rejected alternative (id-fallback signature à la decision sig) manufactures
+  fake-freshness — sha256(id) never drifts, the exact P3 red-team bug. Extractor
+  UNTOUCHED ⇒ golden sha `56df3d86…` intact. Block 5b amended (owner-ratified) in
+  `../docs/roadmap/skeleton-contracts.md`. Tests: +10 `TestNarrateEmptySig` (108 total,
+  105 pass / 3 pre-existing TestGoldenLive pilot-drift fails, 0 new).
 - **MINOR (4 doc/edge-gaps, DEFERRED to P6 — no data-loss/security):** (a)
   `cmd_narrate_reject` dies if no codegraph DB (uses DB only for root discovery; spec says
   reject needs no model). (b) P4 reads non-frozen P3 fields (`caller_count`/

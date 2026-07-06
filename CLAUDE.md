@@ -100,9 +100,11 @@ Shipped: impact-analyzer, codegraph-gate, decision-index (ssot P1), ssot P2
 curation DONE (2026-07-04), **ssot P3 diagram-model extractor DONE (merged main
 `ba02a56`, 2026-07-04; 32/32 pytest, byte-deterministic), P4 narrative sidecar
 PLANNED (design→spec→FCV→plan done 2026-07-06; plan-verify 19/19), **implementation
-DONE 2026-07-06** (Claude subagents via deepseek-orchestrate protocol, no dsk; 95/98 pytest,
-0 P4 regressions, byte-deterministic, F6 close E2E-verified; 1 deferred MAJOR empty-sig
-laundering — owner decision) — see `ssot-diagram/STATE.md`**. Everything else: specced in `<tool>/design.md`, build
+DONE 2026-07-06, merged main `65f3982`** (Claude subagents via deepseek-orchestrate
+protocol, no dsk; 105/108 pytest, 0 P4 regressions, byte-deterministic, F6 close
+E2E-verified; TD-P4-1 empty-sig laundering CLOSED 2026-07-06 via unnarratable
+quarantine, Block 5b amendment owner-ratified) — see `ssot-diagram/STATE.md`**.
+Everything else: specced in `<tool>/design.md`, build
 order in `docs/roadmap/roadmap.md`.
 
 ## What AI Gets Wrong

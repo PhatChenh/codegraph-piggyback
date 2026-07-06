@@ -72,6 +72,14 @@ def _sorted_sha256(parts: list[str]) -> str:
     return _sha256("".join(parts))
 
 
+# sha256 of the empty string — the signature every zero-member component/micro and
+# every empty-source nano shares (e.g. golden's cmp-dist and cmp-invoice-cost).
+# It pins NOTHING: prose stored against it could never go stale, so narration is
+# quarantined on it (TD-P4-1 close — worklist skips, ingest rejects, approve
+# refuses, status derives `unnarratable`).
+EMPTY_SIG = _sha256("")
+
+
 # ── config load + validate (Step 3) ─────────────────────────────────────────────
 
 def load_config(path: Path) -> dict:
@@ -966,6 +974,9 @@ def _compute_scope(model: dict, sig_index: dict, threshold: int, *,
         if extra_node not in sig_index:
             die(f"--node {extra_node!r} is not a narratable node id "
                 f"(unknown, decision, or collapsed — pick a component/micro/nano)")
+        if sig_index[extra_node] == EMPTY_SIG:
+            die(f"--node {extra_node!r} has an empty-source signature — unnarratable "
+                f"(nothing to pin prose to; it renders fallback text only)")
     scope: list[str] = []
     for comp in model.get("components", []):
         scope.append(comp["id"])
@@ -988,8 +999,12 @@ def _compute_scope(model: dict, sig_index: dict, threshold: int, *,
 
 def _derive_status(stored_entry: dict | None, current_sig: str | None) -> str:
     """Block-5a derivation table — computed LIVE, never written. Branch order
-    is load-bearing: a vanished node (current_sig is None) must be caught BEFORE
-    comparing signatures, or it is mislabeled `stale`."""
+    is load-bearing: an empty signature must be caught FIRST (it matches any
+    other empty node's signature, so equality proves nothing — TD-P4-1), and a
+    vanished node (current_sig is None) must be caught BEFORE comparing
+    signatures, or it is mislabeled `stale`."""
+    if current_sig == EMPTY_SIG:
+        return "unnarratable"
     if stored_entry is None:
         return "none"
     if current_sig is None:
@@ -1005,7 +1020,8 @@ def cmd_narrate_worklist(args) -> None:
     """Step 5 — emit JSON array of in-scope nodes needing a sentence: every node
     whose derived status is `none` (no entry) or `stale` (drifted). Fresh
     approved/proposed nodes are NOT emitted (nothing to do; a stale approved node
-    IS emitted — it needs fresh text per F6 one-step refresh). Written via the
+    IS emitted — it needs fresh text per F6 one-step refresh). Empty-signature
+    nodes derive `unnarratable` and are never emitted (TD-P4-1). Written via the
     same serialization params as _save_model so round-trip ingest is clean."""
     model_path, config_path, narratives_path = _narrate_root_paths(args)
     threshold, _ = _load_narrate_config(config_path)
@@ -1097,6 +1113,13 @@ def cmd_narrate_ingest(args) -> None:
         if nid not in sig_index:
             errors.append(f"  [{i}] unknown node id {nid!r} (not in model)")
             continue
+        if sig_index[nid] == EMPTY_SIG:
+            errors.append(
+                f"  [{i}] {nid!r}: empty-source signature — unnarratable "
+                f"(an empty signature pins nothing, so this prose could never "
+                f"go stale; the node keeps its fallback text)"
+            )
+            continue
         if it["current_signature"] != sig_index[nid]:
             errors.append(
                 f"  [{i}] {nid!r}: current_signature does not match model "
@@ -1154,6 +1177,13 @@ def cmd_narrate_approve(args) -> None:
         current_sig = sig_index.get(nid)
         if current_sig is None:
             errors.append(f"  {nid!r}: node vanished from model (orphaned)")
+            continue
+        if current_sig == EMPTY_SIG:
+            errors.append(
+                f"  {nid!r}: node has an empty-source signature — REFUSING to "
+                f"approve (an empty signature pins nothing; approved prose on it "
+                f"could be laundered onto reused ids, TD-P4-1)"
+            )
             continue
         if stored.get("signature") != current_sig:
             errors.append(

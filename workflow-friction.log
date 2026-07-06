@@ -1562,3 +1562,86 @@
 {"ts": "2026-07-06T09:07:58Z", "session": "03310442-4a64-40bc-9a54-00692858eb6d", "mode": "work", "event": "always_on_inject", "tokens": 824, "rule_count": 11}
 {"ts": "2026-07-06T09:07:59Z", "session": "03310442-4a64-40bc-9a54-00692858eb6d", "mode": "work", "event": "rag_query", "query_source": "broad", "tokens_injected": 400, "rules_returned_count": 10, "rule_ids": ["WRITOPS-SKILL-001", "UIUX-LAYOUT-001", "DESIGN-OPTIONS-001", "CLEAN-DEAD-001", "SCALE-CONFIG-001", "ENF-PRE-004", "CLEAN-COMMENT-002", "WRITOPS-AUTHOR-001", "FW-M2-005", "ENF-PRE-001"]}
 {"ts": "2026-07-06T09:07:59Z", "session": "03310442-4a64-40bc-9a54-00692858eb6d", "mode": "work", "event": "rag_query", "query_source": "methodology", "tokens_injected": 40, "rules_returned_count": 1, "rule_ids": ["PBK-PROC-FINISH-001"]}
+{"ts": "2026-07-06T09:10:27Z", "session": "03310442-4a64-40bc-9a54-00692858eb6d", "mode": "work", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 87}
+{"ts": "2026-07-06T09:11:11Z", "session": "17456", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-06T09:11:11Z", "session": "03310442-4a64-40bc-9a54-00692858eb6d", "event": "pressure_audit", "mode": "work", "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-06T09:11:11Z", "session": "17456", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 74}
+{"ts": "2026-07-06T09:31:06Z", "session": "03310442-4a64-40bc-9a54-00692858eb6d", "mode": "work", "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T09:31:06Z", "session": "03310442-4a64-40bc-9a54-00692858eb6d", "mode": "work", "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T09:31:06Z", "session": "03310442-4a64-40bc-9a54-00692858eb6d", "mode": "work", "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T09:31:06Z", "session": "03310442-4a64-40bc-9a54-00692858eb6d", "mode": "work", "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 194}
+{"ts": "2026-07-06T09:31:06Z", "session": "03310442-4a64-40bc-9a54-00692858eb6d", "mode": "work", "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 194}
+{"ts": "2026-07-06T09:31:06Z", "session": "03310442-4a64-40bc-9a54-00692858eb6d", "mode": "work", "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 196}
+{"ts": "2026-07-06T09:31:32Z", "session": "d037407b-5356-4603-87a9-faf3070afc83", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T09:31:32Z", "session": "d037407b-5356-4603-87a9-faf3070afc83", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T09:31:32Z", "session": "d037407b-5356-4603-87a9-faf3070afc83", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T09:31:32Z", "session": "d037407b-5356-4603-87a9-faf3070afc83", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 163}
+{"ts": "2026-07-06T09:31:32Z", "session": "d037407b-5356-4603-87a9-faf3070afc83", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 161}
+{"ts": "2026-07-06T09:31:32Z", "session": "d037407b-5356-4603-87a9-faf3070afc83", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 168}
+{"ts": "2026-07-06T09:32:33Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T09:32:33Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T09:32:33Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T09:32:33Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 220}
+{"ts": "2026-07-06T09:32:33Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 227}
+{"ts": "2026-07-06T09:32:33Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 231}
+{"ts": "2026-07-06T09:33:20Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-06T09:33:20Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["UIUX-ASYNC-001", "SEC-AUTH-LOGOUT-001", "DOC-SYNC-001", "SEC-AUTH-TOKEN-002", "SEC-INJ-SQL-003"]}
+{"ts": "2026-07-06T09:33:35Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "conversation", "event": "mode_change", "change_type": "set", "from_mode": null, "to_mode": "conversation"}
+{"ts": "2026-07-06T09:33:56Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 72}
+{"ts": "2026-07-06T09:34:46Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "conversation", "event": "approval_pattern_miss", "prompt": "go the TD-P4-1 what is it. can u solve. u are much bigger model - Fable, that is why i give it to you"}
+{"ts": "2026-07-06T09:34:46Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "conversation", "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-06T09:34:46Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["CLEAN-NEST-001", "SEC-CRYPTO-ALGO-002", "FW-M2-002", "THINK-SCOPEQ-001", "THINK-STEELMAN-001"]}
+{"ts": "2026-07-06T09:38:06Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "mode_change", "change_type": "set", "from_mode": "conversation", "to_mode": "work"}
+{"ts": "2026-07-06T09:40:28Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:40:28Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 340}
+{"ts": "2026-07-06T09:40:29Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 400, "rules_returned_count": 10, "rule_ids": ["SEC-AUTH-TIMING-001", "SEC-CRYPTO-ALGO-002", "ARCH-ASYNC-001", "PY-PYDANTIC-001", "WRITOPS-IMPORT-001", "SEC-CRYPTO-TLS-001", "ARCH-ASYNC-002", "SEC-CRYPTO-ALGO-001", "CLEAN-FUNC-003", "PERF-ASYNC-001"]}
+{"ts": "2026-07-06T09:40:29Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 912}
+{"ts": "2026-07-06T09:40:39Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:40:39Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 125}
+{"ts": "2026-07-06T09:40:40Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "hook_execution", "hook_name": "validate-rules", "duration_ms": 297}
+{"ts": "2026-07-06T09:40:40Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 360, "rules_returned_count": 9, "rule_ids": ["CLEAN-NAME-002", "ENF-SYS-006", "SEC-INJ-CMD-002", "API-STATUS-001", "DOC-TYPE-001", "CLEAN-BOOL-001", "ERR-HANDLE-002", "SEC-VAL-REGEX-001", "WRITOPS-EVIDENCE-001"]}
+{"ts": "2026-07-06T09:40:40Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 417}
+{"ts": "2026-07-06T09:40:48Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:40:48Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 125}
+{"ts": "2026-07-06T09:40:48Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "hook_execution", "hook_name": "validate-rules", "duration_ms": 280}
+{"ts": "2026-07-06T09:40:48Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 240, "rules_returned_count": 6, "rule_ids": ["CLEAN-NAME-001", "DOC-INLINE-001", "PERF-MEM-002", "CLEAN-SIDE-001", "DESIGN-BORING-001", "CLEAN-NEST-001"]}
+{"ts": "2026-07-06T09:40:48Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 379}
+{"ts": "2026-07-06T09:40:56Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:40:56Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 121}
+{"ts": "2026-07-06T09:40:57Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "hook_execution", "hook_name": "validate-rules", "duration_ms": 275}
+{"ts": "2026-07-06T09:41:06Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:41:06Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 118}
+{"ts": "2026-07-06T09:41:07Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "hook_execution", "hook_name": "validate-rules", "duration_ms": 286}
+{"ts": "2026-07-06T09:41:20Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:41:20Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 122}
+{"ts": "2026-07-06T09:41:20Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "hook_execution", "hook_name": "validate-rules", "duration_ms": 281}
+{"ts": "2026-07-06T09:41:33Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:41:33Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 121}
+{"ts": "2026-07-06T09:41:45Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:41:45Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 124}
+{"ts": "2026-07-06T09:41:45Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "hook_execution", "hook_name": "validate-rules", "duration_ms": 295}
+{"ts": "2026-07-06T09:41:45Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 320, "rules_returned_count": 8, "rule_ids": ["UIUX-EMPTY-001", "DOC-ARTIFACT-001", "PERF-QUERY-004", "TEST-NAME-001", "ENF-POST-005", "TEST-EDGE-002", "API-PAGINATION-001", "WRITOPS-SUBAGENT-001"]}
+{"ts": "2026-07-06T09:41:45Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 394}
+{"ts": "2026-07-06T09:41:53Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:41:53Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 121}
+{"ts": "2026-07-06T09:41:54Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "hook_execution", "hook_name": "validate-rules", "duration_ms": 282}
+{"ts": "2026-07-06T09:42:04Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:42:04Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 123}
+{"ts": "2026-07-06T09:42:04Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "hook_execution", "hook_name": "validate-rules", "duration_ms": 281}
+{"ts": "2026-07-06T09:42:33Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:42:33Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 124}
+{"ts": "2026-07-06T09:42:34Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "hook_execution", "hook_name": "validate-rules", "duration_ms": 292}
+{"ts": "2026-07-06T09:42:34Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "rag_query", "query_source": "file-write-post", "tokens_injected": 160, "rules_returned_count": 4, "rule_ids": ["TEST-INT-001", "TEST-FIXTURE-002", "TEST-CI-001", "TEST-EDGE-001"]}
+{"ts": "2026-07-06T09:42:34Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-posttool-rag", "duration_ms": 387}
+{"ts": "2026-07-06T09:43:34Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:43:34Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 118}
+{"ts": "2026-07-06T09:43:54Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:43:54Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 129}
+{"ts": "2026-07-06T09:44:01Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:44:01Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 129}
+{"ts": "2026-07-06T09:44:32Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:44:32Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 130}
+{"ts": "2026-07-06T09:45:00Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T09:45:00Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 161}
+{"ts": "2026-07-06T09:49:45Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 88}
+{"ts": "2026-07-06T09:49:45Z", "session": "e9fa3b5e-1b0b-4db5-96d7-c378c38ca9a6", "mode": "work", "event": "phase_transition", "from_phase": null, "to_phase": "planning", "trigger": "mode-set", "gate": ""}

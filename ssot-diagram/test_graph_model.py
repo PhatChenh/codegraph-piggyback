@@ -920,6 +920,7 @@ _GOLDEN_SIG_INDEX = 402         # 10 + 150 + 245 = 405 visits, 3 dedupe → 402 
 _GOLDEN_DEFAULT_SCOPE = 345     # 10 comps + 150 micros + 185 threshold/export nanos (list; has 3 dup nano ids)
 _GOLDEN_STATUS_NONE = 342        # status dedupes scope to a set → 345 - 3 dups (canRedo/canUndo/resetStore)
 _GOLDEN_NANO_SCOPE_ALL = 405    # include_nanos (10 + 150 + 245)
+_GOLDEN_EMPTY_SIG_NODES = 2     # cmp-dist + cmp-invoice-cost share sha256("") — quarantined (TD-P4-1)
 _GOLDEN_SHA_PREFIX = "56df3d86"  # committed golden; NOT the stale 5a1e2156
 _COLLAPSED_ID_1 = "nano:+collapsed@micro:micro:lib/canvas/store.ts"
 _COLLAPSED_ID_2 = "nano:+collapsed@micro:micro:lib/store/feed.ts"
@@ -1190,12 +1191,15 @@ class TestNarrateWorklist:
         kinds = {}
         for it in items:
             kinds[it["kind"]] = kinds.get(it["kind"], 0) + 1
-        assert kinds.get("component", 0) == _GOLDEN_COMP_COUNT, f"comps: {kinds}"
+        # 2 empty-sig components (cmp-dist, cmp-invoice-cost) are unnarratable (TD-P4-1)
+        assert kinds.get("component", 0) == _GOLDEN_COMP_COUNT - _GOLDEN_EMPTY_SIG_NODES, \
+            f"comps: {kinds}"
         assert kinds.get("micro", 0) == _GOLDEN_MICRO_COUNT, f"micros: {kinds}"
         # nanos = scope_nanos (threshold/export), less than all-visible 245
         assert 0 < kinds.get("nano", 0) <= _GOLDEN_NANO_VISIBLE
-        assert len(items) == _GOLDEN_DEFAULT_SCOPE, (
-            f"worklist size {len(items)} != default scope {_GOLDEN_DEFAULT_SCOPE}")
+        expected = _GOLDEN_DEFAULT_SCOPE - _GOLDEN_EMPTY_SIG_NODES
+        assert len(items) == expected, (
+            f"worklist size {len(items)} != narratable scope {expected}")
 
     def test_worklist_excludes_collapsed_and_decision_ids(self, tmp_path):
         items, _ = self._worklist(tmp_path)
@@ -1220,8 +1224,9 @@ class TestNarrateWorklist:
         base, _ = self._worklist(tmp_path)
         wide, _ = self._worklist(tmp_path, include_nanos=True)
         assert len(wide) > len(base), "--include-nanos must widen the worklist"
-        assert len(wide) == _GOLDEN_NANO_SCOPE_ALL, (
-            f"include_nanos worklist size {len(wide)} != all-scope {_GOLDEN_NANO_SCOPE_ALL}")
+        expected = _GOLDEN_NANO_SCOPE_ALL - _GOLDEN_EMPTY_SIG_NODES
+        assert len(wide) == expected, (
+            f"include_nanos worklist size {len(wide)} != narratable all-scope {expected}")
 
     def test_node_decision_id_rejected_exit2(self, tmp_path):
         r = _run_narrate(["worklist", "--model", str(GOLDEN), "--config", str(SHIPPED_CONFIG),
@@ -1536,10 +1541,15 @@ class TestNarrateStatus:
         assert r.returncode == 0, r.stderr
         lines = [ln for ln in r.stdout.splitlines() if ln.strip()]
         none_lines = [ln for ln in lines if ln.endswith("| none")]
-        # status dedupes the scope to a set (3 deduped nanos) → 342, not 345.
-        assert len(none_lines) == _GOLDEN_STATUS_NONE, (
-            f"`none` lines {len(none_lines)} != deduped scope {_GOLDEN_STATUS_NONE} "
+        # status dedupes the scope to a set (3 deduped nanos) → 342, not 345;
+        # the 2 empty-sig components derive `unnarratable`, not `none` (TD-P4-1).
+        expected_none = _GOLDEN_STATUS_NONE - _GOLDEN_EMPTY_SIG_NODES
+        assert len(none_lines) == expected_none, (
+            f"`none` lines {len(none_lines)} != deduped narratable scope {expected_none} "
             f"(status uses a set; the 3 dup nano ids collapse)")
+        unnarr_lines = [ln for ln in lines if ln.endswith("| unnarratable")]
+        assert len(unnarr_lines) == _GOLDEN_EMPTY_SIG_NODES, (
+            f"expected {_GOLDEN_EMPTY_SIG_NODES} unnarratable lines, got: {unnarr_lines}")
         # No out-of-scope ids (collapsed/decision) appear
         for ln in lines:
             assert "collapsed" not in ln, f"collapsed id in status: {ln}"
@@ -1622,6 +1632,110 @@ class TestNarrateStatus:
         r = _run_narrate(["status", "--model", str(GOLDEN), "--config", str(SHIPPED_CONFIG),
                           "--narratives", str(tmp_path / "n.json")])
         assert r.returncode == 0, f"status must exit 0 (advisory), got {r.returncode}"
+
+
+class TestNarrateEmptySig:
+    """TD-P4-1 close — empty-signature quarantine. sha256("") is shared by every
+    zero-member node (golden: cmp-dist + cmp-invoice-cost), so it pins nothing:
+    an id reused for new code with the same empty hash would render old approved
+    prose as fresh. Quarantine: derive `unnarratable`, worklist skips, ingest
+    rejects, approve refuses, --node dies."""
+
+    def _model_file(self, tmp_path) -> Path:
+        m = _mini_model()
+        m["components"].append({
+            "id": "comp:empty", "kind": "component", "name": "Empty", "path": "empty",
+            "signature": gm.EMPTY_SIG, "edges": [], "decisions": [], "children": []})
+        p = tmp_path / "model.json"
+        p.write_text(json.dumps(m))
+        return p
+
+    def test_empty_sig_constant_is_sha256_of_empty_string(self):
+        assert gm.EMPTY_SIG == hashlib.sha256(b"").hexdigest()
+
+    def test_derive_status_no_entry_unnarratable(self):
+        assert gm._derive_status(None, gm.EMPTY_SIG) == "unnarratable"
+
+    def test_derive_status_approved_matching_empty_sig_never_trusted(self):
+        """The laundering close: a legacy approved entry pinned to the empty sig
+        must NOT derive `approved` even though signatures match."""
+        entry = {"node_id": "comp:empty", "signature": gm.EMPTY_SIG,
+                 "text": "old prose", "status": "approved"}
+        assert gm._derive_status(entry, gm.EMPTY_SIG) == "unnarratable"
+
+    def test_derive_status_vanished_node_still_orphaned(self):
+        """Branch order: empty-sig guard must not swallow the orphaned case."""
+        entry = {"node_id": "x", "signature": gm.EMPTY_SIG,
+                 "text": "t", "status": "approved"}
+        assert gm._derive_status(entry, None) == "orphaned"
+
+    def test_worklist_skips_empty_sig_node(self, tmp_path):
+        model = self._model_file(tmp_path)
+        wl = tmp_path / "wl.json"
+        r = _run_narrate(["worklist", "--model", str(model), "--config", str(SHIPPED_CONFIG),
+                          "--narratives", str(tmp_path / "n.json"), "-o", str(wl)])
+        assert r.returncode == 0, r.stderr
+        ids = {it["node_id"] for it in json.loads(wl.read_text())}
+        assert "comp:empty" not in ids, "empty-sig node must not be emitted"
+        assert "comp:x" in ids
+
+    def test_worklist_node_flag_empty_sig_exits2(self, tmp_path):
+        model = self._model_file(tmp_path)
+        r = _run_narrate(["worklist", "--model", str(model), "--config", str(SHIPPED_CONFIG),
+                          "--narratives", str(tmp_path / "n.json"),
+                          "--node", "comp:empty"])
+        assert r.returncode == 2, f"--node on empty-sig id should exit 2, got {r.returncode}"
+        assert "unnarratable" in r.stderr
+
+    def test_ingest_rejects_empty_sig_entry_no_write(self, tmp_path):
+        model = self._model_file(tmp_path)
+        narr = tmp_path / "narratives.json"
+        wl = tmp_path / "wl.json"
+        wl.write_text(json.dumps([{"node_id": "comp:empty",
+                                   "current_signature": gm.EMPTY_SIG,
+                                   "text": "handcrafted prose"}]))
+        r = _run_narrate(["ingest", str(wl), "--model", str(model),
+                          "--config", str(SHIPPED_CONFIG), "--narratives", str(narr)])
+        assert r.returncode == 2, f"ingest should reject empty-sig entry, got {r.returncode}"
+        assert "unnarratable" in r.stderr
+        assert not narr.exists(), "nothing may be written on a rejected batch"
+
+    def test_approve_refuses_legacy_empty_sig_proposed(self, tmp_path):
+        """A pre-quarantine entry pinned to the empty sig must not be approvable."""
+        model = self._model_file(tmp_path)
+        narr = tmp_path / "narratives.json"
+        gm._write_narratives(narr, {"comp:empty": {
+            "node_id": "comp:empty", "signature": gm.EMPTY_SIG,
+            "text": "legacy prose", "status": "proposed"}})
+        before = narr.read_bytes()
+        r = _run_narrate(["approve", "comp:empty", "--model", str(model),
+                          "--config", str(SHIPPED_CONFIG), "--narratives", str(narr)])
+        assert r.returncode == 2, f"approve should refuse, got {r.returncode}"
+        assert narr.read_bytes() == before, "refused approve must not write"
+
+    def test_status_shows_unnarratable(self, tmp_path):
+        model = self._model_file(tmp_path)
+        r = _run_narrate(["status", "--model", str(model), "--config", str(SHIPPED_CONFIG),
+                          "--narratives", str(tmp_path / "n.json")])
+        assert r.returncode == 0, r.stderr
+        line = next((ln for ln in r.stdout.splitlines()
+                     if ln.startswith("comp:empty")), None)
+        assert line is not None, "empty-sig node must still appear in status"
+        assert line.endswith("| unnarratable"), f"got: {line}"
+
+    def test_golden_quarantines_cmp_dist_and_invoice_cost(self, tmp_path):
+        wl = tmp_path / "wl.json"
+        r = _run_narrate(["worklist", "--model", str(GOLDEN), "--config", str(SHIPPED_CONFIG),
+                          "--narratives", str(tmp_path / "n.json"), "-o", str(wl)])
+        assert r.returncode == 0, r.stderr
+        ids = {it["node_id"] for it in json.loads(wl.read_text())}
+        assert "cmp-dist" not in ids
+        assert "cmp-invoice-cost" not in ids
+        s = _run_narrate(["status", "--model", str(GOLDEN), "--config", str(SHIPPED_CONFIG),
+                          "--narratives", str(tmp_path / "n.json")])
+        for nid in ("cmp-dist", "cmp-invoice-cost"):
+            line = next(ln for ln in s.stdout.splitlines() if ln.startswith(f"{nid} "))
+            assert line.endswith("| unnarratable"), f"got: {line}"
 
 
 class TestNarrateByteDeterminism:
