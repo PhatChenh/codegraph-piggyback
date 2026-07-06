@@ -174,12 +174,27 @@ biography (Phase F).
 
 ### Decisions
 
-**5a. Entry (FROZEN, verbatim from ssot roadmap):**
-`{node_id, signature, text, status: proposed|approved|stale}`.
+**5a. Entry (FROZEN; AMENDED 2026-07-06 — storage clarified, P4-build + owner-ratified).**
+Entry shape is `{node_id, signature, text, status}`. The `status` field **as stored
+in `narratives.json` is exactly `proposed|approved`** — `stale` is NEVER written to the
+file; it is a **derived display state** a consumer computes by comparing the entry's
+pinned `signature` against the current model node's `signature` (per 5b). Rationale: a
+stored `stale` badge is a mutation side-effect of a read and can itself go out of date
+(an entry re-approved without re-running narrate would stay `stale` forever) — deriving
+it from the live signature comparison is always accurate. The three-value vocabulary
+`proposed|approved|stale` remains the **output** contract every consumer sees; only the
+persisted set is narrowed to two. (Was: `status: proposed|approved|stale` implied all
+three persisted; why: F1 red-team 2026-07-06 — a literal-reading consumer would never
+see `stale` and would render drifted prose as trusted.)
 
 **5b. Trust rule (FROZEN):** nothing renders/quotes as trusted prose unless
 `approved` AND signature matches current model; stale is shown as visibly
-stale, never silently as current. Biography obeys the same rule when quoting
-narratives.
+stale, never silently as current. **Consumer obligation (per the 5a amendment):
+because `stale` is never stored, every consumer (P5 renderer, biography) MUST compute
+the derived status itself via the signature comparison — reading the stored `status`
+field literally and trusting `approved` without the signature check will render drifted
+prose as current.** Biography obeys the same rule when quoting narratives.
 
-**PENDING:** worklist format, approval CLI flags (P4 build decides).
+**RESOLVED (P4 design 2026-07-06):** worklist format = JSON array; approval CLI =
+`narrate worklist|ingest|approve|reject|status` (per-id, deny-by-default). Signature is
+pinned at **ingest** (against a validated-current model), not re-pinned at approve.

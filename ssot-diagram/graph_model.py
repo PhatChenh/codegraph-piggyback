@@ -18,6 +18,7 @@ import fnmatch
 import hashlib
 import json
 import os
+import re
 import sqlite3
 import sys
 from pathlib import Path
@@ -30,6 +31,10 @@ DEFAULT_CONFIG_REL = "ssot-diagram/ssot-diagram.config.json"
 DEFAULT_OUTPUT_REL = "ssot-diagram/diagram-model.json"
 DEFAULT_NANO_CAP = 8
 MODEL_VERSION = 1
+
+# P4 narrative sidecar defaults (owner-ratified).
+DEFAULT_NARRATE_THRESHOLD = 4
+DEFAULT_NARRATIVES_REL = "ssot-diagram/narratives.json"
 
 FRESH, STALE, ORPHANED, AMBIGUOUS = di.FRESH, di.STALE, di.ORPHANED, di.AMBIGUOUS
 
@@ -791,6 +796,443 @@ def _pre_extract_guard(con: sqlite3.Connection, root: Path, index_doc: dict) -> 
     # Exit 0 always — warn-and-continue
 
 
+# ── P4 narrative sidecar (Steps 1-4) ────────────────────────────────────────────
+
+def _load_narrate_config(config_path: Path) -> tuple[int, str]:
+    """Permissive config reader for narrate subcommands.
+
+    Unlike `load_config`, this NEVER aborts on a minimal config — a read-only
+    `narrate status` must succeed on a bare config. Returns
+    `(narrate_threshold, narratives_rel)` with `.get()` defaults. A config that
+    is present but not a JSON object is corrupt and dies (exit 2).
+    """
+    if not config_path.is_file():
+        return DEFAULT_NARRATE_THRESHOLD, DEFAULT_NARRATIVES_REL
+    try:
+        cfg = json.loads(config_path.read_text())
+    except json.JSONDecodeError as e:
+        warn(f"{config_path}: invalid JSON ({e}) — using narrate defaults")
+        return DEFAULT_NARRATE_THRESHOLD, DEFAULT_NARRATIVES_REL
+    if not isinstance(cfg, dict):
+        die(f"{config_path}: top-level must be a JSON object (narrate config)")
+    threshold = cfg.get("narrate_threshold", DEFAULT_NARRATE_THRESHOLD)
+    narratives_rel = cfg.get("narratives_path", DEFAULT_NARRATIVES_REL)
+    return threshold, narratives_rel
+
+
+def _load_model(model_path: Path) -> dict:
+    """Load diagram-model.json. Die (exit 2) if absent or unparseable — the
+    owner must run `extract` first."""
+    try:
+        return json.loads(model_path.read_text())
+    except FileNotFoundError:
+        die(f"{model_path} not found — run `graph_model.py extract` first")
+    except json.JSONDecodeError as e:
+        die(f"{model_path}: invalid JSON: {e}")
+
+
+def _build_sig_index(model: dict) -> dict[str, str]:
+    """Build {node_id: signature} over the nested Block-4a shape (components →
+    micros → nanos). Skips collapsed placeholders; never walks `model["decisions"]`.
+    Dies (exit 2) if any indexed node lacks `signature` — schema-drift guard so a
+    future P3 change that drops the field is caught before any read/write, not
+    silently turned into false staleness."""
+    idx: dict[str, str] = {}
+    for comp in model.get("components", []):
+        if "signature" not in comp:
+            die(f"sig-index: component {comp.get('id')!r} missing 'signature'")
+        idx[comp["id"]] = comp["signature"]
+        for micro in comp.get("children", []):
+            if micro.get("kind") == "collapsed":
+                continue
+            if "signature" not in micro:
+                die(f"sig-index: micro {micro.get('id')!r} missing 'signature'")
+            idx[micro["id"]] = micro["signature"]
+            for nano in micro.get("children", []):
+                if nano.get("kind") == "collapsed":
+                    continue
+                if "signature" not in nano:
+                    die(f"sig-index: node {nano.get('id')!r} missing 'signature'")
+                idx[nano["id"]] = nano["signature"]
+    return idx
+
+
+# ── P4 fallback text (Step 3) ───────────────────────────────────────────────────
+
+# Matches a line that is only box-drawing chars / dashes / equals (the
+# separator-bar docstring prefix some functions carry). The `─` (U+2500) is a
+# literal here on purpose — raw string, so a \u escape would NOT decode.
+_SEP_LINE = re.compile(r"^\s*[-─=]+\s*$")
+# A run of >=2 box-drawing/dash/equals chars anywhere in joined text: the
+# labeled-header shape ("── Validation helpers ──…") the pure-line regex above
+# cannot clean, because prose sits on the same line as the bars. Scrubbed to a
+# space post-join so the result is plain English (T2 / C6 / E2E §2: no ── bars).
+_BAR_RUN = re.compile(r"[-─=]{2,}")
+
+
+def _first_sentence(docstring: str) -> str:
+    """Strip leading separator-bar lines, join remaining lines, scrub any
+    decorative bar-runs (labeled headers like `── X ──`), then take up to the
+    first sentence period followed by space/newline/end; if none, return up to
+    70 chars. Returns \"\" if nothing remains."""
+    lines = (docstring or "").split("\n")
+    while lines and _SEP_LINE.match(lines[0]):
+        lines.pop(0)
+    text = " ".join(s.strip() for s in lines).strip()
+    text = _BAR_RUN.sub(" ", text)
+    text = re.sub(r"\s{2,}", " ", text).strip()
+    if not text:
+        return ""
+    m = re.search(r"\.(\s|$)", text)
+    return text[: m.start() + 1] if m else text[:70]
+
+
+def _fallback_text(node: dict) -> str:
+    """Deterministic plain-language sentence for a narratable node, from model
+    fields only (no DB).  Micros/components count NON-collapsed children (the
+    collapsed placeholder must not be miscounted as a real function — store.ts
+    reads 8, not 9). Raises ValueError on a decision/collapsed node (programmer
+    error: the scope predicate should have excluded it).
+
+    Kind dispatch accepts BOTH the golden's actual kind strings (\"nano\",
+    \"micro\", \"component\" — what P3's `_build_*` writes) and the kind aliases
+    the plan's Implementer Note §1 / §7 mini-model cite (\"function\"/\"method\"
+    for nanos, \"file\" for micros). The golden ships \"nano\"/\"micro\";
+    the plan's own test fixtures ship \"function\"/\"micro\". Both must work for
+    the FCV-validated \"never raises on a real-model node\" criterion."""
+    kind = node.get("kind")
+    if kind in ("nano", "function", "method"):
+        name = node.get("name", "")
+        callers = node.get("caller_count", 0)
+        base = f"{name} — function, {callers} caller(s)."
+        first = _first_sentence(node.get("docstring") or "")
+        return f"{base} {first}" if first else base
+    if kind in ("micro", "file"):
+        name = node.get("name", "")
+        n = sum(1 for ch in node.get("children", []) if ch.get("kind") != "collapsed")
+        return f"{name} — file, {n} function(s)."
+    if kind == "component":
+        name = node.get("name", "")
+        n = sum(1 for ch in node.get("children", []) if ch.get("kind") != "collapsed")
+        return f"{name} — component, {n} file(s)."
+    raise ValueError(f"_fallback_text: unsupported node kind {kind!r} (id={node.get('id')!r})")
+
+
+# ── P4 narrate internals (Step 4) ──────────────────────────────────────────────
+
+def _narrate_root_paths(args) -> tuple[Path, Path, Path]:
+    """Resolve (model, config, narratives) paths for a narrate subcommand,
+    mirroring cmd_extract's discovery: di.find_db → di.repo_root_for, then root
+    relative defaults with explicit-flag override."""
+    db_path = di.find_db(Path.cwd())
+    if not db_path:
+        die("no .codegraph/codegraph.db found (run `codegraph init` first)")
+    root = di.repo_root_for(db_path)
+    config = Path(args.config) if getattr(args, "config", None) else root / DEFAULT_CONFIG_REL
+    _, narratives_rel = _load_narrate_config(config)
+    model = Path(args.model) if getattr(args, "model", None) else root / DEFAULT_OUTPUT_REL
+    narratives = Path(args.narratives) if getattr(args, "narratives", None) else root / narratives_rel
+    return model, config, narratives
+
+
+def _load_narratives(narratives_path: Path) -> dict[str, dict]:
+    """Load {"narratives": {id: entry}}. Absent → {}. Malformed → die (exit 2)."""
+    if not narratives_path.is_file():
+        return {}
+    try:
+        doc = json.loads(narratives_path.read_text())
+    except json.JSONDecodeError as e:
+        die(f"{narratives_path}: invalid JSON: {e}")
+    if not isinstance(doc, dict) or not isinstance(doc.get("narratives"), dict):
+        die(f"{narratives_path}: expected {{\"narratives\": {{...}}}}")
+    return doc["narratives"]
+
+
+def _write_narratives(narratives_path: Path, entries: dict) -> None:
+    """Write narratives.json via the generic byte-deterministic writer. Reuses
+    `_save_model` so sort_keys / indent / trailing newline are consistent with
+    diagram-model.json (F2 fix: do NOT add a separate sort — _save_model sorts)."""
+    _save_model(narratives_path, {"narratives": entries})
+
+
+def _compute_scope(model: dict, sig_index: dict, threshold: int, *,
+                   include_nanos: bool = False, extra_node: str | None = None) -> list[str]:
+    """In-scope node ids for narrate: every component + every micro + every nano
+    where is_exported OR caller_count >= threshold. `include_nanos` widens to
+    ALL non-collapsed nanos. `extra_node` adds one named node (a decision or
+    collapsed id is rejected, exit 2). Decisions and collapsed placeholders are
+    never in scope. Order follows the model's nested traversal (stable)."""
+    if extra_node is not None:
+        if extra_node not in sig_index:
+            die(f"--node {extra_node!r} is not a narratable node id "
+                f"(unknown, decision, or collapsed — pick a component/micro/nano)")
+    scope: list[str] = []
+    for comp in model.get("components", []):
+        scope.append(comp["id"])
+        for micro in comp.get("children", []):
+            if micro.get("kind") == "collapsed":
+                continue
+            scope.append(micro["id"])
+            for nano in micro.get("children", []):
+                if nano.get("kind") == "collapsed":
+                    continue
+                if include_nanos:
+                    scope.append(nano["id"])
+                else:
+                    if nano.get("is_exported") or nano.get("caller_count", 0) >= threshold:
+                        scope.append(nano["id"])
+    if extra_node is not None and extra_node not in scope:
+        scope.append(extra_node)
+    return scope
+
+
+def _derive_status(stored_entry: dict | None, current_sig: str | None) -> str:
+    """Block-5a derivation table — computed LIVE, never written. Branch order
+    is load-bearing: a vanished node (current_sig is None) must be caught BEFORE
+    comparing signatures, or it is mislabeled `stale`."""
+    if stored_entry is None:
+        return "none"
+    if current_sig is None:
+        return "orphaned"
+    if stored_entry.get("signature") != current_sig:
+        return "stale"
+    return stored_entry.get("status", "proposed")
+
+
+# ── P4 narrate subcommands (Steps 5-9) ──────────────────────────────────────────
+
+def cmd_narrate_worklist(args) -> None:
+    """Step 5 — emit JSON array of in-scope nodes needing a sentence: every node
+    whose derived status is `none` (no entry) or `stale` (drifted). Fresh
+    approved/proposed nodes are NOT emitted (nothing to do; a stale approved node
+    IS emitted — it needs fresh text per F6 one-step refresh). Written via the
+    same serialization params as _save_model so round-trip ingest is clean."""
+    model_path, config_path, narratives_path = _narrate_root_paths(args)
+    threshold, _ = _load_narrate_config(config_path)
+    model = _load_model(model_path)
+    sig_index = _build_sig_index(model)
+    narratives = _load_narratives(narratives_path)
+    include_nanos = bool(getattr(args, "include_nanos", False))
+    extra_node = getattr(args, "node", None)
+    scope = _compute_scope(model, sig_index, threshold,
+                          include_nanos=include_nanos, extra_node=extra_node)
+    # node_id -> node dict for resolving kind/name/fallback without a second walk.
+    node_by_id: dict[str, dict] = {}
+    for comp in model.get("components", []):
+        node_by_id[comp["id"]] = comp
+        for micro in comp.get("children", []):
+            if micro.get("kind") == "collapsed":
+                continue
+            node_by_id[micro["id"]] = micro
+            for nano in micro.get("children", []):
+                if nano.get("kind") == "collapsed":
+                    continue
+                node_by_id[nano["id"]] = nano
+
+    items: list[dict] = []
+    for nid in scope:
+        current_sig = sig_index.get(nid)
+        stored = narratives.get(nid)
+        status = _derive_status(stored, current_sig)
+        if status not in ("none", "stale"):
+            continue
+        node = node_by_id.get(nid, {})
+        items.append({
+            "node_id": nid,
+            "kind": node.get("kind", ""),
+            "name": node.get("name", ""),
+            "current_signature": current_sig,
+            "fallback_text": _fallback_text(node) if node else "",
+            "text": "",
+        })
+    out = json.dumps(items, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    out_path = getattr(args, "out", None)
+    if out_path:
+        Path(out_path).write_text(out)
+        ok(f"wrote {len(items)} worklist items to {out_path}")
+    else:
+        sys.stdout.write(out)
+
+
+def cmd_narrate_ingest(args) -> None:
+    """Step 6 — load a filled worklist into narratives.json. The ONLY command
+    that pins a signature. Validates the WHOLE batch first, writes NOTHING on
+    any error (FM4 no-partial-write). Per-entry decision after validation:
+      - absent                       -> write (proposed)
+      - stored `proposed`            -> overwrite (proposed, new text/sig)
+      - stored `approved` + drifted  -> overwrite (proposed — F6 one-step refresh)
+      - stored `approved` + fresh    -> SKIP (do not clobber trusted prose)
+    Written entry = {node_id, signature: current_signature, text, status:"proposed"}.
+    """
+    model_path, config_path, narratives_path = _narrate_root_paths(args)
+    threshold, _ = _load_narrate_config(config_path)
+    model = _load_model(model_path)
+    sig_index = _build_sig_index(model)
+    narratives = _load_narratives(narratives_path)
+
+    file_path = Path(args.file)
+    try:
+        raw = file_path.read_text()
+    except OSError as e:
+        die(f"ingest: cannot read {file_path}: {e}")
+    try:
+        items = json.loads(raw)
+    except json.JSONDecodeError as e:
+        die(f"ingest: {file_path}: invalid JSON ({e})")
+    if not isinstance(items, list):
+        die(f"ingest: {file_path}: top-level must be a JSON array")
+
+    REQUIRED = ("node_id", "current_signature", "text")
+    errors: list[str] = []
+    for i, it in enumerate(items):
+        if not isinstance(it, dict):
+            errors.append(f"  [{i}] not a JSON object")
+            continue
+        for k in REQUIRED:
+            if k not in it:
+                errors.append(f"  [{i}] missing required key {k!r}")
+        if any(k not in it for k in REQUIRED):
+            continue
+        nid = it["node_id"]
+        if nid not in sig_index:
+            errors.append(f"  [{i}] unknown node id {nid!r} (not in model)")
+            continue
+        if it["current_signature"] != sig_index[nid]:
+            errors.append(
+                f"  [{i}] {nid!r}: current_signature does not match model "
+                f"(re-run `narrate worklist` against the latest diagram-model.json)"
+            )
+    if errors:
+        die("ingest: batch rejected — fix and retry (nothing written):\n" + "\n".join(errors))
+
+    written = 0
+    skipped_fresh_approved = 0
+    for it in items:
+        nid = it["node_id"]
+        current_sig = sig_index[nid]
+        stored = narratives.get(nid)
+        if stored is not None:
+            stored_status = stored.get("status")
+            stored_sig = stored.get("signature")
+            # F6 one-step refresh: fresh-approved is the ONLY skip path.
+            if stored_status == "approved" and stored_sig == current_sig:
+                skipped_fresh_approved += 1
+                continue
+        narratives[nid] = {
+            "node_id": nid,
+            "signature": current_sig,
+            "text": it["text"],
+            "status": "proposed",
+        }
+        written += 1
+    if written:
+        _write_narratives(narratives_path, narratives)
+    info(f"ingested {written} entries ({skipped_fresh_approved} skipped fresh-approved)")
+
+
+def cmd_narrate_approve(args) -> None:
+    """Step 7 — flip proposed→approved. Deny-by-default; REFUSES a drifted
+    entry (no re-pin — closes the laundering hole, F6). Approve NEVER touches
+    `signature` or `text`. Unknown id / non-proposed status → exit 2, no
+    partial approval (errors collected up-front)."""
+    model_path, config_path, narratives_path = _narrate_root_paths(args)
+    threshold, _ = _load_narrate_config(config_path)
+    model = _load_model(model_path)
+    sig_index = _build_sig_index(model)
+    narratives = _load_narratives(narratives_path)
+
+    ids: list[str] = list(args.ids)
+    errors: list[str] = []
+    for nid in ids:
+        stored = narratives.get(nid)
+        if stored is None:
+            errors.append(f"  {nid!r}: no stored entry (run `narrate worklist` + `ingest` first)")
+            continue
+        if stored.get("status") != "proposed":
+            errors.append(f"  {nid!r}: status is {stored.get('status')!r}, not 'proposed'")
+            continue
+        current_sig = sig_index.get(nid)
+        if current_sig is None:
+            errors.append(f"  {nid!r}: node vanished from model (orphaned)")
+            continue
+        if stored.get("signature") != current_sig:
+            errors.append(
+                f"  {nid!r}: signature drifted since ingest — REFUSING to approve "
+                f"(re-run `narrate worklist` then `narrate ingest` to refresh text)"
+            )
+    if errors:
+        die("approve: refusing — no entries changed (nothing written):\n" + "\n".join(errors))
+
+    for nid in ids:
+        # Flip status ONLY. Never re-pin signature, never touch text.
+        narratives[nid]["status"] = "approved"
+    _write_narratives(narratives_path, narratives)
+    info(f"approved {len(ids)} entries")
+
+
+def cmd_narrate_reject(args) -> None:
+    """Step 8 — remove entries so the node reverts to fallback text on the next
+    `status`. No model load, no freshness check (pure delete). Unknown id →
+    exit 2, no write (typo must not silently succeed)."""
+    _, config_path, narratives_path = _narrate_root_paths(args)
+    narratives = _load_narratives(narratives_path)
+
+    ids: list[str] = list(args.ids)
+    unknown = [nid for nid in ids if nid not in narratives]
+    if unknown:
+        die(f"reject: unknown id(s): {', '.join(map(repr, unknown))} — nothing written")
+    for nid in ids:
+        del narratives[nid]
+    _write_narratives(narratives_path, narratives)
+    info(f"rejected {len(ids)} entries")
+
+
+def cmd_narrate_status(args) -> None:
+    """Step 9 — report every stored entry UNION every default-scope unnarrated
+    node, each with a DERIVED status. Advisory only — exit 0 ALWAYS, NEVER
+    writes narratives.json. An --include-nanos-approved entry that has since
+    dropped below threshold is STILL watched (F9 fix)."""
+    model_path, config_path, narratives_path = _narrate_root_paths(args)
+    threshold, _ = _load_narrate_config(config_path)
+    model = _load_model(model_path)
+    sig_index = _build_sig_index(model)
+    narratives = _load_narratives(narratives_path)
+    # Spec component 8: --include-nanos is a WORKLIST-ONLY flag; status scope is
+    # the default worklist scope (components + micros + threshold/export nanos),
+    # never widened. F9 holds via set(narratives.keys()) below — stored entries
+    # are watched regardless of scope.
+    default_scope = _compute_scope(model, sig_index, threshold, include_nanos=False)
+
+    # Display set = every stored id UNION every default-scope node with no entry.
+    display_ids: set[str] = set(narratives.keys())
+    for nid in default_scope:
+        if nid not in narratives:
+            display_ids.add(nid)
+
+    # node_id -> kind for the kind column.
+    kind_by_id: dict[str, str] = {}
+    for comp in model.get("components", []):
+        kind_by_id[comp["id"]] = comp.get("kind", "")
+        for micro in comp.get("children", []):
+            if micro.get("kind") == "collapsed":
+                continue
+            kind_by_id[micro["id"]] = micro.get("kind", "")
+            for nano in micro.get("children", []):
+                if nano.get("kind") == "collapsed":
+                    continue
+                kind_by_id[nano["id"]] = nano.get("kind", "")
+
+    lines: list[str] = []
+    for nid in sorted(display_ids):
+        current_sig = sig_index.get(nid)
+        stored = narratives.get(nid)
+        status = _derive_status(stored, current_sig)
+        kind = kind_by_id.get(nid, "?")
+        lines.append(f"{nid} | {kind} | {status}")
+    if lines:
+        sys.stdout.write("\n".join(lines) + "\n")
+
+
 # ── writer (Step 12) ────────────────────────────────────────────────────────────
 
 def _save_model(path: Path, model: dict) -> None:
@@ -972,6 +1414,36 @@ def build_parser() -> argparse.ArgumentParser:
     pb.add_argument("--out", help=f"output config path (default: <root>/{DEFAULT_CONFIG_REL})")
     pb.add_argument("--force", action="store_true", help="overwrite an existing config")
     pb.set_defaults(fn=cmd_bootstrap_config)
+
+    # ── P4 narrate subcommands (Step 10) ────────────────────────────────────────
+    pn = sub.add_parser("narrate", help="plain-language sidecar for diagram nodes")
+    nsub = pn.add_subparsers(dest="narrate_cmd", required=True)
+
+    def _common(sp):
+        sp.add_argument("--model", help=f"diagram-model.json (default: <root>/{DEFAULT_OUTPUT_REL})")
+        sp.add_argument("--narratives", help="narratives.json (default: config narratives_path)")
+        sp.add_argument("--config", help=f"config (default: <root>/{DEFAULT_CONFIG_REL})")
+
+    pw = nsub.add_parser("worklist", help="list nodes needing a sentence"); _common(pw)
+    pw.add_argument("--include-nanos", action="store_true")
+    pw.add_argument("--node", help="restrict to one node id")
+    pw.add_argument("-o", "--out", help="write JSON array here (default: stdout)")
+    pw.set_defaults(fn=cmd_narrate_worklist)
+
+    pi = nsub.add_parser("ingest", help="load a filled worklist file"); _common(pi)
+    pi.add_argument("file", help="filled worklist JSON file")
+    pi.set_defaults(fn=cmd_narrate_ingest)
+
+    pa = nsub.add_parser("approve", help="approve proposed entries"); _common(pa)
+    pa.add_argument("ids", nargs="+", help="node id(s)")
+    pa.set_defaults(fn=cmd_narrate_approve)
+
+    prj = nsub.add_parser("reject", help="remove entries"); _common(prj)
+    prj.add_argument("ids", nargs="+", help="node id(s)")
+    prj.set_defaults(fn=cmd_narrate_reject)
+
+    ps = nsub.add_parser("status", help="show derived status of every node"); _common(ps)
+    ps.set_defaults(fn=cmd_narrate_status)
 
     return p
 

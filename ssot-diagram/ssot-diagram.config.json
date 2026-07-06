@@ -53,5 +53,7 @@
     }
   ],
   "default_component": "cmp-misc",
-  "nano_cap": 8
+  "nano_cap": 8,
+  "narrate_threshold": 4,
+  "narratives_path": "ssot-diagram/narratives.json"
 }

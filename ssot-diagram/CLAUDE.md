@@ -38,8 +38,8 @@ is fully gated + pinned. L5 is a dumb renderer of L3+L4 — it invents nothing.
 
 - **P1** decision-index engine (`decision_index.py` + `decision_hook.py`) — SHIPPED
 - **P2** decision-index curation (mkt_engine: 8 ADRs/33 anchors/all verified/all FRESH) — DONE 2026-07-04
-- **P3** diagram-model extractor (`graph_model.py` → `diagram-model.json`) — DONE 2026-07-04 (merged main `ba02a56`); 32/32 pytest, byte-deterministic (golden sha256 `5a1e2156…`)
-- **P4** narrative sidecar — NEXT
+- **P3** diagram-model extractor (`graph_model.py` → `diagram-model.json`) — DONE 2026-07-04 (merged main `ba02a56`); 32/32 pytest, byte-deterministic (golden sha256 `56df3d86…`)
+- **P4** narrative sidecar — implementation DONE 2026-07-06 (Claude subagents via deepseek-orchestrate protocol, no dsk). Additive: `graph_model.py` +475 lines (`narrate` subcommands + helpers), `test_graph_model.py` +874 lines (66 `TestNarrate*` tests), config +2 keys, manifest +`narrative-sidecar` entry. 95/98 pytest (3 pre-existing `TestGoldenLive` pilot-drift fails, 0 P4 regressions), golden sha `56df3d86…` intact, byte-deterministic, F6 laundering-hole close + 1-step refresh E2E-verified. Pending owner review/merge + 1 deferred MAJOR (empty-signature laundering — owner decision, see STATE.md Open Questions). Plan: `ai-artifacts/4_plans/p4-narrative-sidecar.md` (12 Steps, plan-verify 19/19)
 - **P5** interactive HTML renderer
 - **P6** PostToolUse re-extract hook
 

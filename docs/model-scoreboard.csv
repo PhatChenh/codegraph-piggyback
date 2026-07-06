@@ -3,3 +3,5 @@ date,model,role,risk_tier,outcome,note
 2026-07-04,writ:writ-plan-reviewer,review,B,findings-confirmed,Stage 1 plan-compliance — 6 issues (default paths, --force, nano name, guard [:1], micro/collapsed id forms)
 2026-07-04,writ:writ-code-quality-reviewer,review,B,findings-confirmed,Stage 2 code-quality — supersedes literal, decisions[] sort, SystemExit swallow
 2026-07-04,writ:writ-red-team,red-team,B,findings-confirmed,Phase-end adversarial — edge data loss (660+ edges), decision sig sha256(id), --nano-cap dead code
+2026-07-06,writ:worker,review,B,findings-confirmed,P4 factual-code-verification (13 valid/0 invalid/2 unverifiable)
+2026-07-06,writ:worker,review,B,pass-first-try,P4 plan-from-specs (12 Steps; plan_verify --strict 19/19)
