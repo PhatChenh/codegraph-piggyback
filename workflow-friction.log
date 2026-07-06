@@ -1162,3 +1162,51 @@
 {"ts": "2026-07-04T12:24:03Z", "session": "97245", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
 {"ts": "2026-07-04T12:24:03Z", "session": "d53dfa3c-140d-4ead-b482-aa17de444be8", "event": "pressure_audit", "mode": "review", "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
 {"ts": "2026-07-04T12:24:03Z", "session": "97245", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 74}
+{"ts": "2026-07-06T00:40:43Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T00:40:43Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 175}
+{"ts": "2026-07-06T00:40:43Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-06T00:40:44Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["ARCH-STATE-002", "ENF-SYS-006", "ENF-SYS-003", "UIUX-ASYNC-001", "SCALE-DB-002"]}
+{"ts": "2026-07-06T00:40:54Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": "conversation", "event": "mode_change", "change_type": "set", "from_mode": null, "to_mode": "conversation"}
+{"ts": "2026-07-06T00:41:14Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 51}
+{"ts": "2026-07-06T00:44:52Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": "conversation", "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-06T00:44:52Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["WRITOPS-IMPORT-002", "UIUX-THEME-001", "DOC-SYNC-001", "DESIGN-OPTIONS-001", "THINK-PREMORTEM-001"]}
+{"ts": "2026-07-06T00:46:59Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T00:46:59Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 131}
+{"ts": "2026-07-06T00:47:16Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T00:47:16Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 127}
+{"ts": "2026-07-06T00:47:44Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 44}
+{"ts": "2026-07-06T00:50:11Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": "conversation", "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-06T00:50:12Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["DOC-ONBOARD-001", "DOC-ARTIFACT-001", "DOC-API-001", "WRITOPS-AUTHOR-002", "WRITOPS-AUTHOR-001"]}
+{"ts": "2026-07-06T00:50:42Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T00:50:42Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 123}
+{"ts": "2026-07-06T00:50:59Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T00:50:59Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 129}
+{"ts": "2026-07-06T00:51:13Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 47}
+{"ts": "2026-07-06T00:54:26Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": "conversation", "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-06T00:54:26Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": "conversation", "event": "rag_query", "query_source": "broad", "tokens_injected": 600, "rules_returned_count": 5, "rule_ids": ["SEC-DEP-AUDIT-001", "UIUX-ICON-001", "TEST-FIXTURE-002", "FW-M2-RT-005", "ERR-HANDLE-003"]}
+{"ts": "2026-07-06T00:55:06Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T00:55:06Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 119}
+{"ts": "2026-07-06T00:55:15Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T00:55:15Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 118}
+{"ts": "2026-07-06T00:55:21Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "pre_write_decision"}
+{"ts": "2026-07-06T00:55:22Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": null, "event": "hook_execution", "hook_name": "writ-pre-write-dispatch", "duration_ms": 124}
+{"ts": "2026-07-06T00:55:28Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 50}
+{"ts": "2026-07-06T00:57:35Z", "session": "e150d949-0781-4681-8773-10382c37e343", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T00:57:35Z", "session": "e150d949-0781-4681-8773-10382c37e343", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T00:57:35Z", "session": "e150d949-0781-4681-8773-10382c37e343", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 207}
+{"ts": "2026-07-06T00:57:35Z", "session": "e150d949-0781-4681-8773-10382c37e343", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 217}
+{"ts": "2026-07-06T00:57:35Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "event": "pressure_audit", "mode": "conversation", "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-06T00:57:35Z", "session": "4651", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-06T00:57:35Z", "session": "4651", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 91}
+{"ts": "2026-07-06T00:58:01Z", "session": "4651", "mode": null, "event": "session_end", "rules_loaded": 0, "total_violations": 0, "files_written": 0, "queries": 0, "final_phase": null}
+{"ts": "2026-07-06T00:58:01Z", "session": "e150d949-0781-4681-8773-10382c37e343", "event": "pressure_audit", "mode": null, "active_playbook": null, "phases_traversed": 0, "verification_evidence_count": 0, "quality_judgment_count": 0, "quality_override_count": 0}
+{"ts": "2026-07-06T00:58:01Z", "session": "4651", "mode": null, "event": "hook_execution", "hook_name": "writ-session-end", "duration_ms": 96}
+{"ts": "2026-07-06T00:58:51Z", "session": "dcaeee1a-e208-4adf-b390-1c01cd2d43ba", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T00:58:51Z", "session": "dcaeee1a-e208-4adf-b390-1c01cd2d43ba", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T00:58:51Z", "session": "dcaeee1a-e208-4adf-b390-1c01cd2d43ba", "mode": null, "event": "instructions_loaded", "rule_ids_count": 0, "rule_ids": []}
+{"ts": "2026-07-06T00:58:51Z", "session": "dcaeee1a-e208-4adf-b390-1c01cd2d43ba", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 192}
+{"ts": "2026-07-06T00:58:51Z", "session": "dcaeee1a-e208-4adf-b390-1c01cd2d43ba", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 199}
+{"ts": "2026-07-06T00:58:51Z", "session": "dcaeee1a-e208-4adf-b390-1c01cd2d43ba", "mode": null, "event": "hook_execution", "hook_name": "writ-instructions-loaded", "duration_ms": 192}
+{"ts": "2026-07-06T01:06:27Z", "session": "dcaeee1a-e208-4adf-b390-1c01cd2d43ba", "mode": null, "event": "always_on_inject", "tokens": 233, "rule_count": 3}
+{"ts": "2026-07-06T01:06:27Z", "session": "dcaeee1a-e208-4adf-b390-1c01cd2d43ba", "mode": null, "event": "rag_query", "query_source": "broad", "tokens_injected": 480, "rules_returned_count": 4, "rule_ids": ["DOC-ARTIFACT-001", "DOC-ONBOARD-001", "CLEAN-LOG-002", "ERR-HANDLE-003"]}
+{"ts": "2026-07-06T01:06:37Z", "session": "aeab6c64-dfb4-4dc0-abc0-6d2eee6d67c3", "mode": "conversation", "event": "hook_execution", "hook_name": "enforce-violations", "duration_ms": 61}
