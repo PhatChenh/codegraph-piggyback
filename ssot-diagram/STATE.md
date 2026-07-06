@@ -12,6 +12,71 @@ three review rounds (plan-compliance → code-quality → phase-end adversarial 
 scoreboard: `../docs/model-scoreboard.csv`. `../CLAUDE.md` "Build Progress" updated
 (P3 DONE / P4 next). Pushed to origin `99a4c11` (2026-07-06).
 
+## P5 (HTML renderer) — build-pipeline IN FLIGHT (started 2026-07-06); design + red-team + spec DONE, FCV next
+
+**Spec step DONE (2026-07-06):** `AI-artifacts/2_specs/p5-html-renderer.md` (890
+lines, 11 components FONT-ASSETS/TEMPLATE-SHELL/CLI-PATHS/INPUT-LOAD/VIEWMODEL/
+EMBED-ESCAPE/SPLICE-WRITE/JS-PAINTER/FIXTURES/TEST-BATTERY/MANIFEST; 20 assumptions
+= A1–A14 carried + A15–A20 new; L3 matrix both halves + L4 three-sink contract +
+sentinel invariant transcribed exactly). Spec discoveries: micro-view
+same-component stub grammar is a design gap (addendum §3 covers component
+granularity only — C5 Decisions entry, plan must close); golden has 3 nano ids ×2
+tree positions (402 unique/407 positions — A15); design line ~379 sentinel-invariant
+typo (`<` escape eaten) + raw U+2028/29 bytes in A11 — spec transcribes
+corrected, design file untouched; archived spec §7.2 data-attr tooltips deliberately
+overridden by F2 (recorded so nobody "restores" it). OQ-P5-5 RESOLVED BY OWNER
+2026-07-06: first committed rendered artifact lives in the PILOT repo via P6 —
+P5 ships tool + fixtures only, E2E still renders+clicks live mkt_engine, nothing
+committed here (resolution injected into spec Open Questions).
+
+**PAUSED HERE BY OWNER 2026-07-06 (spec gate).** Pipeline position: design ✅ →
+red-team ✅ (REVISE, all folded) → spec ✅ (890 lines, 11 components, 20
+assumptions) → **NEXT: factual-code-verification** (fresh strong-model subagent
+re-verifies all 20 assumptions against live code, distrusting the spec; then plan
+with `plan_verify.py --strict` gate). Resume: dispatch FCV per build-pipeline
+template against `AI-artifacts/2_specs/p5-html-renderer.md`, findings to
+`AI-artifacts/3_factual-code-verification/p5-html-renderer.md`. Delegation
+verdict (design doc): big-model-only for spec/plan/implementation — no cheap
+delegation on those rows. Cross-model red-team still owed if dsk available.
+Run-report + doc-sweep (update-project-docs full) pending at pipeline end; tech
+debt to log then: ADR-0001/CLAUDE.md stale "_shared deferred to Phase B" text;
+AI-artifacts case-collision (pre-existing).
+
+Tier: heavy. Grill locked 2026-07-06 (owner-ratified): archived visualizer_guide spec
+(`~/all-projects/vibe-coding-setup/_archived/visualizer_guide/design-system/spec.md`) =
+LOCKED UX contract + delta addendum for the 4 unseen surfaces; trust derivation in
+PYTHON (render.py imports `gm._derive_status`/`gm._fallback_text`, JS = dumb painter);
+proposed prose renders MARKED (muted + badge), not hidden; DM Sans embedded base64
+(OFL, woff2 vendored — binaries don't exist in workspace yet, OQ-P5-2); `--component`
+= subtree + neighbor STUB cards; separate `render.py` + manifest entry; missing
+narratives.json → all-fallback + warn, exit 0; scope ladder CORE/STANDARD pinned.
+**Design step DONE (2026-07-06):** `AI-artifacts/1_design/p5-html-renderer.md` (714
+lines, options grid 6 axes, A1–A14 assumptions, status→treatment matrix pinned,
+delegation verdict: big-model-only ×3) + UX addendum `…-ux-addendum.md` (142 lines) +
+`adrs/0002` (Python-join/JS-dumb) + `adrs/0003` (proposed-marked). Chosen: repo-owned
+`render_template.html` marker-splice; drill-down focus views via `viewPath` (NOT
+overlay-in-overlay — golden's biggest component has 47 micros); embed escape =
+`json.dumps(ensure_ascii=True)` + `<`→`\u003c`, DOM via textContent only; 2 pinned-sha
+goldens (no-narratives + all-treatment). Design-agent discovery to fold: `_shared/`
+extraction partially LANDED (`decision_index.py:50-57` imports `_shared.*`) — ADR-0001
++ CLAUDE.md "deferred to Phase B" text stale (TD, fix at pipeline end).
+**Red-team DONE (2026-07-06):** `AI-artifacts/1_design/p5-html-renderer-redteam.md`,
+verdict REVISE — 4 MAJOR + 2 MINOR, ALL adjudicated CONFIRMED by orchestrator +
+folded same day (design doc now 868 lines + `## Red-team resolution` section):
+F1 stub contract aligned to owner override (navigable full / inert scoped, `→` cue,
+`stub_nav` embedded field); F2 tooltips = third named sink, no prose in HTML
+attributes ever, tooltip INHERITS node trust treatment (matrix extended); F3
+sentinels now `<`-bearing (`/*<SSOT:VIEWMODEL_JSON>*/null`, `/*<SSOT:FONT_FACE>*/`)
++ invariant pinned (sentinel must contain a char payload-escape guarantees absent);
+F4 third golden `testdata/trustmatrix.model.json`+`.narratives.json` (synthetic,
+every decision + narrative status row covered); F5 subtitle counts UNIQUE decisions
+(8, not 11 attachments); F6/OQ-P5-4 owner-resolved: 1–1.5MB size OK + generated
+HTML COMMITTED (not gitignored). Owner also ratified at design gate: OQ-P5-1
+stub-navigable (override), OQ-P5-2 fonts fetch+commit, OQ-P5-3 `--title` flag
+(override; flows through narrative escaping path). Cross-model red-team pass NOT
+run (no dsk this run; same-model writ-red-team only — noted for run report).
+Next: spec → FCV → plan.
+
 ## P4 (narrative sidecar) — implementation DONE 2026-07-06; MERGED to main `65f3982`; TD-P4-1 closed same day (see Open Questions)
 
 **Started 2026-07-06.** Stage 1-3 done (roadmap read; grill locked 2 decisions:

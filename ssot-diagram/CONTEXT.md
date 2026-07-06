@@ -55,6 +55,22 @@ _Avoid_: init, generate-config, auto-config
 The command that reads the DB + curated decision index + curated config and emits one byte-identical `diagram-model.json`; fails loud if the config is missing.
 _Avoid_: build, render, generate (render is reserved for P5 HTML)
 
+**Render**:
+The P5 command (`render.py`) that joins `diagram-model.json` + `narratives.json` in Python and writes ONE self-contained interactive HTML file; never opens the DB, never writes any state but the HTML.
+_Avoid_: export, publish, generate, visualize
+
+**View-model**:
+The render-ready payload `render.py` embeds in the HTML as the single `MODEL` constant — every node already carries its final text, derived trust status, badges, and preformatted labels, so the browser derives nothing. Ephemeral: regenerated on every render, never persisted as state.
+_Avoid_: embedded model, payload, DIAGRAM (the archived template's constant)
+
+**Focus view**:
+One screen of the diagram's drill-down: the expanded card becomes a header panel and its children become the canvas (components view → component focus → micro focus). At most one node expanded per level; the breadcrumb is the way back up.
+_Avoid_: overlay, popup, zoom level, page
+
+**Stub card**:
+A labeled placeholder standing in for a neighbor component when an edge leaves the current view; never expands in place. In the full artifact it is navigable (click = jump to that neighbor's focus view); in a `--component` scoped file it is inert (the neighbor's data is absent there).
+_Avoid_: ghost node, external node, proxy card
+
 ## Flagged ambiguities
 
 - **"signature"** — overloaded in this codebase. The codegraph DB has a `nodes.signature` column (the function's type signature in code, e.g. `(x: number): string`). The diagram model has a `signature` field (a sha256 content fingerprint). Whenever "signature" appears unqualified, it means the content fingerprint. When the DB column is meant, write "codegraph `nodes.signature` column" or "type signature".
