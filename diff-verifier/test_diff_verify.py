@@ -174,3 +174,124 @@ class TestGitMode:
         r = run(repo, GOOD_DIFF, "--json")
         doc = json.loads(r.stdout)
         assert doc["findings"] == [] and doc["tiers"] == ["B"]
+
+
+# ── per-step listing mode (P8 ADR-0011 seam) ────────────────────────────────
+
+PER_STEP_PLAN = """# P8 plan
+
+### Step 1 — first
+
+<!-- plan-verify
+touch: src/foo.py, src/bar.py
+tier: A
+gates: human:merge-signoff
+-->
+
+### Step 2 — second
+
+<!-- plan-verify
+touch: src/baz.py
+-->
+
+### Step 3 — third
+
+<!-- plan-verify
+touch: src/qux.py
+tier: Z
+-->
+"""
+
+
+def run_per_step(plan_path: Path) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        [sys.executable, str(CLI), str(plan_path), "--per-step"],
+        capture_output=True, text=True)
+
+
+class TestPerStep:
+    def test_help_advertises_per_step(self):
+        """done-signal #1: --help must print --per-step (P8 ADR-0011)."""
+        r = subprocess.run([sys.executable, str(CLI), "--help"],
+                           capture_output=True, text=True)
+        assert "--per-step" in r.stdout, r.stdout
+
+    def test_emits_one_record_per_block(self, tmp_path):
+        plan = tmp_path / "plan.md"
+        plan.write_text(PER_STEP_PLAN)
+        r = run_per_step(plan)
+        assert r.returncode == 0, r.stdout + r.stderr
+        records = json.loads(r.stdout)
+        assert isinstance(records, list)
+        assert len(records) == 3, records
+
+    def test_record_carries_step_id_from_heading(self, tmp_path):
+        plan = tmp_path / "plan.md"
+        plan.write_text(PER_STEP_PLAN)
+        records = json.loads(run_per_step(plan).stdout)
+        # Step IDs are the heading text (stripped of leading hashes).
+        assert records[0]["stepId"] == "Step 1 — first"
+        assert records[1]["stepId"] == "Step 2 — second"
+        assert records[2]["stepId"] == "Step 3 — third"
+        assert all(rec["stepIdSource"] == "heading" for rec in records)
+
+    def test_record_carries_files(self, tmp_path):
+        plan = tmp_path / "plan.md"
+        plan.write_text(PER_STEP_PLAN)
+        records = json.loads(run_per_step(plan).stdout)
+        assert records[0]["files"] == ["src/foo.py", "src/bar.py"]
+        assert records[1]["files"] == ["src/baz.py"]
+        assert records[2]["files"] == ["src/qux.py"]
+
+    def test_tier_present_vs_absent_marker(self, tmp_path):
+        plan = tmp_path / "plan.md"
+        plan.write_text(PER_STEP_PLAN)
+        records = json.loads(run_per_step(plan).stdout)
+        # Step 1: tier A, present.
+        assert records[0]["tier"] == "A"
+        assert records[0]["tierAbsent"] is False
+        # Step 2: tier missing → explicit marker for the consumer.
+        assert records[1]["tier"] is None
+        assert records[1]["tierAbsent"] is True
+        # Step 3: tier Z (out of vocabulary) → value preserved + problem reported.
+        assert records[2]["tier"] == "Z"
+        assert records[2]["tierAbsent"] is False
+        assert any("tier: 'Z'" in p for p in records[2]["tierProblems"])
+
+    def test_record_carries_gates(self, tmp_path):
+        plan = tmp_path / "plan.md"
+        plan.write_text(PER_STEP_PLAN)
+        records = json.loads(run_per_step(plan).stdout)
+        assert records[0]["gates"] == ["human:merge-signoff"]
+        assert records[1]["gates"] == []
+        assert records[2]["gates"] == []
+
+    def test_synthetic_step_id_when_no_heading(self, tmp_path):
+        plan = tmp_path / "plan.md"
+        plan.write_text(
+            "<!-- plan-verify\ntouch: src/a.py\ntier: C\n-->\n"
+            "<!-- plan-verify\ntouch: src/b.py\ntier: B\n-->\n"
+        )
+        records = json.loads(run_per_step(plan).stdout)
+        assert records[0]["stepId"] == "block-1"
+        assert records[0]["stepIdSource"] == "synthetic"
+        assert records[1]["stepId"] == "block-2"
+
+    def test_no_diff_required(self, tmp_path):
+        """--per-step must work WITHOUT --diff or --files."""
+        plan = tmp_path / "plan.md"
+        plan.write_text("<!-- plan-verify\ntouch: src/x.py\ntier: B\n-->")
+        r = run_per_step(plan)
+        assert r.returncode == 0, r.stdout + r.stderr
+        records = json.loads(r.stdout)
+        assert len(records) == 1
+
+    def test_diff_required_when_per_step_absent(self, tmp_path):
+        """Regression: diff mode still requires --diff|--files when no --per-step."""
+        plan = tmp_path / "plan.md"
+        plan.write_text("<!-- plan-verify\ntouch: src/x.py\ntier: B\n-->")
+        r = subprocess.run(
+            [sys.executable, str(CLI), str(plan), "--strict"],
+            capture_output=True, text=True)
+        assert r.returncode == 2, r.stdout + r.stderr
+        assert "--per-step" in r.stderr or "--diff" in r.stderr
