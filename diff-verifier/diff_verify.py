@@ -206,7 +206,7 @@ def per_step_records(plan_path: Path) -> list[dict]:
             "blockIndex": r.block_index,
             "files": r.files,
             "tier": r.tier,
-            "tierAbsent": r.tier is None,
+            "tierAbsent": r.tier is None or r.tier == "",
             "tierProblems": r.tier_problems,
             "gates": r.gates,
             "qualifiers": r.qualifiers,
