@@ -17,6 +17,14 @@ wrong-but-green logic, quality, security).
 Usage:
   diff_verify.py <plan.md> --diff <base>..<head> [--strict] [--json]
   diff_verify.py <plan.md> --files f1 f2 ...     [--strict] [--skip-db]
+  diff_verify.py <plan.md> --per-step [--json]   # 2026-07-07 P8 listing mode
+
+`--per-step` (added 2026-07-07 for agent_village P8 `av verify-wave --preflight`,
+ADR-0011 pinned seam) emits one record per `<!-- plan-verify -->` block —
+step id, declared file paths, `tier:` value (or explicit absent marker),
+`gates:` list, plus any per-block tier problems — as JSON. Works WITHOUT a
+git diff: it is a pure manifest listing, used for tier-law + tier-floor lint
+BEFORE the wave runs.
 """
 
 from __future__ import annotations
@@ -32,7 +40,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _shared import resolve as _rs                      # noqa: E402
 from _shared.db import SchemaError, find_db, open_db    # noqa: E402
-from _shared.manifest import parse_manifest             # noqa: E402
+from _shared.manifest import iter_blocks, parse_manifest  # noqa: E402
 
 OUT_OF_SCOPE = "OUT-OF-SCOPE-TOUCH"
 QUALIFIER_FAIL = "QUALIFIER-FAIL"
@@ -174,13 +182,53 @@ def render(result: dict) -> str:
     return "\n".join(lines)
 
 
+# ── per-step listing mode (P8 ADR-0011 seam) ─────────────────────────────────
+
+def per_step_records(plan_path: Path) -> list[dict]:
+    """Return one record per `<!-- plan-verify -->` block in the plan.
+
+    Each record is the consumer-side JSON shape:
+      {stepId, blockIndex, files[], tier (or null), tierAbsent, tierProblems[],
+       gates[], qualifiers[], stepIdSource: "heading"|"synthetic"}
+
+    `tierAbsent` is the explicit absent marker — true when `tier:` was missing
+    or empty in the block. The consumer's tier-law check (P8 preflight)
+    needs both `tier` AND `tierAbsent` to distinguish "tagged tier X" from
+    "tag omitted". `tierProblems` carries the per-block meta_problems
+    (e.g. an out-of-vocabulary tier like `D`) so the consumer can surface
+    them without re-parsing the plan.
+    """
+    text = plan_path.read_text(errors="replace")
+    records: list[dict] = []
+    for r in iter_blocks(text):
+        records.append({
+            "stepId": r.step_id,
+            "blockIndex": r.block_index,
+            "files": r.files,
+            "tier": r.tier,
+            "tierAbsent": r.tier is None or r.tier == "",
+            "tierProblems": r.tier_problems,
+            "gates": r.gates,
+            "qualifiers": r.qualifiers,
+            "stepIdSource": "heading" if not r.step_id.startswith("block-")
+                            else "synthetic",
+        })
+    return records
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(prog="diff_verify", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("plan", help="path to the plan markdown (with plan-verify manifest)")
-    src = ap.add_mutually_exclusive_group(required=True)
+    # `--per-step` is a listing-only mode; mutually exclusive with the diff/
+    # files src group because it does not consume a diff. `--diff|--files`
+    # remain required EXCEPT when `--per-step` is set.
+    src = ap.add_mutually_exclusive_group(required=False)
     src.add_argument("--diff", help="git range, e.g. main..HEAD")
     src.add_argument("--files", nargs="+", help="explicit changed-file list")
+    ap.add_argument("--per-step", action="store_true",
+                    help="list one record per plan-verify block as JSON "
+                         "(P8 preflight; no diff required)")
     ap.add_argument("--allow", action="append", default=[],
                     help="glob of additionally-allowed changed files (repeatable); "
                          "run docs / STATE.md updates typically ride here")
@@ -196,6 +244,23 @@ def main() -> None:
     if not plan.is_file():
         print(f"error: no such plan file: {plan}", file=sys.stderr)
         sys.exit(2)
+
+    # `--per-step` short-circuits the diff-verification path. Listing only.
+    if args.per_step:
+        try:
+            records = per_step_records(plan)
+        except (FileNotFoundError, SchemaError) as e:
+            print(f"error: {e}", file=sys.stderr)
+            sys.exit(2)
+        print(json.dumps(records, indent=2))
+        sys.exit(0)
+
+    # Diff mode — enforce the (originally mutually exclusive + required) src group.
+    if not (args.diff or args.files):
+        print("error: one of --diff, --files, or --per-step is required",
+              file=sys.stderr)
+        sys.exit(2)
+
     if args.repo_root:
         repo_root = Path(args.repo_root)
     else:
