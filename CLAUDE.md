@@ -47,7 +47,7 @@ manifest.json       # SSOT: script + hook events + scope (global|repo) per tool
 _shared/            # extracted common code (db, sig, resolve, queries, budget, hookio) — see _shared/design.md
 impact-analyzer/    # SHIPPED — PostToolUse:Read blast-radius hook (+ design-extensions.md)
 codegraph-gate/     # SHIPPED — codegraph-first exploration ordering gate
-ssot-diagram/       # SHIPPED P1 (decision-index) + P3 (diagram-model extractor); P2-P6 per ssot-diagram/CLAUDE.md
+ssot-diagram/       # SHIPPED P1–P5 (decision-index, P2 curation, P3 diagram-model, P4 narrative sidecar, P5 HTML renderer — impl DONE 2026-07-10 on branch dsk/p5-html-renderer, merge pending); P6 (regen hook) pending — per ssot-diagram/CLAUDE.md
 plan-verifier/      # G2 star — verify plan claims against DB (design.md)
 plan-visualizer/    # G3 star — render a plan as a picture over the code map (design.md)
 changeset-context/  # branch brief: touched symbols + one-hop neighborhood (design.md)
@@ -99,13 +99,27 @@ python3 -m pytest                   # run all tests
 Shipped: impact-analyzer, codegraph-gate, decision-index (ssot P1), ssot P2
 curation DONE (2026-07-04), **ssot P3 diagram-model extractor DONE (merged main
 `ba02a56`, 2026-07-04; 32/32 pytest, byte-deterministic), P4 narrative sidecar
-PLANNED (design→spec→FCV→plan done 2026-07-06; plan-verify 19/19), **implementation
-DONE 2026-07-06, merged main `65f3982`** (Claude subagents via deepseek-orchestrate
-protocol, no dsk; 105/108 pytest, 0 P4 regressions, byte-deterministic, F6 close
-E2E-verified; TD-P4-1 empty-sig laundering CLOSED 2026-07-06 via unnarratable
-quarantine, Block 5b amendment owner-ratified) — see `ssot-diagram/STATE.md`**.
-Everything else: specced in `<tool>/design.md`, build
-order in `docs/roadmap/roadmap.md`.
+DONE 2026-07-06 (merged main `65f3982`; design→spec→FCV→plan→implement→review
+complete, plan-verify 19/19; 105/108 pytest, 0 P4 regressions, byte-deterministic,
+F6 laundering-hole close E2E-verified; TD-P4-1 empty-sig quarantine CLOSED, Block
+5b amendment owner-ratified). **P5 HTML renderer IMPLEMENTATION COMPLETE 2026-07-10**
+(branch `dsk/p5-html-renderer`, 12 commits, NOT merged). 11 steps shipped via
+av-orchestrate (minimax worker seats on Steps 5/8/9/10 — glm orchestrator
+inline-reviewing tier-A + authoring the verbatim steps): `render.py` +
+`render_template.html` + `test_render.py` (24 tests) + 3 font binaries + OFL +
+4 fixtures + `ssot-render` manifest entry + OTHER-FILE addendum note.
+**129 pytest pass / 3 pre-existing `TestGoldenLive` pilot-drift (0 NEW)**; golden
+model sha `56df3d86…` intact; render E2E = 339KB self-contained,
+byte-deterministic, zero network. **NEXT: live painter E2E browser check
+(deferred — click/hover/pan/zoom not headlessly assertable) + merge to main.**
+av-orchestrate gaps logged: BUG-023 (staged-cwd unreachable → sequential-only),
+BUG-024 (verify-wave category-21 phase-scoped → per-wave gate can't pass mid-phase).
+`_shared/` extraction SHIPPED (commit `82287f9`, alongside plan-verifier)
+— `_shared/db.py`/`sig.py`/`resolve.py`/`queries.py`/`budget.py`/`hookio.py`/
+`manifest.py` live at repo root; ADR-0001's "defer to Phase B" decision is
+SUPERSEDED (dated note added to the ADR). See `ssot-diagram/STATE.md`** for the
+P5 pick-up point. Everything else: specced in `<tool>/design.md`, build order
+in `docs/roadmap/roadmap.md`.
 
 ## What AI Gets Wrong
 

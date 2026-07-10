@@ -40,7 +40,7 @@ is fully gated + pinned. L5 is a dumb renderer of L3+L4 — it invents nothing.
 - **P2** decision-index curation (mkt_engine: 8 ADRs/33 anchors/all verified/all FRESH) — DONE 2026-07-04
 - **P3** diagram-model extractor (`graph_model.py` → `diagram-model.json`) — DONE 2026-07-04 (merged main `ba02a56`); 32/32 pytest, byte-deterministic (golden sha256 `56df3d86…`)
 - **P4** narrative sidecar — implementation DONE 2026-07-06 (Claude subagents via deepseek-orchestrate protocol, no dsk). Additive: `graph_model.py` +475 lines (`narrate` subcommands + helpers), `test_graph_model.py` +874 lines (66 `TestNarrate*` tests), config +2 keys, manifest +`narrative-sidecar` entry. 105/108 pytest (3 pre-existing `TestGoldenLive` pilot-drift fails, 0 P4 regressions), golden sha `56df3d86…` intact, byte-deterministic, F6 laundering-hole close + 1-step refresh E2E-verified. MERGED main `65f3982`. TD-P4-1 (empty-signature laundering) CLOSED 2026-07-06 via quarantine: nodes with the empty-source signature derive `unnarratable` — worklist skips, ingest rejects, approve refuses (Block 5b amendment, owner-ratified; +10 `TestNarrateEmptySig` tests; see STATE.md). Plan: `ai-artifacts/4_plans/p4-narrative-sidecar.md` (12 Steps, plan-verify 19/19)
-- **P5** interactive HTML renderer
+- **P5** interactive HTML renderer — IMPLEMENTATION COMPLETE 2026-07-10 (branch `dsk/p5-html-renderer`, 11 steps; 129 PHPUnit / 3 pre-existing, golden `56df3d86…` intact, render E2E 339KB self-contained byte-deterministic; merge pending)
 - **P6** PostToolUse re-extract hook
 
 Pick-up point: `STATE.md`. Roadmap detail: `roadmap.md`. Run report:
@@ -58,7 +58,9 @@ Pick-up point: `STATE.md`. Roadmap detail: `roadmap.md`. Run report:
   folds to `calls`; `implements` is dropped; non-function-target nano-level edges
   resolve to the target symbol's owning micro (no silent data loss).
 - Read-only DB (`mode=ro&immutable=1`); reuses P1's recipe via sibling-import
-  (`import decision_index as di`); `_shared/` extraction deferred to Phase B per
-  `adrs/0001-reuse-p1-recipe-by-sibling-import-defer-shared-to-phase-b.md`.
+  (`import decision_index as di`). `_shared/` extraction SHIPPED (commit
+  `82287f9`, alongside plan-verifier); `decision_index.py` now imports
+  `_shared.db`/`resolve`/`sig`. ADR-0001's "defer to Phase B" decision is
+  SUPERSEDED (dated note appended to the ADR — was true 2026-07-04, no longer).
 - Byte-deterministic writer: `sort_keys=True`, `generated_at: null`, atomic
   temp+`os.replace` (inherits P1's `save_index` pattern).
