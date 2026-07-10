@@ -4,19 +4,23 @@
 
 ## What is happening right now
 
-**ssot P5 HTML renderer: IMPLEMENTATION COMPLETE (2026-07-10), on branch
-`dsk/p5-html-renderer`, NOT merged to main.** 11 steps shipped (`1dfead0`→`5e91004`)
-via av-orchestrate (minimax worker seats for the judgment steps — Steps 5/8/9/10 —
+**ssot P5 HTML renderer: COMPLETE + MERGED to main `a51384e` (2026-07-10), pushed
+to origin (`bf1570a`).** 11 steps shipped (`1dfead0`→`5e91004` + docs/retro) via
+av-orchestrate (minimax worker seats for the judgment steps — Steps 5/8/9/10 —
 glm orchestrator inline-reviewing tier-A + authoring the verbatim steps).
 `render.py` + `render_template.html` + `test_render.py` (24 tests, +24 vs 105/3
 baseline → **129 passed / 3 pre-existing `TestGoldenLive` pilot-drift, 0 NEW**),
 3 font binaries + OFL + 4 fixtures + `ssot-render` manifest entry + the OTHER-FILE
 addendum note. Golden model sha `56df3d86…` intact; render E2E = 339KB self-contained,
-byte-deterministic, zero network. **NEXT: live painter E2E browser check (deferred
-— click/hover/pan/zoom/theme cannot assert headlessly) + merge proposal → main.**
-Pipeline position: implement ✅ → review ⏳(inline done; cross-model panel owed —
-deepseek reasonix review seat broken per `../agent_village/BUGS.md` BUG-022, so
-inline glm reviewed tier-A Step 5 instead) → E2E ⏳(browser, owner) → docs → merge.
+byte-deterministic, zero network. Run report: `../docs/AI_artifacts/9_runs/2026-07-10-p5-html-renderer.md`
++ scoreboard rows in `../docs/model-scoreboard.csv`. Retro: 2 minimax model-behavior
+lessons in `../CLAUDE.md` "What AI Gets Wrong". Pipeline position: implement ✅ →
+review ✅ (inline glm tier-A done; cross-model panel owed — deepseek reasonix
+review seat broken per `../agent_village/BUGS.md` BUG-022) → E2E ⏳(**OPEN — live
+painter browser check, owner: click macro→micro→nano, hover a PROPOSED/UNNARRATABLE
+card, pan/zoom, toggle theme; not headlessly assertable; render to
+`/tmp/p5.html` + `open`**) → docs ✅ → merge ✅. NEXT phase = **P6 PostToolUse
+re-extract hook** (per `roadmap.md`).
 
 **av-orchestrate tooling friction this phase (logged to `../agent_village/BUGS.md`):**
 BUG-023 (staged-cwd pre-write unreachable via `av` CLI → worker cwd always
