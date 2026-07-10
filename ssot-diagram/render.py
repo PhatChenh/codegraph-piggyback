@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import base64
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -96,10 +97,9 @@ def cmd_render(args) -> None:
     # 1. Model — absent/malformed -> die 2 (owner must run `extract` first).
     model = gm._load_model(model_path)
 
-    # 3. Config — permissive; threshold ignored, only `narratives_rel` is used.
-    _, narratives_rel = gm._load_narrate_config(config_path)
-
     # 2. Narratives — the absent-vs-malformed split is L7's entire contract.
+    #    (config is loaded only for narratives_rel resolution inside _render_paths;
+    #    cmd_render does not need the threshold.)
     note = None
     if narratives_path is not None and narratives_path.is_file():
         narratives = gm._load_narratives(narratives_path)   # malformed -> die 2; {} -> no note
@@ -111,7 +111,7 @@ def cmd_render(args) -> None:
     else:
         narratives = {}   # all-explicit path set with no narratives file (A14 no-DB branch)
 
-    # 4. Template — ships WITH the tool (script's own dir), never the target repo.
+    # 3. Template — ships WITH the tool (script's own dir), never the target repo.
     template_path = Path(__file__).resolve().parent / "render_template.html"
     try:
         template_text = template_path.read_text()
@@ -120,11 +120,19 @@ def cmd_render(args) -> None:
     except OSError as e:
         die(f"render_template.html unreadable: {e}")
 
-    # 5. Loaded inputs held for Step 5's join (build_viewmodel takes these forward).
-    gm.info(f"model       = {model_path} ({len(model.get('components', []))} components)")
-    gm.info(f"narratives  = {narratives_path} ({len(narratives)} entries{' [absent — ' + note + ']' if note else ''})")
-    gm.info(f"out         = {out}")
-    gm.info(f"title       = {title}")
+    # 4. Join (Step 5) — build_viewmodel takes the note forward (L7 note is set
+    #    here at the loader boundary, build_viewmodel itself returns note=None).
+    component = getattr(args, "component", None)
+    viewmodel = build_viewmodel(model, narratives, component=component, title=title)
+    if note is not None:
+        viewmodel["note"] = note
+
+    # 5. Escape + font + splice + save (Steps 6-7).
+    assets_dir = Path(__file__).resolve().parent / "assets"
+    font_css = _font_face_css(assets_dir)
+    html = _render_html(template_text, viewmodel, font_css)
+    _save_text(out, html)
+    gm.ok(f"wrote {out} ({len(html)} bytes, {len(model.get('components', []))} components)")
 
 
 # ── escape + font (Step 6; axis 2A, F3 invariant — copy verbatim) ────────────
@@ -155,6 +163,26 @@ def _font_face_css(assets_dir: Path) -> str:
         rules.append(f'@font-face{{font-family:"DM Sans";font-weight:{weight};'
                      f'font-style:normal;src:url(data:font/woff2;base64,{b64}) format("woff2")}}')
     return "\n".join(rules)
+
+
+# ── splice + atomic writer (Step 7; pinned F3 order — copy verbatim from §6) ──
+def _render_html(template_text: str, viewmodel: dict, font_css: str) -> str:
+    # (1) assert BOTH sentinels occur exactly once BEFORE any replace (die 2 otherwise)
+    assert template_text.count(SENTINEL_VM) == 1, die("sentinel drift: VIEWMODEL_JSON")
+    assert template_text.count(SENTINEL_FONT) == 1, die("sentinel drift: FONT_FACE")
+    # (2) replace font sentinel first (font_css has no sentinel)
+    out = template_text.replace(SENTINEL_FONT, font_css)
+    # (3) replace view-model sentinel (escaped payload has no '<', hence no sentinel)
+    out = out.replace(SENTINEL_VM, _escape_viewmodel_json(viewmodel))
+    # (4) assert zero sentinels remain (die 2)
+    assert SENTINEL_VM not in out and SENTINEL_FONT not in out, die("sentinel survived splice")
+    return out
+
+
+def _save_text(path: Path, html: str) -> None:
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(html + ("" if html.endswith("\n") else "\n"))
+    os.replace(tmp, path)
 
 
 # ── build_viewmodel: the trust join (L2 heart) ────────────────────────────────
