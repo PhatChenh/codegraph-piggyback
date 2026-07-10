@@ -141,6 +141,55 @@ def parse_manifest(text: str) -> Manifest:
     return m
 
 
+def parse_manifest_for_step(text: str, step_id: str) -> tuple[Manifest, bool]:
+    """Build a Manifest from ONLY the plan-verify block(s) whose nearest-heading
+    step id matches `step_id` (added 2026-07-10 for BUG-024 per-wave scoping).
+
+    Returns `(manifest, matched)`. `matched` is False when no block in the plan
+    resolves to `step_id` — the caller (diff_verify `--step`) treats that as a
+    hard error rather than silently verdicting an EMPTY manifest (which would
+    pass any diff and mask a mis-typed step id).
+
+    Step-id resolution mirrors `iter_blocks`: the nearest preceding `#`-heading
+    text, or `block-N` (1-based) when no heading precedes the block. A plan may
+    (rarely) carry two blocks under the same heading — both are merged, matching
+    how `parse_manifest` accumulates claims across a step's blocks.
+
+    `step_id` may be given as (a) the exact heading text, (b) the `block-N`
+    fallback id, or (c) a bare 1-based ordinal (`"1"`, `"2"`, …) — the last form
+    matches the `.av-verify.json` contract's "text or numeric index". The
+    numeric form matches by block ordinal regardless of heading text.
+    """
+    m = Manifest()
+    matched = False
+    want_ordinal: int | None = None
+    if step_id.isdigit():
+        want_ordinal = int(step_id)
+    for idx, mo in enumerate(_BLOCK_RE.finditer(text), start=1):
+        heading = _nearest_heading(text, mo.start())
+        this_step = heading or f"block-{idx}"
+        if not (this_step == step_id or (want_ordinal is not None and idx == want_ordinal)):
+            continue
+        matched = True
+        claims, tier, tier_problems, gates, qualifiers = _parse_block_body(mo.group(1))
+        m.claims.extend(claims)
+        if tier is not None:
+            m.tiers.append(tier)
+        m.meta_problems.extend(tier_problems)
+        m.gates.extend(gates)
+        for g in gates:
+            if not g.startswith(GATE_PREFIXES):
+                m.meta_problems.append(
+                    f"gate {g!r} lacks a {'/'.join(GATE_PREFIXES)} prefix")
+        m.qualifiers.extend(qualifiers)
+        for q in qualifiers:
+            if not q.startswith(QUALIFIER_VERBS):
+                m.meta_problems.append(
+                    f"qualifier {q!r} not one of {list(QUALIFIER_VERBS)} "
+                    "(raw shell is not allowed)")
+    return m, matched
+
+
 def _parse_block_body(block_text: str) -> tuple[list[Claim], str | None,
                                                   list[str], list[str], list[str]]:
     """Parse one plan-verify block's lines. Returns

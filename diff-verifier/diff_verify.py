@@ -40,7 +40,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _shared import resolve as _rs                      # noqa: E402
 from _shared.db import SchemaError, find_db, open_db    # noqa: E402
-from _shared.manifest import iter_blocks, parse_manifest  # noqa: E402
+from _shared.manifest import (                            # noqa: E402
+    iter_blocks,
+    parse_manifest,
+    parse_manifest_for_step,
+)
 
 OUT_OF_SCOPE = "OUT-OF-SCOPE-TOUCH"
 QUALIFIER_FAIL = "QUALIFIER-FAIL"
@@ -113,10 +117,26 @@ def run_qualifier(q: str, repo_root: Path, changed: list[str],
 # ── core ─────────────────────────────────────────────────────────────────────
 
 def verify(plan_path: Path, changed: list[str], repo_root: Path,
-           allow: list[str], skip_db: bool, db_path: Path | None) -> dict:
-    manifest = parse_manifest(plan_path.read_text(errors="replace"))
+           allow: list[str], skip_db: bool, db_path: Path | None,
+           step: str | None = None) -> dict:
+    text = plan_path.read_text(errors="replace")
+    # BUG-024: `--step` scopes the whole verdict to ONE plan-verify block, so a
+    # multi-wave plan can pass mid-phase (before later steps' symbols exist).
+    # Without it, `verify()` verdicts a single wave's diff against the ENTIRE
+    # plan's manifest → NOT-DELIVERED for every not-yet-built later-step symbol.
+    if step is not None:
+        manifest, matched = parse_manifest_for_step(text, step)
+        if not matched:
+            raise SchemaError(
+                f"--step {step!r} matched no plan-verify block in {plan_path} "
+                "(step id is the block's nearest preceding heading, or "
+                "'block-N'); run --per-step to list the available step ids")
+    else:
+        manifest = parse_manifest(text)
     findings: list[dict] = []
     notes: list[str] = []
+    if step is not None:
+        notes.append(f"scoped to step {step!r} (BUG-024 per-wave verdict)")
 
     # 1 — scope: every changed file ∈ declared paths ∪ allow globs
     declared = manifest.declared_paths()
@@ -229,6 +249,11 @@ def main() -> None:
     ap.add_argument("--per-step", action="store_true",
                     help="list one record per plan-verify block as JSON "
                          "(P8 preflight; no diff required)")
+    ap.add_argument("--step",
+                    help="scope the diff verdict to ONE plan-verify block "
+                         "(its nearest-heading step id, or 'block-N'); a "
+                         "multi-wave plan uses this so a mid-phase wave passes "
+                         "without demanding later steps' symbols (BUG-024)")
     ap.add_argument("--allow", action="append", default=[],
                     help="glob of additionally-allowed changed files (repeatable); "
                          "run docs / STATE.md updates typically ride here")
@@ -272,7 +297,8 @@ def main() -> None:
         changed = (diff_files(repo_root, args.diff) if args.diff
                    else list(args.files))
         result = verify(plan, changed, repo_root, args.allow,
-                        args.skip_db, Path(args.db) if args.db else None)
+                        args.skip_db, Path(args.db) if args.db else None,
+                        step=args.step)
     except (FileNotFoundError, SchemaError, subprocess.CalledProcessError) as e:
         print(f"error: {e}", file=sys.stderr)
         sys.exit(2)
