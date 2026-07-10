@@ -59,7 +59,11 @@ def _render_paths(args) -> tuple[Path, Path | None, Path | None, Path, str]:
     else:
         model = Path(args.model)
         narratives = Path(args.narratives) if args.narratives else None
-        config = Path(args.config) if getattr(args, "config", None) else None
+        # --config overridable without triggering discovery (A14). When absent,
+        # fall back to a cwd-relative DEFAULT_CONFIG_REL: gm._load_narrate_config
+        # is permissive to missing files (returns DEFAULT_NARRATIVES_REL), so this
+        # never dies — it just reads narratives_rel from the default if present.
+        config = Path(args.config) if getattr(args, "config", None) else Path(DEFAULT_CONFIG_REL)
         root = None
 
     # Out path: --out beats --component beats default.
@@ -76,15 +80,47 @@ def _render_paths(args) -> tuple[Path, Path | None, Path | None, Path, str]:
 
 
 def cmd_render(args) -> None:
-    """render verb — Step-3 shell: resolve paths + print summary + exit 0.
+    """render verb — resolve paths → load inputs → (Step 5 joins, 6 escapes, 7 splices/writes).
 
-    Steps 4-7 fill this body with load → join → escape → splice → write.
+    Step 4 fills the LOAD half only. The L7 split: every failure mode lands exactly
+    where P4 pinned it — absent narratives is a note (exit 0), everything malformed
+    is a loud exit 2. Narratives load through P4's own loaders (never re-written);
+    because `gm._load_narratives` returns `{}` for BOTH absent and empty, render
+    checks `is_file()` ITSELF to tell the absent case (note + `!` warn) from the
+    curated empty-`{}` case (no note).
     """
-    model, narratives, config, out, title = _render_paths(args)
-    # Placeholder summary — Steps 4-7 replace this with the actual load/join/splice.
-    gm.info(f"model       = {model}")
-    gm.info(f"narratives  = {narratives}")
-    gm.info(f"config      = {config}")
+    model_path, narratives_path, config_path, out, title = _render_paths(args)
+
+    # 1. Model — absent/malformed -> die 2 (owner must run `extract` first).
+    model = gm._load_model(model_path)
+
+    # 3. Config — permissive; threshold ignored, only `narratives_rel` is used.
+    _, narratives_rel = gm._load_narrate_config(config_path)
+
+    # 2. Narratives — the absent-vs-malformed split is L7's entire contract.
+    note = None
+    if narratives_path is not None and narratives_path.is_file():
+        narratives = gm._load_narratives(narratives_path)   # malformed -> die 2; {} -> no note
+    elif narratives_path is not None:
+        # Absent: load nothing, set the note + warn, continue to exit 0.
+        narratives = {}
+        note = "no narratives yet — run graph_model.py narrate"
+        gm.warn(f"{narratives_path} not found — {note}")
+    else:
+        narratives = {}   # all-explicit path set with no narratives file (A14 no-DB branch)
+
+    # 4. Template — ships WITH the tool (script's own dir), never the target repo.
+    template_path = Path(__file__).resolve().parent / "render_template.html"
+    try:
+        template_text = template_path.read_text()
+    except FileNotFoundError:
+        die(f"render_template.html not found beside {template_path}")
+    except OSError as e:
+        die(f"render_template.html unreadable: {e}")
+
+    # 5. Loaded inputs held for Step 5's join (build_viewmodel takes these forward).
+    gm.info(f"model       = {model_path} ({len(model.get('components', []))} components)")
+    gm.info(f"narratives  = {narratives_path} ({len(narratives)} entries{' [absent — ' + note + ']' if note else ''})")
     gm.info(f"out         = {out}")
     gm.info(f"title       = {title}")
 
