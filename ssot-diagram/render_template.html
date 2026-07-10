@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<!-- P5 ssot-diagram template. Two splice seams (Step 7) + one static comment:
+       the view-model seam (a script-side token incl. a literal '<' that the
+       escape guarantees absent from the spliced payload — F3), the @font-face
+       seam (a style-side token incl. a literal '<'), and the fixed generator
+       note (not a splice target). Refer to them by name in comments, never
+       re-type the literal token text (Step 7 counts each once).
+-->
+<!--SSOT:GENERATOR-->
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSOT diagram</title>
+<style>
+/* ── §1 Color Palette ─────────────────────────────────────────────────── */
+:root,
+[data-theme="light"] {
+  /* §1.1 Backgrounds */
+  --bg:          #fcf8f1;
+  --bg-surface:  #fdf7f1;
+  --bg-inset:    #fbe7d7;
+  --bg-group:    #fcf8f1;
+  /* §1.2 Text */
+  --fg:          #4a4037;
+  --fg-body:     #8b6e57;
+  --fg-muted:    #8b6e57;
+  --fg-disabled: #92908d;
+  /* §1.3 Borders & Focus */
+  --border:      #fad6b3;
+  --ring:        #f66e60;
+  /* §1.4 Badges — bg + fg pairs */
+  --badge-neutral-bg:  #d0e2ed; --badge-neutral-fg:  #3a6a8a;
+  --badge-action-bg:   #f9dec7; --badge-action-fg:   #a05e2a;
+  --badge-positive-bg: #d0ede8; --badge-positive-fg: #2a7a6a;
+  --badge-danger-bg:   #fad3ca; --badge-danger-fg:   #a04030;
+  /* §1.5 Accents */
+  --accent: #fbe7d7;
+  --error:  #f66e60;
+  /* §1.6 Shadows */
+  --shadow:    rgba(74, 64, 55, 0.06);
+  --shadow-md: rgba(74, 64, 55, 0.12);
+  /* §1.7 Edge colors */
+  --edge-default:  #8b6e57;
+  --edge-error:    #f66e60;
+  --edge-success:  #2a7a6a;
+  --edge-highlight:#a05e2a;
+}
+[data-theme="dark"] {
+  /* §1.1 Backgrounds */
+  --bg:          #1a1614;
+  --bg-surface:  #242019;
+  --bg-inset:    #3a2e22;
+  --bg-group:    #1a1614;
+  /* §1.2 Text */
+  --fg:          #e8e0d6;
+  --fg-body:     #c4a88e;
+  --fg-muted:    #c4a88e;
+  --fg-disabled: #5a5856;
+  /* §1.3 Borders & Focus */
+  --border:      #5a4332;
+  --ring:        #f66e60;
+  /* §1.4 Badges */
+  --badge-neutral-bg:  #1e3040; --badge-neutral-fg:  #8abbd6;
+  --badge-action-bg:   #402a15; --badge-action-fg:   #e0a060;
+  --badge-positive-bg: #153530; --badge-positive-fg: #6abcac;
+  --badge-danger-bg:   #401a15; --badge-danger-fg:   #e07060;
+  /* §1.5 Accents */
+  --accent: #3a2e22;
+  --error:  #f66e60;
+  /* §1.6 Shadows */
+  --shadow:    rgba(0, 0, 0, 0.3);
+  --shadow-md: rgba(0, 0, 0, 0.5);
+  /* §1.7 Edge colors */
+  --edge-default:  #c4a88e;
+  --edge-error:    #f66e60;
+  --edge-success:  #6abcac;
+  --edge-highlight:#e0a060;
+}
+
+/* ── §2 Typography ─────────────────────────────────────────────────────── */
+/* §2.1 Font family — @font-face-less fallback chain (Step 1 splices the
+   base64 @font-face rules via the style-side seam below; the raw template
+   previews with system fonts so it opens from disk with zero network). */
+:root {
+  --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+  /* §2.2 Size scale */
+  --text-title:    20px;
+  --text-subtitle: 16px;
+  --text-label:    14px;
+  --text-body:     12px;
+  --text-caption:  10px;
+  /* §2.3 Weights */
+  --font-regular:  400;
+  --font-medium:   500;
+  --font-semibold: 600;
+  /* §1/§8 radii referenced by chrome/legend/tooltips */
+  --radius:    10px;
+  --radius-sm: 5px;
+}
+/* §2.4 letter spacing default 0 — DM Sans natural. */
+
+/* §1.7 / §2.1 spliced base64 @font-face rules land here (Step 1 / Step 6):
+/*<SSOT:FONT_FACE>*/
+
+/* ── §3 Card anatomy ───────────────────────────────────────────────────── */
+.node      { fill: var(--bg-surface); }
+.node-l1   { width: 220px; rx: 12; }            /* Macro  §3.1 */
+.node-l2   { width: 180px; rx: 10; }            /* Micro  §3.1 */
+.node-l3   { width: 120px; rx: 8;  }            /* Nano   §3.1 */
+/* §3.2 badge strip / title / desc / inset; §3.7 bg-surface. §3.6 hover via JS. */
+/* §3.5 foreignObject/animation discipline: outer <g> = SVG positioning only
+   (the transform attribute), inner <g> = CSS animation only (no transform attr).
+   Inner-area bg = var(--bg); border-top 1.5px solid var(--border); 20px min padding. */
+.node-collapsed-inset { fill: var(--bg-inset); }
+.node-expand-btn       { fill: var(--accent); }     /* badge-BG fill, badge-FG +/- */
+
+/* §3 stub cards (addendum §3 binding contract) */
+.stub-card        { fill: var(--bg); stroke: var(--border); stroke-width: 1; }
+.stub-badge-strip { fill: var(--badge-neutral-bg); }
+.stub-title-nav   { fill: var(--fg-body); }          /* navigable: body + -> glyph */
+.stub-title-inert { fill: var(--fg-disabled); }        /* inert: disabled, no glyph */
+.stub-nav-hover   { stroke: var(--ring); }            /* navigable hover: focus ring */
+
+/* Decision + trust chips (addendum §2 — pills in badge colors, 10px/500, uppercase) */
+.chip            { font-size: var(--text-caption); font-weight: var(--font-medium);
+                   text-transform: uppercase; }
+.chip-fresh      { fill: var(--badge-positive-bg); }   /* FRESH  text: positive-fg */
+.chip-danger     { fill: var(--badge-danger-bg); }     /* STALE/ORPHANED/AMBIGUOUS */
+.chip-superseded { fill: var(--bg-inset); }             /* superseded greyed + disabled-fg */
+
+/* ── §4 Edges ─────────────────────────────────────────────────────────── */
+.edge              { fill: none; stroke: var(--edge-default); }
+.edge-solid        { stroke-width: 1.5px; }                /* §4.1 */
+.edge-dashed       { stroke-width: 1px; stroke-dasharray: 6, 4; }
+.edge-dotted       { stroke-width: 1px; stroke-dasharray: 2, 3; }
+.edge-error        { stroke: var(--edge-error); }
+.edge-success      { stroke: var(--edge-success); }
+.edge-highlight    { stroke: var(--edge-highlight); stroke-width: 2px; }
+.edge-faded        { opacity: 0.2; }                       /* §4.6 unconnected */
+.edge-label        { font-size: 9px; font-weight: 500; fill: var(--fg-body); }
+/* §4.4 arrowhead marker: M0,0 L7,3.5 L0,7 Z, 7x7, refX 7 refY 3.5 (in <defs>) */
+
+/* ── §5 Spacing / layout ──────────────────────────────────────────────── */
+:root { --grid: 8px; }   /* §5.1 — all gaps/padding/margin snap to 8px multiples */
+
+/* ── §8 Page chrome ───────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+html, body {
+  height: 100%; margin: 0; overflow: hidden;       /* §8.1 full viewport, no scroll */
+  font-family: var(--font); color: var(--fg); background: var(--bg);
+  transition: background 0.2s, color 0.2s;         /* §7.6 theme */
+}
+#app { display: flex; flex-direction: column; height: 100vh; }
+
+/* §8.2 Header */
+#header {
+  flex: 0 0 auto; display: flex; align-items: center;
+  padding: 12px 20px; background: var(--bg-surface);
+  border-bottom: 1px solid var(--border); z-index: 10; gap: 16px;
+}
+#header-left   { flex: 1 1 auto; }
+#header-center { flex: 0 1 auto; }            /* breadcrumb — hidden at top level */
+#header-right  { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+#title    { font-size: 20px; font-weight: 700; color: var(--fg); }     /* §8.2 title 20/700 */
+#subtitle { font-size: 13px; font-weight: 400; color: var(--fg-body); }
+#breadcrumb { font-size: 12px; font-weight: 500; }
+#breadcrumb .sep    { color: var(--fg-disabled); }
+#breadcrumb .seg    { color: var(--fg-body); cursor: pointer; }       /* clickable → underline */
+#breadcrumb .seg:hover { text-decoration: underline; }
+#breadcrumb .active { color: var(--fg); font-weight: 700; cursor: default; } /* deepest, not clickable */
+
+/* §8.2 right controls — zoom group + theme toggle */
+.hbtn {                        /* 36px square header buttons */
+  width: 36px; height: 36px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--bg-surface);
+  color: var(--fg); cursor: pointer; display: inline-flex; align-items: center;
+  justify-content: center; transition: background 0.15s, color 0.15s, border 0.15s;
+}
+#zoom-group { display: inline-flex; gap: 4px; }       /* §8.2 4px within zoom group */
+.hbtn:hover { background: var(--bg); color: var(--fg); border-color: var(--ring); }
+
+/* §8.1 Canvas */
+#canvas-wrap { flex: 1 1 auto; position: relative; overflow: hidden; }
+#diagram { width: 100%; height: 100%; cursor: grab; }
+#diagram:active { cursor: grabbing; }                /* §7.4 pan grab→grabbing */
+#preview-note {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  color: var(--fg-body); font-size: var(--text-body); pointer-events: none;
+}
+
+/* §8.3 Legend */
+#legend {
+  position: absolute; left: 16px; bottom: 16px; min-width: 160px;
+  padding: 12px 16px; background: var(--bg-surface);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: 0 2px 8px var(--shadow); z-index: 5; font-size: var(--text-body);
+}
+#legend-title { font-size: 11px; font-weight: 600; color: var(--fg-body);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.legend-sw  { width: 16px; height: 12px; border: 1px solid var(--border); }
+.legend-edge { width: 24px; }
+.legend-label { font-size: 11px; font-weight: 500; color: var(--fg); }
+#legend-divider { height: 1px; background: var(--border); margin: 6px 0; }
+
+/* §7.2 Tooltip */
+#tooltip {
+  position: absolute; max-width: 280px; padding: 8px 10px;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); box-shadow: 0 4px 16px var(--shadow-md);
+  font-size: var(--text-body); color: var(--fg-body); pointer-events: none;
+  display: none; z-index: 20;
+}
+#tooltip .tt-chip { font-size: var(--text-caption); font-weight: var(--font-medium);
+  text-transform: uppercase; margin-bottom: 4px; }
+#tooltip .tt-name { font-weight: var(--font-medium); color: var(--fg); }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- §8.2 header: left(title), center(breadcrumb), right(controls) -->
+  <header id="header">
+    <div id="header-left">
+      <div id="title">SSOT diagram</div>
+      <div id="subtitle"></div>
+    </div>
+    <nav id="header-center">
+      <div id="breadcrumb" style="display:none;"></div>  <!-- §8.2 hidden at top level -->
+    </nav>
+    <div id="header-right">
+      <div id="zoom-group">                              <!-- §8.2 zoom group -->
+        <button class="hbtn" id="zoom-in"  title="Zoom in"       aria-label="Zoom in">+</button>
+        <button class="hbtn" id="zoom-out" title="Zoom out"      aria-label="Zoom out">&#8722;</button>
+        <button class="hbtn" id="zoom-fit" title="Fit to view"   aria-label="Fit to view">&#9635;</button>
+      </div>
+      <button class="hbtn" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">&#9728;</button>
+    </div>
+  </header>
+
+  <div id="canvas-wrap">
+    <svg id="diagram" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- §4.4 arrowhead marker (inherits currentColor via stroke; defaults to edge-default).
+             src refX=7 refY=3.5 markerWidth/Height=7; fill inherits edge color. -->
+        <marker id="arrowhead" viewBox="0 0 7 7" refX="7" refY="3.5"
+                markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L7,3.5 L0,7 Z" fill="context-stroke"></path>
+        </marker>
+        <!-- Main canvas <g>: SVG positioning on an outer <g>, CSS animation on an inner <g>
+             (§3.5 discipline — never both on a <g> holding foreignObject). -->
+        <g id="viewport">           <!-- pan/zoom transform applied here by the painter (Step 8) -->
+          <g id="content"></g>       <!-- nodes + edges; the painter renders into this -->
+        </g>
+      </defs>
+    </svg>
+    <div id="preview-note">template preview — no data spliced</div>  <!-- Decision 3: shown iff MODEL === null -->
+    <aside id="legend" style="display:none;"></aside>  <!-- §8.3 auto-generated, hidden until the painter fills it -->
+    <div id="tooltip"></div>                            <!-- §7.2 tooltip; filled via setText (F2) -->
+  </div>
+</div>
+
+<script>
+// ── Safe DOM helpers (axis 2B / F2) ───────────────────────────────────
+// Every model-derived string reaches the DOM through exactly ONE of these two
+// helpers (textContent assignment — the raw-HTML sink is forbidden). The
+// raw-HTML sink may appear in this template ONLY as the literal clearing idiom
+// `= ''` (Step 10 grep enforces: the word is allowed only in that form).
+// (b′) tooltip sink: tooltip content also flows through setText(el, s); no
+// model-derived prose is ever stored in an HTML attribute (no data-title/-desc).
+function setText(el, s) {                       // mechanism (b) — assigns textContent
+  el.textContent = s;
+  return el;
+}
+// paintWrappedText — the foreignObject writer (adapts the archived
+// renderWrappedText: builds a <div> under a <foreignObject>, assigns
+// div.textContent). Used for wrapping descriptions (§3.2 "wraps natively").
+function paintWrappedText(parent, x, y, w, h, text, cls) {
+  const fo = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+  fo.setAttribute('x', x); fo.setAttribute('y', y);
+  fo.setAttribute('width', w); fo.setAttribute('height', h);
+  const div = document.createElement('div');
+  if (cls) div.setAttribute('class', cls);
+  setText(div, text);               // NEVER assign raw HTML / interpolation
+  fo.appendChild(div);
+  parent.appendChild(fo);
+  return div;
+}
+
+// ── View-model splice seam (Step 6/7) ─────────────────────────────────
+// The script-side sentinel (the token on the next line) is WHOLE, including
+// the trailing `null`: the raw template stays valid JS (MODEL === null shows
+// the preview note via the guard below). render.py replaces the whole token
+// with the escaped object literal. Both sentinels contain a literal '<' (F3):
+// the escaped payload has zero '<' (json.dumps ensure_ascii + the '<'
+// replace), so it can never contain its own sentinel.
+const MODEL = /*<SSOT:VIEWMODEL_JSON>*/null;
+
+// Decision 3 preview-note guard: when the template is opened RAW from disk
+// (MODEL === null), show the chrome + the preview note; hide the legend.
+// The painter (Step 8) runs only after splice replaces the token with a real
+// object literal (MODEL !== null), so preview-note + guard live in the template.
+(function previewGuard() {
+  var note = document.getElementById('preview-note');
+  if (MODEL !== null && note) { note.style.display = 'none'; }
+})();
+
+// ── Painter (Step 8 fills these stubs) ────────────────────────────────
+// The painter is a dumb renderer of MODEL: it switches on embedded flags
+// (stub, stub_nav, prose.status, decision status, chips, tooltip) and derives
+// nothing. Trust verdicts are precomputed in Python (L2/_derive_status) — the
+// painter never decides freshness. Pan/zoom + breadcrumb + focus views +
+// tooltips + legend + theme land in Step 8.
+function showTooltip(nodeId) { /* Step 8 — fills #tooltip via setText only */ }
+function paintView()        { /* Step 8 — renders #content for current viewPath */ }
+function buildLegend(vm)    { /* Step 8 — createElement + textContent (archived buildLegend raw-HTML hazard rewritten) */ }
+// boot(): Step 8 wires pan/zoom, theme toggle (localStorage 'diagram-theme'),
+// breadcrumb, click handlers. No-op until then so the raw template opens clean.
+function boot() { /* Step 8 */ }
+// NOTE: boot() intentionally NOT called here — Step 8 adds the call once the
+// painter exists; calling it now would throw on missing MODEL fields in a
+// spliced-but-unpainted artifact.
+</script>
+</body>
+</html>
