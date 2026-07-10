@@ -266,6 +266,84 @@ class TestPerStep:
         assert records[1]["gates"] == []
         assert records[2]["gates"] == []
 
+
+# ── BUG-024: --step scopes the diff verdict to ONE wave's block ──────────────
+
+# A 2-step plan: Step 1's symbol is delivered; Step 2's is NOT (later wave, not
+# built yet). The whole-plan verdict fails on Step 2's NOT-DELIVERED; a --step
+# "Step 1" verdict must PASS (that is the toll-gate BUG-024 restores).
+TWO_WAVE_PLAN = """# multi-wave plan
+
+### Step 1 — build the pool
+
+<!-- plan-verify
+touch: src/db.py::get_conn, tests/test_db.py
+new:   src/db.py::get_pool
+tier: B
+-->
+
+### Step 2 — build the cache (NOT YET IMPLEMENTED)
+
+<!-- plan-verify
+new:   src/cache.py::get_cache
+tests/test_cache.py
+tier: B
+-->
+"""
+
+
+class TestStepScope:
+    """BUG-024 regression: --step must scope the whole verdict to one block."""
+
+    def _repo(self, tmp_path: Path) -> Path:
+        (tmp_path / "src").mkdir()
+        (tmp_path / "src/db.py").write_text("def get_conn(): pass\n")
+        (tmp_path / "plan.md").write_text(TWO_WAVE_PLAN)
+        # DB has Step 1's symbols delivered; Step 2's get_cache is ABSENT.
+        make_db(tmp_path, delivered=True, removed=True)
+        return tmp_path
+
+    def test_whole_plan_fails_midwave(self, tmp_path):
+        """Without --step, wave-1's diff is verdicted against the WHOLE plan →
+        NOT-DELIVERED for Step 2's not-yet-built get_cache. This is the bug."""
+        repo = self._repo(tmp_path)
+        r = run(repo, GOOD_DIFF, "--strict")
+        assert r.returncode == 1, r.stdout + r.stderr
+        assert "NOT-DELIVERED" in r.stdout
+        assert "get_cache" in r.stdout
+
+    def test_step_scopes_verdict_and_passes(self, tmp_path):
+        """WITH --step 'Step 1 — build the pool', only Step 1's claims are
+        verdicted → PASS even though Step 2's symbols don't exist yet."""
+        repo = self._repo(tmp_path)
+        r = run(repo, GOOD_DIFF, "--strict", "--step", "Step 1 — build the pool")
+        assert r.returncode == 0, r.stdout + r.stderr
+        assert "PASS" in r.stdout
+        # get_cache belongs to Step 2 — it must NOT be verdicted here.
+        assert "get_cache" not in r.stdout
+
+    def test_step_scopes_out_of_scope_touch(self, tmp_path):
+        """A file declared only in Step 2 is OUT-OF-SCOPE for a Step-1 verdict."""
+        repo = self._repo(tmp_path)
+        r = run(repo, [*GOOD_DIFF, "src/cache.py"], "--strict",
+                "--step", "Step 1 — build the pool")
+        assert r.returncode == 1
+        assert "OUT-OF-SCOPE-TOUCH" in r.stdout and "src/cache.py" in r.stdout
+
+    def test_unknown_step_errors_loudly(self, tmp_path):
+        """A mis-typed step id must fail (exit 2), NOT silently verdict an empty
+        manifest (which would pass any diff)."""
+        repo = self._repo(tmp_path)
+        r = run(repo, GOOD_DIFF, "--strict", "--step", "Step 99 — nope")
+        assert r.returncode == 2, r.stdout + r.stderr
+        assert "matched no plan-verify block" in r.stderr
+
+    def test_step_note_records_scoping(self, tmp_path):
+        repo = self._repo(tmp_path)
+        r = run(repo, GOOD_DIFF, "--json", "--step", "Step 1 — build the pool")
+        doc = json.loads(r.stdout)
+        assert any("scoped to step" in n for n in doc["notes"])
+
     def test_synthetic_step_id_when_no_heading(self, tmp_path):
         plan = tmp_path / "plan.md"
         plan.write_text(
