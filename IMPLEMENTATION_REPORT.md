@@ -1,33 +1,49 @@
-# Step 7 Implementation Report — _render_html splice + _save_text + cmd_render assembly
+# Step 8 Implementation Report — JS painter body
 
 ## Files changed
-- `ssot-diagram/render.py` — added _render_html + _save_text (verbatim from plan
-  §6); wired cmd_render end-to-end (resolve → load → build_viewmodel →
-  _font_face_css + _escape_viewmodel_json → _render_html → _save_text → ok); os
-  import; removed the dead `_, narratives_rel = gm._load_narrate_config(...)`
-  (narratives_rel was unused after Step 5; CLEAN-DEAD-001). Passes component +
-  title to build_viewmodel; lifts the L7 `note` from the loader boundary into the
-  view-model.
+- `ssot-diagram/render_template.html` — filled the painter stubs (showTooltip,
+  paintView, buildLegend, boot + supporting helpers). Template 325 -> 1007 lines.
 
-## Verify (2026-07-10) — the renderer is now functionally complete
-- E2E: `render render --model golden --out /tmp/x.html` → writes 313091-byte
-  self-contained HTML, exit 0, "10 components".
-- Splice: both sentinels pre-counted == 1 (no drift); zero sentinels survive
-  splice (grep SSOT = 0). `const MODEL = {...}` (object literal, not null);
-  `<` in the view-model is escaped to < everywhere (json.dumps ensure_ascii
-  + replace). No </script> breakout.
-- Self-contained: 3 base64 data:font/woff2 @font-face rules embedded; ZERO
-  `<link>` / @import / external src (opens offline, zero network).
-- Byte-deterministic: two renders → identical sha256 e25d74cb….
-- --component cmp-lib scoped render → 183423-byte HTML, exit 0.
-- Narratives fixture render → UNNARRATABLE chip present (A1 case via the join).
-- L7 regression intact: missing template → exit 2; absent narratives → note in
-  payload + exit 0; missing/malformed model → exit 2; empty {} → no note exit 0.
-- pytest 105/3 (0 new); graph_model.py + golden byte-unchanged.
+## Painter behaviors filled (Step 8 + UX addendum §1-4)
+Focus-view state machine (viewPath 0-2 + viewState pan/zoom, paintView fully
+re-renders per path); grid layout (ceil(sqrt(n)) cols, §5.2/5.3/5.4 spacings);
+focus header panel (§3.5 look); breadcrumb (from viewPath via name lookups,
+segments truncate path on click = same as panel `-`, hidden at top, scoped root);
+stubs (switch on stub/stub_nav flags only — navigable `->`+body+pointer+hover
+ring click->viewPath, inert disabled+no-glyph+edge-highlight-only, OTHER FILE
+badge label + OTHER COMPONENT); tooltips (data-node-id only, showTooltip fills
+via setText from precomputed node.tooltip, §7.2 trigger/position/box); legend
+(draw embedded legend verbatim via createElement+textContent); edge painting
+(rounded orthogonal + arrowhead + precomputed pill labels, highlight-on-click +
+unconnected fade, deselect on empty-click); theme toggle (data-theme +
+localStorage diagram-theme + prefers-color-scheme); pan/zoom (drag, wheel,
+0.25-4x, buttons, fit-to-view from layout data never getBBox, dblclick, touch).
 
-## Literal testCmd (Step-7 gate)
+## Dumb-painter invariant (ADR-0002)
+No arithmetic/conditionals on trust fields, no .get defaulting — every
+status/chip/label/tooltip is read from the embedded precomputed MODEL. load-time
+id->node index (Decision 11) built once; boot() wired only when MODEL !== null.
+
+## Verify (2026-07-10, static)
+- sentinels each exactly once (VM 1 / FONT 1 / GENERATOR 1) — Step 7 splice
+  assert holds.
+- raw-HTML-sink word absent (0) — all model-derived strings via setText /
+  paintWrappedText / createElement+textContent. No prose in HTML attributes.
+- no <link>/@import (self-contained, zero network).
+- node --check on extracted <script> (29352 chars) -> JS-syntax OK.
+- boot() (line 997) called only when MODEL !== null (line 1004) — raw template
+  still previews clean.
+- E2E render: writes 338962-byte HTML exit 0; byte-deterministic across two
+  renders (sha b64e2136b6362a0d). Output grew vs Step 7 (was 313K) because the
+  painter JS now adds render content — expected; determinism is what holds.
+- graph_model.py + golden byte-unchanged; pytest 105/3 (0 new).
+
+NOTE: live interactive behavior (click/hover/pan/zoom/theme-persist) is NOT
+assertable headlessly — deferred to the phase-end E2E browser check.
+
+## Literal testCmd (Step-8 gate)
 ```
-python3 ssot-diagram/render.py render --model ssot-diagram/testdata/mkt_engine.model.json --out /tmp/p5_step7.html
+python3 ssot-diagram/render.py render --model ssot-diagram/testdata/mkt_engine.model.json --out /tmp/p5_s8.html
 ```
 
 === END REPORT ===
