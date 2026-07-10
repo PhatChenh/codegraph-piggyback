@@ -14,6 +14,8 @@ Command:
 from __future__ import annotations
 
 import argparse
+import base64
+import json
 import sys
 from pathlib import Path
 
@@ -123,6 +125,36 @@ def cmd_render(args) -> None:
     gm.info(f"narratives  = {narratives_path} ({len(narratives)} entries{' [absent — ' + note + ']' if note else ''})")
     gm.info(f"out         = {out}")
     gm.info(f"title       = {title}")
+
+
+# ── escape + font (Step 6; axis 2A, F3 invariant — copy verbatim) ────────────
+# _escape_viewmodel_json: the payload between <script> tags can never break out.
+# ensure_ascii=True escapes U+2028/U+2029 + all non-ASCII (A11); the sole
+# remaining dangerous ASCII char '<' becomes < — simultaneously valid JSON +
+# valid JS, so </script>, <!--, and any HTML-ish payload in narrative text or a
+# --title is inert, AND the <'-bearing sentinels are collision-proof (the
+# invariant lives in the '<' char, not obscurity — the escaped payload has zero
+# '<', so it can never contain its own sentinel).
+def _escape_viewmodel_json(viewmodel: dict) -> str:
+    return (json.dumps(viewmodel, sort_keys=True, ensure_ascii=True,
+                       separators=(",", ":")).replace("<", "\\u003c"))
+
+
+# _font_face_css: the three vendored woff2 as base64 @font-face rules, fixed
+# file order (weights 400/500/700), deterministic. A missing asset -> die 2
+# (fail-loud beats silent system-font fallback masking the zero-network rule).
+# Emitted CSS contains no '<' and no sentinel.
+def _font_face_css(assets_dir: Path) -> str:
+    rules = []
+    for weight, fname in [(400, "DMSans-Regular.woff2"), (500, "DMSans-Medium.woff2"),
+                          (700, "DMSans-Bold.woff2")]:
+        p = assets_dir / fname
+        if not p.is_file():
+            die(f"missing font asset: {p}")   # fail-loud, never silent system-font fallback
+        b64 = base64.b64encode(p.read_bytes()).decode("ascii")
+        rules.append(f'@font-face{{font-family:"DM Sans";font-weight:{weight};'
+                     f'font-style:normal;src:url(data:font/woff2;base64,{b64}) format("woff2")}}')
+    return "\n".join(rules)
 
 
 # ── build_viewmodel: the trust join (L2 heart) ────────────────────────────────
