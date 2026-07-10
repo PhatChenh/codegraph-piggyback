@@ -1,0 +1,34 @@
+{
+  "narratives": {
+    "nano:alphaOne@tm/alpha.ts": {
+      "node_id": "nano:alphaOne@tm/alpha.ts",
+      "signature": "cccc0000000000000000000000000000000000000000000000000000000000cc",
+      "text": "alphaOne — approved entry, signature matches the golden (FRESHL).",
+      "status": "approved"
+    },
+    "micro:tm/alpha.ts": {
+      "node_id": "micro:tm/alpha.ts",
+      "signature": "bbbb0000000000000000000000000000000000000000000000000000000000bb",
+      "text": "alpha micro — proposed entry, signature matches; visible PROPOSED badge.",
+      "status": "proposed"
+    },
+    "nano:alphaTwo@tm/alpha.ts": {
+      "node_id": "nano:alphaTwo@tm/alpha.ts",
+      "signature": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "text": "alphaTwo — stale: stored signature does not match the live one; OLD text rendered with a NEEDS REVIEW danger chip.",
+      "status": "approved"
+    },
+    "cmp-tm-beta": {
+      "node_id": "cmp-tm-beta",
+      "signature": "beefbeefbeefbeefbeefbeefbeefbeefbeefbeefbeefbeefbeefbeefbeefbeef",
+      "text": "Stored entry MUST be ignored — cmp-tm-beta has the EMPTY signature, so gm._derive_status returns 'unnarratable' on the FIRST branch (A1 branch order). Fallback text + UNNARRATABLE badge.",
+      "status": "approved"
+    },
+    "fake:nano-ghost@tm/ghost.ts": {
+      "node_id": "fake:nano-ghost@tm/ghost.ts",
+      "signature": "9999999999999999999999999999999999999999999999999999999999999999",
+      "text": "Orphan entry — id not in the trustmatrix model; build_viewmodel counts it via gm.info and never lets it into the payload.",
+      "status": "proposed"
+    }
+  }
+}

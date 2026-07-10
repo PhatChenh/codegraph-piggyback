@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "generated_at": null,
+  "nano_cap": 8,
+  "components": [
+    {
+      "id": "cmp-tm-alpha",
+      "kind": "component",
+      "name": "trustmatrix-alpha",
+      "path": "tm/alpha",
+      "signature": "aaaa0000000000000000000000000000000000000000000000000000000000aa",
+      "children": [
+        {
+          "id": "micro:tm/alpha.ts",
+          "kind": "micro",
+          "name": "tm/alpha.ts",
+          "path": "tm/alpha.ts",
+          "signature": "bbbb0000000000000000000000000000000000000000000000000000000000bb",
+          "edges": [],
+          "decisions": ["dec-tm-ambig"],
+          "children": [
+            {
+              "id": "nano:alphaOne@tm/alpha.ts",
+              "kind": "function",
+              "name": "alphaOne",
+              "qualified_name": "alphaOne",
+              "path": "tm/alpha.ts",
+              "signature": "cccc0000000000000000000000000000000000000000000000000000000000cc",
+              "caller_count": 0,
+              "is_exported": true,
+              "docstring": "",
+              "edges": [],
+              "decisions": ["dec-tm-fresh"]
+            },
+            {
+              "id": "nano:alphaTwo@tm/alpha.ts",
+              "kind": "function",
+              "name": "alphaTwo",
+              "qualified_name": "alphaTwo",
+              "path": "tm/alpha.ts",
+              "signature": "dddd0000000000000000000000000000000000000000000000000000000000dd",
+              "caller_count": 0,
+              "is_exported": true,
+              "docstring": "",
+              "edges": [],
+              "decisions": ["dec-tm-stale"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cmp-tm-beta",
+      "kind": "component",
+      "name": "trustmatrix-beta",
+      "path": "tm/beta",
+      "signature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "children": [
+        {
+          "id": "micro:tm/beta.ts",
+          "kind": "micro",
+          "name": "tm/beta.ts",
+          "path": "tm/beta.ts",
+          "signature": "eeee0000000000000000000000000000000000000000000000000000000000ee",
+          "edges": [],
+          "decisions": ["dec-tm-super"],
+          "children": [
+            {
+              "id": "nano:betaOne@tm/beta.ts",
+              "kind": "function",
+              "name": "betaOne",
+              "qualified_name": "betaOne",
+              "path": "tm/beta.ts",
+              "signature": "ffff0000000000000000000000000000000000000000000000000000000000ff",
+              "caller_count": 0,
+              "is_exported": true,
+              "docstring": "",
+              "edges": [],
+              "decisions": ["dec-tm-orphan"]
+            },
+            {
+              "id": "collapsed:tm/beta.ts",
+              "kind": "collapsed",
+              "name": "+5 more",
+              "signature": "1111111111111111111111111111111111111111111111111111111111111111",
+              "collapsed_count": 5
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-tm-fresh",
+      "name": "Trustmatrix fresh ADR",
+      "doc": "All anchors verified, no drift.",
+      "status": "FRESH"
+    },
+    {
+      "id": "dec-tm-stale",
+      "name": "Trustmatrix stale ADR",
+      "doc": "Anchors drifted; signature mismatch.",
+      "status": "STALE"
+    },
+    {
+      "id": "dec-tm-orphan",
+      "name": "Trustmatrix orphaned ADR",
+      "doc": "Anchor symbol vanished from the model.",
+      "status": "ORPHANED"
+    },
+    {
+      "id": "dec-tm-ambig",
+      "name": "Trustmatrix ambiguous ADR",
+      "doc": "Anchor matches multiple symbols; cannot pin.",
+      "status": "AMBIGUOUS"
+    },
+    {
+      "id": "dec-tm-super",
+      "name": "Trustmatrix superseded ADR",
+      "doc": "Replaced by a newer ADR; painted disabled.",
+      "status": "superseded"
+    }
+  ]
+}
