@@ -1,0 +1,16 @@
+{
+  "narratives": {
+    "cmp-prisma": {
+      "node_id": "cmp-prisma",
+      "signature": "c5dd7b9877ffd00bd35baf20c5b3989b545b921622535a2dc32e9ec8c56daf45",
+      "text": "Probe component — narrative carries every F3 escape hazard: a literal </script><script>alert(1)</script> tag, an HTML comment opener <!--, a Unicode LINE SEPARATOR (U+2028), and the literal sentinel string /*<SSOT:VIEWMODEL_JSON>*/ appearing inside prose. _escape_viewmodel_json must neutralize all of these.",
+      "status": "approved"
+    },
+    "micro:prisma/seed.ts": {
+      "node_id": "micro:prisma/seed.ts",
+      "signature": "96ff5db581b0e0a4e292185f6b511cd7da69e8442e17af8414a67ecdf06a7c40",
+      "text": "Secondary injection entry — another U+2028 inside the prose, plus a nested <!-- comment marker. Used to verify the escape is applied to every entry, not just the first.",
+      "status": "proposed"
+    }
+  }
+}

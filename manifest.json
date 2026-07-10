@@ -39,6 +39,12 @@
       "desc": "ssot-diagram P4 — narrate subcommands: plain-language sidecar for diagram nodes, signature-pinned",
       "hooks": []
     },
+    "ssot-render": {
+      "script": "ssot-diagram/render.py",
+      "scope": "repo",
+      "desc": "ssot-diagram P5 — render diagram-model + narratives into one self-contained interactive HTML",
+      "hooks": []
+    },
     "plan-verifier": {
       "script": "plan-verifier/plan_verify.py",
       "args": "--hook",

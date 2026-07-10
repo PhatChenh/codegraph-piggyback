@@ -4,7 +4,33 @@
 
 ## What is happening right now
 
-**ssot P3 diagram-model extractor: DONE (2026-07-04), merged to main.**
+**ssot P5 HTML renderer: IMPLEMENTATION COMPLETE (2026-07-10), on branch
+`dsk/p5-html-renderer`, NOT merged to main.** 11 steps shipped (`1dfead0`→`5e91004`)
+via av-orchestrate (minimax worker seats for the judgment steps — Steps 5/8/9/10 —
+glm orchestrator inline-reviewing tier-A + authoring the verbatim steps).
+`render.py` + `render_template.html` + `test_render.py` (24 tests, +24 vs 105/3
+baseline → **129 passed / 3 pre-existing `TestGoldenLive` pilot-drift, 0 NEW**),
+3 font binaries + OFL + 4 fixtures + `ssot-render` manifest entry + the OTHER-FILE
+addendum note. Golden model sha `56df3d86…` intact; render E2E = 339KB self-contained,
+byte-deterministic, zero network. **NEXT: live painter E2E browser check (deferred
+— click/hover/pan/zoom/theme cannot assert headlessly) + merge proposal → main.**
+Pipeline position: implement ✅ → review ⏳(inline done; cross-model panel owed —
+deepseek reasonix review seat broken per `../agent_village/BUGS.md` BUG-022, so
+inline glm reviewed tier-A Step 5 instead) → E2E ⏳(browser, owner) → docs → merge.
+
+**av-orchestrate tooling friction this phase (logged to `../agent_village/BUGS.md`):**
+BUG-023 (staged-cwd pre-write unreachable via `av` CLI → worker cwd always
+`profile.worktree`; worked around by repointing minimax worktree to the codegraph
+repo, sequential not 4-parallel), BUG-024 (`av verify-wave` category-21 is
+phase-scoped not per-step → mid-multi-wave gate can't pass; gated each wave on
+cat-20 tests + cat-22 report + manual per-step symbol check, full toll-gate pass
+deferred to phase-end). Two more field-reported (BUG-025 warmup-zombie, BUG-026
+malformed-envelope cosmetic) corroborate. a `--worktree/--cwd` flag on `av session
+create` would fix BUG-023 cleanly.
+
+---
+
+## ssot P3 diagram-model extractor: DONE (2026-07-04), merged to main.
 Commit `ba02a56` (merge) + `b0b82b4` (run-report). NOT pushed to origin. Built via
 `deepseek-orchestrate` (deepseek-v4-flash implemented; Claude reviewed each wave) with
 three review rounds (plan-compliance → code-quality → phase-end adversarial red-team)
@@ -29,18 +55,53 @@ overridden by F2 (recorded so nobody "restores" it). OQ-P5-5 RESOLVED BY OWNER
 P5 ships tool + fixtures only, E2E still renders+clicks live mkt_engine, nothing
 committed here (resolution injected into spec Open Questions).
 
-**PAUSED HERE BY OWNER 2026-07-06 (spec gate).** Pipeline position: design ✅ →
-red-team ✅ (REVISE, all folded) → spec ✅ (890 lines, 11 components, 20
-assumptions) → **NEXT: factual-code-verification** (fresh strong-model subagent
-re-verifies all 20 assumptions against live code, distrusting the spec; then plan
-with `plan_verify.py --strict` gate). Resume: dispatch FCV per build-pipeline
-template against `AI-artifacts/2_specs/p5-html-renderer.md`, findings to
-`AI-artifacts/3_factual-code-verification/p5-html-renderer.md`. Delegation
-verdict (design doc): big-model-only for spec/plan/implementation — no cheap
+**factual-code-verification step DONE (2026-07-09):**
+`AI-artifacts/3_factual-code-verification/p5-html-renderer.md` — 19 validated /
+0 invalidated / 2 unverifiable (P5 fixtures absent until built — expected). Run
+by `writ:writ-explorer` subagent (fresh strong-model context, read-only,
+distrusts spec); main-thread orchestrator re-verified every load-bearing claim +
+corrected ONE false-positive: the subagent marked A19 (pytest baseline
+105/108) INVALIDATED reporting `152/155`, but that was a repo-root-vs-subdir
+scope confusion — bare `pytest` ran from `codegraph-piggyback/` (collects ALL
+tools = 155), not the `pytest ssot-diagram/` scope the spec + STATE.md use
+(108). Re-verdicted A19 VALIDATED; 105/108 confirmed live. Zero design-loop-back;
+pipeline proceeds to plan. Two doc-drift items (both loop-back-to-docs at
+pipeline end, not loop-back-to-design): (1) ADR-0001 + both CLAUDE.md still say
+`_shared/` "deferred to Phase B" though it landed (`decision_index.py:44-57`
+imports it; P5 spec itself already current — A9 cites `_shared/db.py`); (2)
+design doc L812 carries literal U+2028/29 bytes in A11 prose (cosmetic; spec
+A11 correct). Golden sha `56df3d86…` byte-verified intact.
+
+**plan step DONE (2026-07-09):** `ai-artifacts/4_plans/p5-html-renderer.md`
+(~1170 lines, 11 Steps ≈ spec components 1–11, 7 waves A–H, 11 Capabilities
+C1–C11, E2E 13-step walkthrough + final-commit checklist per OQ-P5-5).
+`plan_verify.py --strict` PASS (`strict_fail: False`; 26 manifest claims all OK,
+zero meta problems; 106 swept tokens warn-only by design, matching P4's noise).
+All 5 spec Decisions entries CLOSED before authoring (THINK-SCOPEQ): the ONE
+visual-contract decision (micro-view sibling-micro stub — addendum §3 only
+defines component-granularity "OTHER COMPONENT" stubs) was OWNER-RATIFIED
+2026-07-09 via AskUserQuestion → pick (a) "OTHER FILE" micro-stub (one-token
+extension of addendum §3: same card grammar, new badge label + sibling-micro
+resolution); recorded against the addendum in Step 5 + painted in Step 8. Other
+10 decisions low-blast/reversible, resolved in-plan. Two fixture-related notes
+importing P4's pattern: A19 re-baseline on build-start day
+(`pytest ssot-diagram/` → 105 pass / 3 pre-existing `TestGoldenLive`), golden
+sha `56df3d86…` cited wherever asserted (never stale `5a1e2156…`).
+**build-pipeline COMPLETE** (design→spec→FCV→plan). NEXT: implement.
+
+Pipeline position restated: design ✅ → red-team ✅ → spec ✅ →
+factual-code-verification ✅ → plan ✅ (plan_verify --strict PASS) →
+**NEXT: implement → review → E2E**. Delegation verdict (design doc):
+big-model-only for spec/plan/implementation — no cheap
 delegation on those rows. Cross-model red-team still owed if dsk available.
-Run-report + doc-sweep (update-project-docs full) pending at pipeline end; tech
-debt to log then: ADR-0001/CLAUDE.md stale "_shared deferred to Phase B" text;
-AI-artifacts case-collision (pre-existing).
+Run-report + doc-sweep (update-project-docs full) pending at pipeline end.
+Doc-sweep DONE 2026-07-09 (mid-pipeline, not end): fixed the stale "_shared
+deferred to Phase B" text flagged by P5 FCV — `_shared/` extraction shipped in
+commit `82287f9` (alongside plan-verifier, second-consumer rule), so ADR-0001
+got a dated SUPERSEDED note (body unchanged, ADR immutability preserved), both
+CLAUDE.md "Build Progress"/ssot-diagram rule lines + roadmap.md Phase B
+landmine+section updated to SHIPPED. Remaining deferred debt: AI-artifacts
+case-collision (pre-existing, post-P4 cleanup); cross-model red-team pass (dsk).
 
 Tier: heavy. Grill locked 2026-07-06 (owner-ratified): archived visualizer_guide spec
 (`~/all-projects/vibe-coding-setup/_archived/visualizer_guide/design-system/spec.md`) =

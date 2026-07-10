@@ -1,0 +1,34 @@
+{
+  "narratives": {
+    "micro:app/layout.tsx": {
+      "node_id": "micro:app/layout.tsx",
+      "signature": "c02ea15f8f13acb87caf33283d77a754b853c0bafe75a6cecd0889169e045630",
+      "text": "Root layout — wires the auth context + global error boundary for every route under /app.",
+      "status": "approved"
+    },
+    "nano:Home@app/page.tsx": {
+      "node_id": "nano:Home@app/page.tsx",
+      "signature": "2a9436e73561c29df789435dc8dc2b1405f581e29b11c6965ba81171577a7f5a",
+      "text": "Landing page server component — streams the latest public feed row (PROPOSED, signature matches live so gm._derive_status returns proposed).",
+      "status": "proposed"
+    },
+    "micro:app/api/auth/login/route.ts": {
+      "node_id": "micro:app/api/auth/login/route.ts",
+      "signature": "00000000000000000000000000000000000000000000000000000000000000bb",
+      "text": "Login route — older revision text; the route has since added rate limiting and a new session cookie shape.",
+      "status": "approved"
+    },
+    "cmp-dist": {
+      "node_id": "cmp-dist",
+      "signature": "c02ea15f8f13acb87caf33283d77a754b853c0bafe75a6cecd0889169e045630",
+      "text": "This entry MUST be ignored — cmp-dist has the EMPTY signature, so gm._derive_status returns 'unnarratable' on the FIRST branch (A1 branch order), before any stored-entry comparison runs. The painter shows the fallback text + an UNNARRATABLE badge.",
+      "status": "approved"
+    },
+    "nano:does-not-exist@app/ghost.tsx": {
+      "node_id": "nano:does-not-exist@app/ghost.tsx",
+      "signature": "00000000000000000000000000000000000000000000000000000000000000cc",
+      "text": "Orphan entry — node id not in the model; should be dropped from the payload and counted on stderr via gm.info.",
+      "status": "proposed"
+    }
+  }
+}

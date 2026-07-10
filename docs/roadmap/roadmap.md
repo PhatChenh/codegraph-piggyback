@@ -17,22 +17,61 @@ diagram and its satellites). Delivery rail: `manifest.json` + `piggyback` CLI.
 
 ## Feature Inventory
 
-| # | Capability (tool) | Goal | Status | Spec |
-|---|---|---|---|---|
-| 1 | impact-analyzer | G1 | ✅ shipped (+3 extensions pending) | `impact-analyzer/design-extensions.md` |
-| 2 | codegraph-gate | G2 | ✅ shipped | `codegraph-gate/` |
-| 3 | decision-index (ssot P1) | G3 | ✅ shipped; P2 curation DONE (2026-07-04); P3 planned → `STATE.md` | `ssot-diagram/roadmap.md` |
-| 4 | _shared | infra | ✅ BUILT 2026-07-05 (db/sig/resolve/queries/budget/hookio/manifest; decision_index cut over, tests green) | `_shared/design.md` |
-| 5 | plan-verifier ⭐ | G2 | ✅ BUILT 2026-07-05 (24 tests; hook + CLI; sweep noise measured — see design.md) | `plan-verifier/design.md` |
-| 5b | diff-verifier | G2 | ✅ BUILT 2026-07-05 (14 tests; wave-end diff-vs-manifest; restricted qualifier DSL) | `diff-verifier/design.md` |
-| 6 | plan-visualizer ⭐ | G3 | not built (import `_shared/manifest.py`, do NOT re-parse) | `plan-visualizer/design.md` |
-| 7 | changeset-context | G1 | not built | `changeset-context/design.md` |
-| 8 | repo-map | G1 | not built | `repo-map/design.md` |
-| 9 | drift-digest | G3 | not built | `drift-digest/design.md` |
-| 10 | sot-enrichment (biography) | G3 | not built | `sot-enrichment/design.md` |
-| 11 | impact-precommit | G2 | not built | `impact-precommit/design.md` |
-| 12 | dead-code-finder | G1 | not built | `dead-code-finder/design.md` |
-| 13 | doc-coverage | G1 | not built | `doc-coverage/design.md` |
+Legend — **Goal**: G1 = push structural context to agents (save tokens); G2 =
+verify plan/commit claims deterministically (catch ghosts); G3 = non-coder visibility
+(diagram, biography, drift). **Auto-install**: "global `install`" = wired into
+`~/.claude/settings.json` by `piggyback install`; "per-repo `init`" = wired into the
+repo's `.claude/settings.json` by `piggyback init`; "CLI ships in repo" = script is
+distributed and runnable, but has no editor hook to wire.
+
+| #   | Capability (plain name)                | Goal  | What it does (non-coder view)                                                                                                                  | When it fires / trigger                                                                                                                                               | Status                                                                                                     | Spec                                   | Auto-install?                             |
+| --- | -------------------------------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------- | ----------------------------------------- |
+| 1   | impact-analyzer                        | G1    | Reads blast radius for you: when an AI reads a plan or spec, shows which functions are called a lot, so it knows the risk before editing.      | `PostToolUse: Read` — only `.md` files (plans/specs). Source-file reads silently skipped.                                                                             | ✅ shipped (+3 extensions pending)                                                                          | `impact-analyzer/design-extensions.md` | yes — global `install`                    |
+| 2   | codegraph-gate                         | G2    | Forces the AI to ask codegraph first: discourages blind Grep/Glob/Read so it gets answers from the index instead of re-reading source.         | `PreToolUse: Grep\|Glob\|Read`; `PostToolUse: mcp__codegraph__*`; `PostToolUse: Edit\|Write`.                                                                         | ✅ shipped                                                                                                  | `codegraph-gate/`                      | yes — per-repo `init`                     |
+| 3   | ssot-diagram P1 — decision-index       | G3    | Pinned decision log: each ADR is anchored to the code it affects; surfaces STALE decisions when the code drifts.                               | `PostToolUse: Read` — surfaces stale anchors. CLI: `bootstrap` / `status` / `check` / `refresh`.                                                                      | ✅ shipped; P2 curation DONE 2026-07-04 (mkt_engine 8 ADRs / 33 anchors, all FRESH)                         | `ssot-diagram/AI-artifacts/roadmap.md` | yes — per-repo `init`                     |
+| 4   | ssot-diagram P3 — diagram-model        | G3    | Generates one JSON file describing the repo's components and their relations — the single input every visualization later reads.               | CLI only (`graph_model.py extract`). No editor hook.                                                                                                                  | ✅ shipped 2026-07-04 (32/32 pytest, byte-deterministic)                                                    | `ssot-diagram/AI-artifacts/roadmap.md` | yes — CLI ships in repo                   |
+| 5   | ssot-diagram P4 — narrative-sidecar    | G3    | Plain-language notes pinned to each component. AI proposes the wording, you approve, the note is signature-pinned — drift visible.             | CLI only (`graph_model.py narrate …`). No editor hook.                                                                                                                | ✅ shipped 2026-07-06 (105/108 pytest, byte-deterministic, F6 empty-sig laundering closed)                  | `ssot-diagram/AI-artifacts/roadmap.md` | yes — CLI ships in repo                   |
+| 6   | ssot-diagram P5 — interactive renderer | G3    | One self-contained HTML file: click macro → micro → nano, decision status painted on. Opens in any browser, no internet needed.                | none — opens manually in a browser.                                                                                                                                   | BUILT 2026-07-10 (branch `dsk/p5-html-renderer`, 11 steps; 129 pytest / 3 pre-existing; render E2E 339KB self-contained; merge pending — live painter E2E browser check owed) | `ssot-diagram/AI-artifacts/roadmap.md` | once built, CLI + file output             |
+| 7   | ssot-diagram P6 — re-extract hook      | G3    | Keeps `diagram-model.json` honest by regenerating it when code changes.                                                                        | `PostToolUse: Write\|Edit` (planned).                                                                                                                                 | not built                                                                                                  | `ssot-diagram/AI-artifacts/roadmap.md` | once built — per-repo `init`              |
+| 8   | _shared (internal library)             | infra | Tiny toolkit every tool shares: open codegraph DB read-only, find symbols, hash code, format hook output, fit to a token budget.               | n/a — library, imported by other tools. Extracted when a 2nd tool needs it.                                                                                           | ✅ BUILT 2026-07-05 (db/sig/resolve/queries/budget/hookio/manifest; `decision_index` cut over, tests green) | `_shared/design.md`                    | ships with any piggyback tool             |
+| 9   | plan-verifier ⭐                        | G2    | Fact-checks a plan before approval: "does this file exist? is this name unique? will removing it break 12 callers?" — verdict table.           | `PostToolUse: Write\|Edit` on `*plan*.md` or `docs/plans/**` (advisory table injected). CLI: `plan_verify.py <plan.md> [--strict]` (strict blocks the pipeline step). | ✅ BUILT 2026-07-05 (24 tests; sweep noise measured)                                                        | `plan-verifier/design.md`              | yes — per-repo `init`                     |
+| 10  | diff-verifier                          | G2    | At wave-end, mechanically checks the diff delivered what the plan declared (files in scope, new symbols present, removes gone).                | CLI only (`diff_verify.py <plan.md> --diff <base>..<head>`); orchestrated skill calls it. No editor hook.                                                             | ✅ BUILT 2026-07-05 (14 tests; restricted-qualifier DSL)                                                    | `diff-verifier/design.md`              | yes — CLI ships in repo                   |
+| 11  | plan-visualizer ⭐                      | G3    | Turns a verified plan into a picture on the code map: touched glows amber, new is dashed, removed is strikethrough, ghost = missing claim.     | CLI (`plan_visualize.py <plan.md> -o preview.html`). Pipe-to-/build-pipeline step planned.                                                                            | not built                                                                                                  | `plan-visualizer/design.md`            | once built — CLI + optional pipeline step |
+| 12  | changeset-context                      | G1    | Branch brief: short summary (≤150 lines) of what changed + who depends on it + which decisions are anchored to the changed pieces.             | CLI (`context_brief.py`). Optional `SessionStart` hook (only mid-flight branch).                                                                                      | not built                                                                                                  | `changeset-context/design.md`          | once built — CLI + opt-in hook            |
+| 13  | repo-map                               | G1    | Token-budgeted ranked list of the most-depended-on symbols across the whole repo — so a cold-start session orients without grepping.           | CLI (`repo_map.py --budget 1500`). Optional opt-in `SessionStart` hook.                                                                                               | not built                                                                                                  | `repo-map/design.md`                   | once built — CLI + opt-in hook            |
+| 14  | drift-digest                           | G3    | "What changed since I last looked": snapshot the repo's shape today, later diff to see new functions, removed ones, decisions that went stale. | CLI (`digest.py snapshot` / `digest.py since <date\|last>`). Optional weekly cron.                                                                                    | not built                                                                                                  | `drift-digest/design.md`               | once built — CLI + cron                   |
+| 15  | sot-enrichment (symbol biography)      | G3    | "Tell me everything about this piece" — what it is, who depends on it, which decisions anchor to it, recent change dates.                      | CLI (`biography.py <symbol>`). Also the data source for the diagram's node-detail side panel.                                                                         | not built                                                                                                  | `sot-enrichment/design.md`             | once built — CLI + diagram                |
+| 16  | impact-precommit                       | G2    | Last-look before commit: warns if staged lines touch widely-used symbols with no test file. `--strict` blocks that one specific rule.          | `git pre-commit` hook (stub installed into `.git/hooks/`). CLI (`impact_precommit.py [--strict]`) for CI / manual checks.                                             | not built                                                                                                  | `impact-precommit/design.md`           | once built — git hook + CLI               |
+| 17  | dead-code-finder                       | G1    | Lists symbols nothing in the repo refers to (after excluding public APIs, entry points, decorated routes, tests). Report-only, never deletes.  | CLI / cron only. No editor hook.                                                                                                                                      | not built                                                                                                  | `dead-code-finder/design.md`           | once built — CLI / cron                   |
+| 18  | doc-coverage                           | G1    | Reports functions/methods missing a docstring. CI mode (changed files) exits 1 and blocks; report mode (whole repo) is informational.          | CLI only. CI gate + cron / manual report.                                                                                                                             | not built                                                                                                  | `doc-coverage/design.md`               | once built — CI / cron                    |
+
+### Notes on what's in the repo but not separately listed above
+
+- **arch-visualizer/** — legacy stub, superseded by `ssot-diagram` + `plan-visualizer`. Not a
+  separate capability.
+- **impact-analyzer extensions** — three follow-ups tracked in
+  `impact-analyzer/design-extensions.md`. Not yet separate rows; #1 still ships as one tool
+  in `manifest.json`.
+- **ssot-diagram P2 (decision-index curation)** — one-time human pass, not a tool. Embedded
+  under row 3.
+- **ssot-diagram P0 — codegraph foundation** — external dependency
+  (`colbymchenry/codegraph`); piggyback reads only. `piggyback init` calls
+  `codegraph init` and seeds the index in the repo.
+
+### What piggyback install vs init does today (2026-07-08)
+
+Verified against `manifest.json` + `piggyback.py`:
+
+- **`piggyback install` (per-machine, once)** wires rows that carry `scope: "global"` into
+  `~/.claude/settings.json`. Today that is only `impact-analyzer` (#1).
+- **`piggyback init` (per-repo, idempotent)** wires rows with `scope: "repo"` into the
+  repo's `.claude/settings.json`. Today that is `codegraph-gate` (#2), `decision-index`
+  (#3), `plan-verifier` (#9), `diff-verifier` (#10). It also runs `codegraph init`, then
+  seeds the repo's decision index (`decision_index bootstrap`).
+- **`piggyback init` skips** every entry whose `hooks: []` even if `scope: "repo"`, because
+  there's nothing to wire; the script is still distributed. Rows 4, 5, 8, 11–18 today have
+  no editor hook to wire when they ship — they ship as CLIs (some with optional later
+  hooks per their design).
 
 ## Build Order
 
@@ -79,9 +118,12 @@ implementers with standard review.
 - **Phase A:** macro component grouping is a human call (config
   seed-then-curate) — bad grouping degrades every downstream picture; curate
   before P5 ships, cheap to redo before then, expensive after narratives pin.
-- **Phase B:** `_shared` extraction refactors SHIPPED `decision_index.py` —
-  regression risk on a live tool; its existing tests must pass unchanged
-  (contract Block 1, decision-log note).
+- **Phase B:** ~~`_shared` extraction refactors SHIPPED `decision_index.py`~~ —
+  RESOLVED: `_shared/` extraction SHIPPED in commit `82287f9` (alongside
+  plan-verifier, by the second-consumer rule); `decision_index.py:44-57` now
+  imports `_shared.db`/`resolve`/`sig`, tests pass unchanged. Was a regression-
+  risk landmine pre-ship; the live plan-verifier/diff-verifier ADRs (0011+)
+  carry forward any residual cutover notes.
 - **Phase C:** renderer's "one self-contained HTML, zero external deps" is
   hard-to-reverse once P5 template + D reuse land — any CDN/framework
   temptation breaks the contract two tools share.
@@ -95,7 +137,7 @@ implementers with standard review.
 index, then build the deterministic extractor that turns the codegraph DB + decision
 index into `diagram-model.json`, the public intermediate every visualization tool
 renders through. Behavior per `ssot-diagram/roadmap.md` (P2, P3).
-**Delivers:** capabilities 3 (P2/P3 slice).
+**Delivers:** capabilities 3 (P2 curation slice), 4 (P3 slice).
 **Dependency:** ssot P2 curation DONE (2026-07-04 — 8 ADRs / 33 anchors, all verified
 +FRESH on `~/all-projects/mkt_engine`). P3 plan step complete; code implementation
 is the remaining work.
@@ -106,13 +148,19 @@ P3 extractor emits a valid model for that repo per its roadmap's exit criteria (
 P3 half at implement step — see `STATE.md`).
 **Open questions:** none — governed by `ssot-diagram/roadmap.md`.
 
-### Phase B — plan-verifier (+ `_shared` extraction)
+### Phase B — plan-verifier (+ `_shared` extraction) — SHIPPED (`82287f9`)
+> **STATUS 2026-07-09 (doc-sweep): SHIPPED.** plan-verifier + diff-verifier +
+> `_shared/` extraction all landed in commit `82287f9` (build-order #3). The
+> plan-file hook + CLI are live; `_shared/` cutover happened by the
+> second-consumer rule (the "Done when" criteria below are MET). This section
+> kept as the record; Phase B is no longer forward work.
 **Feature description/requirements:** mechanically verify every code-referencing
 claim in a plan (verdicts: MISSING / AMBIGUOUS / COLLISION / BLOCKED /
 UNACKNOWLEDGED-BLAST) as a /build-pipeline step and a plan-file hook.
-**Delivers:** capabilities 4, 5.
-**Dependency:** none hard; this phase triggers the `_shared/` extraction (second
-consumer rule — resolver + signature code comes out of the decision-index engine now).
+**Delivers:** capabilities 8, 9.
+**Dependency:** none hard; this phase *triggered* the `_shared/` extraction
+(second-consumer rule — resolver + signature code came out of the
+decision-index engine; DONE).
 **Outcome:** a plan built on a hallucinated fact is caught in milliseconds, before
 implementation turns are spent on it.
 **Scope:** IN: both claim-extraction tiers, verdict table, CLI + hook delivery,
@@ -134,7 +182,7 @@ painted on.
 **Feature description/requirements:** render any verified plan as a picture over the
 current code map — changed, new, removed, and collateral-caller pieces visually
 distinct; verifier verdicts as warning chips.
-**Delivers:** capability 6.
+**Delivers:** capability 11.
 **Dependency:** Phase B (manifest + verdicts), Phases A+C (model + renderer).
 **Outcome:** the human plan gate becomes "look at a picture," not "trust prose."
 **Scope:** IN: rendering a verified plan over the model. OUT: any new analysis not
@@ -146,7 +194,7 @@ MISSING claim appears as a ghost node.
 ### Phase E — changeset-context
 **Feature description/requirements:** the branch brief — touched symbols, one-hop
 neighborhood, anchored decisions with staleness, budgeted to ~150 lines.
-**Delivers:** capability 7.
+**Delivers:** capability 12.
 **Dependency:** reuses shared query helpers extracted in Phase B.
 **Outcome:** cheap implementer models start every task with blast-radius awareness.
 **Done when:** given a branch, the brief prints within budget and flags symbols not
@@ -157,7 +205,7 @@ in the graph as new.
 **Feature description/requirements:** dated snapshots diffed into a plain-language
 "what changed since I last looked" digest; per-symbol biography composing docstring,
 callers, anchored decisions, and summarized git history.
-**Delivers:** capabilities 9, 10.
+**Delivers:** capabilities 14, 15.
 **Outcome:** owner tracks the portfolio without reading code.
 **Done when:** digest prints grouped-by-component changes between two snapshots;
 biography answers "tell me everything about this piece" for a real symbol.
@@ -166,7 +214,7 @@ biography answers "tell me everything about this piece" for a real symbol.
 ### Phase G — repo-map
 **Feature description/requirements:** token-budgeted, ranked orientation map of the
 repo's API surface for cold-start sessions.
-**Delivers:** capability 8.
+**Delivers:** capability 13.
 **Done when:** map respects the token budget and collapses overflow to counts.
 **Open questions:** see `repo-map/design.md`.
 
@@ -174,7 +222,7 @@ repo's API surface for cold-start sessions.
 **Feature description/requirements:** commit-time blast gate, unreferenced-code
 reports, docstring CI check, and the three shipped-tool extensions. Low urgency by
 design.
-**Delivers:** capabilities 1 (extensions), 11, 12, 13.
+**Delivers:** capability 1 (extensions), 16, 17, 18.
 **Done when:** each tool's design.md "Done" behavior observable on a pilot repo.
 **Open questions:** see respective design.md files.
 

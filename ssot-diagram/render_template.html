@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<!-- P5 ssot-diagram template. Two splice seams (Step 7) + one static comment:
+       the view-model seam (a script-side token incl. a literal '<' that the
+       escape guarantees absent from the spliced payload — F3), the @font-face
+       seam (a style-side token incl. a literal '<'), and the fixed generator
+       note (not a splice target). Refer to them by name in comments, never
+       re-type the literal token text (Step 7 counts each once).
+-->
+<!--SSOT:GENERATOR-->
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSOT diagram</title>
+<style>
+/* ── §1 Color Palette ─────────────────────────────────────────────────── */
+:root,
+[data-theme="light"] {
+  /* §1.1 Backgrounds */
+  --bg:          #fcf8f1;
+  --bg-surface:  #fdf7f1;
+  --bg-inset:    #fbe7d7;
+  --bg-group:    #fcf8f1;
+  /* §1.2 Text */
+  --fg:          #4a4037;
+  --fg-body:     #8b6e57;
+  --fg-muted:    #8b6e57;
+  --fg-disabled: #92908d;
+  /* §1.3 Borders & Focus */
+  --border:      #fad6b3;
+  --ring:        #f66e60;
+  /* §1.4 Badges — bg + fg pairs */
+  --badge-neutral-bg:  #d0e2ed; --badge-neutral-fg:  #3a6a8a;
+  --badge-action-bg:   #f9dec7; --badge-action-fg:   #a05e2a;
+  --badge-positive-bg: #d0ede8; --badge-positive-fg: #2a7a6a;
+  --badge-danger-bg:   #fad3ca; --badge-danger-fg:   #a04030;
+  /* §1.5 Accents */
+  --accent: #fbe7d7;
+  --error:  #f66e60;
+  /* §1.6 Shadows */
+  --shadow:    rgba(74, 64, 55, 0.06);
+  --shadow-md: rgba(74, 64, 55, 0.12);
+  /* §1.7 Edge colors */
+  --edge-default:  #8b6e57;
+  --edge-error:    #f66e60;
+  --edge-success:  #2a7a6a;
+  --edge-highlight:#a05e2a;
+}
+[data-theme="dark"] {
+  /* §1.1 Backgrounds */
+  --bg:          #1a1614;
+  --bg-surface:  #242019;
+  --bg-inset:    #3a2e22;
+  --bg-group:    #1a1614;
+  /* §1.2 Text */
+  --fg:          #e8e0d6;
+  --fg-body:     #c4a88e;
+  --fg-muted:    #c4a88e;
+  --fg-disabled: #5a5856;
+  /* §1.3 Borders & Focus */
+  --border:      #5a4332;
+  --ring:        #f66e60;
+  /* §1.4 Badges */
+  --badge-neutral-bg:  #1e3040; --badge-neutral-fg:  #8abbd6;
+  --badge-action-bg:   #402a15; --badge-action-fg:   #e0a060;
+  --badge-positive-bg: #153530; --badge-positive-fg: #6abcac;
+  --badge-danger-bg:   #401a15; --badge-danger-fg:   #e07060;
+  /* §1.5 Accents */
+  --accent: #3a2e22;
+  --error:  #f66e60;
+  /* §1.6 Shadows */
+  --shadow:    rgba(0, 0, 0, 0.3);
+  --shadow-md: rgba(0, 0, 0, 0.5);
+  /* §1.7 Edge colors */
+  --edge-default:  #c4a88e;
+  --edge-error:    #f66e60;
+  --edge-success:  #6abcac;
+  --edge-highlight:#e0a060;
+}
+
+/* ── §2 Typography ─────────────────────────────────────────────────────── */
+/* §2.1 Font family — @font-face-less fallback chain (Step 1 splices the
+   base64 @font-face rules via the style-side seam below; the raw template
+   previews with system fonts so it opens from disk with zero network). */
+:root {
+  --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+  /* §2.2 Size scale */
+  --text-title:    20px;
+  --text-subtitle: 16px;
+  --text-label:    14px;
+  --text-body:     12px;
+  --text-caption:  10px;
+  /* §2.3 Weights */
+  --font-regular:  400;
+  --font-medium:   500;
+  --font-semibold: 600;
+  /* §1/§8 radii referenced by chrome/legend/tooltips */
+  --radius:    10px;
+  --radius-sm: 5px;
+}
+/* §2.4 letter spacing default 0 — DM Sans natural. */
+
+/* §1.7 / §2.1 spliced base64 @font-face rules land here (Step 1 / Step 6):
+/*<SSOT:FONT_FACE>*/
+
+/* ── §3 Card anatomy ───────────────────────────────────────────────────── */
+.node      { fill: var(--bg-surface); }
+.node-l1   { width: 220px; rx: 12; }            /* Macro  §3.1 */
+.node-l2   { width: 180px; rx: 10; }            /* Micro  §3.1 */
+.node-l3   { width: 120px; rx: 8;  }            /* Nano   §3.1 */
+/* §3.2 badge strip / title / desc / inset; §3.7 bg-surface. §3.6 hover via JS. */
+/* §3.5 foreignObject/animation discipline: outer <g> = SVG positioning only
+   (the transform attribute), inner <g> = CSS animation only (no transform attr).
+   Inner-area bg = var(--bg); border-top 1.5px solid var(--border); 20px min padding. */
+.node-collapsed-inset { fill: var(--bg-inset); }
+.node-expand-btn       { fill: var(--accent); }     /* badge-BG fill, badge-FG +/- */
+
+/* §3 stub cards (addendum §3 binding contract) */
+.stub-card        { fill: var(--bg); stroke: var(--border); stroke-width: 1; }
+.stub-badge-strip { fill: var(--badge-neutral-bg); }
+.stub-title-nav   { fill: var(--fg-body); }          /* navigable: body + -> glyph */
+.stub-title-inert { fill: var(--fg-disabled); }        /* inert: disabled, no glyph */
+.stub-nav-hover   { stroke: var(--ring); }            /* navigable hover: focus ring */
+
+/* Decision + trust chips (addendum §2 — pills in badge colors, 10px/500, uppercase) */
+.chip            { font-size: var(--text-caption); font-weight: var(--font-medium);
+                   text-transform: uppercase; }
+.chip-fresh      { fill: var(--badge-positive-bg); }   /* FRESH  text: positive-fg */
+.chip-danger     { fill: var(--badge-danger-bg); }     /* STALE/ORPHANED/AMBIGUOUS */
+.chip-superseded { fill: var(--bg-inset); }             /* superseded greyed + disabled-fg */
+
+/* ── §4 Edges ─────────────────────────────────────────────────────────── */
+.edge              { fill: none; stroke: var(--edge-default); }
+.edge-solid        { stroke-width: 1.5px; }                /* §4.1 */
+.edge-dashed       { stroke-width: 1px; stroke-dasharray: 6, 4; }
+.edge-dotted       { stroke-width: 1px; stroke-dasharray: 2, 3; }
+.edge-error        { stroke: var(--edge-error); }
+.edge-success      { stroke: var(--edge-success); }
+.edge-highlight    { stroke: var(--edge-highlight); stroke-width: 2px; }
+.edge-faded        { opacity: 0.2; }                       /* §4.6 unconnected */
+.edge-label        { font-size: 9px; font-weight: 500; fill: var(--fg-body); }
+/* §4.4 arrowhead marker: M0,0 L7,3.5 L0,7 Z, 7x7, refX 7 refY 3.5 (in <defs>) */
+
+/* ── §5 Spacing / layout ──────────────────────────────────────────────── */
+:root { --grid: 8px; }   /* §5.1 — all gaps/padding/margin snap to 8px multiples */
+
+/* ── §8 Page chrome ───────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+html, body {
+  height: 100%; margin: 0; overflow: hidden;       /* §8.1 full viewport, no scroll */
+  font-family: var(--font); color: var(--fg); background: var(--bg);
+  transition: background 0.2s, color 0.2s;         /* §7.6 theme */
+}
+#app { display: flex; flex-direction: column; height: 100vh; }
+
+/* §8.2 Header */
+#header {
+  flex: 0 0 auto; display: flex; align-items: center;
+  padding: 12px 20px; background: var(--bg-surface);
+  border-bottom: 1px solid var(--border); z-index: 10; gap: 16px;
+}
+#header-left   { flex: 1 1 auto; }
+#header-center { flex: 0 1 auto; }            /* breadcrumb — hidden at top level */
+#header-right  { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+#title    { font-size: 20px; font-weight: 700; color: var(--fg); }     /* §8.2 title 20/700 */
+#subtitle { font-size: 13px; font-weight: 400; color: var(--fg-body); }
+#breadcrumb { font-size: 12px; font-weight: 500; }
+#breadcrumb .sep    { color: var(--fg-disabled); }
+#breadcrumb .seg    { color: var(--fg-body); cursor: pointer; }       /* clickable → underline */
+#breadcrumb .seg:hover { text-decoration: underline; }
+#breadcrumb .active { color: var(--fg); font-weight: 700; cursor: default; } /* deepest, not clickable */
+
+/* §8.2 right controls — zoom group + theme toggle */
+.hbtn {                        /* 36px square header buttons */
+  width: 36px; height: 36px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--bg-surface);
+  color: var(--fg); cursor: pointer; display: inline-flex; align-items: center;
+  justify-content: center; transition: background 0.15s, color 0.15s, border 0.15s;
+}
+#zoom-group { display: inline-flex; gap: 4px; }       /* §8.2 4px within zoom group */
+.hbtn:hover { background: var(--bg); color: var(--fg); border-color: var(--ring); }
+
+/* §8.1 Canvas */
+#canvas-wrap { flex: 1 1 auto; position: relative; overflow: hidden; }
+#diagram { width: 100%; height: 100%; cursor: grab; }
+#diagram:active { cursor: grabbing; }                /* §7.4 pan grab→grabbing */
+#preview-note {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  color: var(--fg-body); font-size: var(--text-body); pointer-events: none;
+}
+
+/* §8.3 Legend */
+#legend {
+  position: absolute; left: 16px; bottom: 16px; min-width: 160px;
+  padding: 12px 16px; background: var(--bg-surface);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: 0 2px 8px var(--shadow); z-index: 5; font-size: var(--text-body);
+}
+#legend-title { font-size: 11px; font-weight: 600; color: var(--fg-body);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.legend-sw  { width: 16px; height: 12px; border: 1px solid var(--border); }
+.legend-edge { width: 24px; }
+.legend-label { font-size: 11px; font-weight: 500; color: var(--fg); }
+#legend-divider { height: 1px; background: var(--border); margin: 6px 0; }
+
+/* §7.2 Tooltip */
+#tooltip {
+  position: absolute; max-width: 280px; padding: 8px 10px;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); box-shadow: 0 4px 16px var(--shadow-md);
+  font-size: var(--text-body); color: var(--fg-body); pointer-events: none;
+  display: none; z-index: 20;
+}
+#tooltip .tt-chip { font-size: var(--text-caption); font-weight: var(--font-medium);
+  text-transform: uppercase; margin-bottom: 4px; }
+#tooltip .tt-name { font-weight: var(--font-medium); color: var(--fg); }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- §8.2 header: left(title), center(breadcrumb), right(controls) -->
+  <header id="header">
+    <div id="header-left">
+      <div id="title">SSOT diagram</div>
+      <div id="subtitle"></div>
+    </div>
+    <nav id="header-center">
+      <div id="breadcrumb" style="display:none;"></div>  <!-- §8.2 hidden at top level -->
+    </nav>
+    <div id="header-right">
+      <div id="zoom-group">                              <!-- §8.2 zoom group -->
+        <button class="hbtn" id="zoom-in"  title="Zoom in"       aria-label="Zoom in">+</button>
+        <button class="hbtn" id="zoom-out" title="Zoom out"      aria-label="Zoom out">&#8722;</button>
+        <button class="hbtn" id="zoom-fit" title="Fit to view"   aria-label="Fit to view">&#9635;</button>
+      </div>
+      <button class="hbtn" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">&#9728;</button>
+    </div>
+  </header>
+
+  <div id="canvas-wrap">
+    <svg id="diagram" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- §4.4 arrowhead marker (inherits currentColor via stroke; defaults to edge-default).
+             src refX=7 refY=3.5 markerWidth/Height=7; fill inherits edge color. -->
+        <marker id="arrowhead" viewBox="0 0 7 7" refX="7" refY="3.5"
+                markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L7,3.5 L0,7 Z" fill="context-stroke"></path>
+        </marker>
+        <!-- Main canvas <g>: SVG positioning on an outer <g>, CSS animation on an inner <g>
+             (§3.5 discipline — never both on a <g> holding foreignObject). -->
+        <g id="viewport">           <!-- pan/zoom transform applied here by the painter (Step 8) -->
+          <g id="content"></g>       <!-- nodes + edges; the painter renders into this -->
+        </g>
+      </defs>
+    </svg>
+    <div id="preview-note">template preview — no data spliced</div>  <!-- Decision 3: shown iff MODEL === null -->
+    <aside id="legend" style="display:none;"></aside>  <!-- §8.3 auto-generated, hidden until the painter fills it -->
+    <div id="tooltip"></div>                            <!-- §7.2 tooltip; filled via setText (F2) -->
+  </div>
+</div>
+
+<script>
+// ── Safe DOM helpers (axis 2B / F2) ───────────────────────────────────
+// Every model-derived string reaches the DOM through exactly ONE of these two
+// helpers (textContent assignment — the raw-HTML sink is forbidden). The
+// raw-HTML sink may appear in this template ONLY as the literal clearing idiom
+// `= ''` (Step 10 grep enforces: the word is allowed only in that form).
+// (b′) tooltip sink: tooltip content also flows through setText(el, s); no
+// model-derived prose is ever stored in an HTML attribute (no data-title/-desc).
+function setText(el, s) {                       // mechanism (b) — assigns textContent
+  el.textContent = s;
+  return el;
+}
+// paintWrappedText — the foreignObject writer (adapts the archived
+// renderWrappedText: builds a <div> under a <foreignObject>, assigns
+// div.textContent). Used for wrapping descriptions (§3.2 "wraps natively").
+function paintWrappedText(parent, x, y, w, h, text, cls) {
+  const fo = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+  fo.setAttribute('x', x); fo.setAttribute('y', y);
+  fo.setAttribute('width', w); fo.setAttribute('height', h);
+  const div = document.createElement('div');
+  if (cls) div.setAttribute('class', cls);
+  setText(div, text);               // NEVER assign raw HTML / interpolation
+  fo.appendChild(div);
+  parent.appendChild(fo);
+  return div;
+}
+
+// ── View-model splice seam (Step 6/7) ─────────────────────────────────
+// The script-side sentinel (the token on the next line) is WHOLE, including
+// the trailing `null`: the raw template stays valid JS (MODEL === null shows
+// the preview note via the guard below). render.py replaces the whole token
+// with the escaped object literal. Both sentinels contain a literal '<' (F3):
+// the escaped payload has zero '<' (json.dumps ensure_ascii + the '<'
+// replace), so it can never contain its own sentinel.
+const MODEL = /*<SSOT:VIEWMODEL_JSON>*/null;
+
+// Decision 3 preview-note guard: when the template is opened RAW from disk
+// (MODEL === null), show the chrome + the preview note; hide the legend.
+// The painter (Step 8) runs only after splice replaces the token with a real
+// object literal (MODEL !== null), so preview-note + guard live in the template.
+(function previewGuard() {
+  var note = document.getElementById('preview-note');
+  if (MODEL !== null && note) { note.style.display = 'none'; }
+})();
+
+// ── Painter (Step 8) ─────────────────────────────────────────────────
+// DUMB renderer of embedded MODEL (ADR-0002). Switches ONLY on flags the
+// Python join precomputed (stub / stub_nav / prose.status / decision status /
+// chips / tooltip). NEVER derives trust, count, label, or fallback. Indexes
+// nodes by id ONCE at load (Decision 11 — indexing != deriving). All model-
+// derived strings reach the DOM via setText, paintWrappedText, or
+// createElement + textContent. The raw-HTML sink is forbidden here too.
+
+// ── Constants (mirror addendum §1 / §5) ──
+const SVG_NS = "http://www.w3.org/2000/svg";
+const GAP = 48;                                  // §5.2 grid gap
+const PAD = { component: 32, file: 24, nano: 16 };  // §5.3 padding by level
+const MARGIN = 48;                               // §5.4
+const CARD_W = { component: 220, file: 180, nano: 120 };
+const CARD_H = { component: 132, file: 108, nano: 80 };
+const STUB_W = 180;
+const STUB_GAP = 16;
+const STUB_ROW_H = 108;
+const HOVER_DELAY = 300;                         // §7.2 tooltip trigger
+const CHIP_FG = {                                // chip text color (fg over each bg)
+  positive: "var(--badge-positive-fg)",
+  danger:   "var(--badge-danger-fg)",
+  action:   "var(--badge-action-fg)",
+  neutral:  "var(--badge-neutral-fg)",
+  disabled: "var(--fg-disabled)",
+};
+
+// ── State (addendum §1: viewPath 0-2 ids + pan/zoom + selected edge) ──
+const state = {
+  viewPath: [],                       // 0 = components view, 1 = component focus, 2 = micro focus
+  viewState: { tx: 0, ty: 0, scale: 1 },
+  selectedEdge: null,                 // §7.3 highlight; §7.5 clear on empty-canvas click
+  _mouse: { x: 0, y: 0 },             // last cursor inside #canvas-wrap (for tooltip pos)
+};
+
+// ── One-time id→node index (Decision 11, pure indexing NOT deriving) ──
+const nodeIndex = new Map();           // id → joined node dict
+const navIndex  = new Map();           // comp-or-micro id → viewPath jump target ([parent..., self])
+function indexSubtree(nodes, parentChain) {
+  for (const n of nodes || []) {
+    const chain = parentChain.concat([n.id]);
+    nodeIndex.set(n.id, n);
+    if (n.kind === "component" || n.kind === "file") navIndex.set(n.id, chain);
+    if (n.children) indexSubtree(n.children, chain);
+  }
+}
+if (MODEL !== null) {
+  indexSubtree(MODEL.components || [], []);
+  // also seed components even if not in components[] (--component scoped view starts there)
+  for (const c of MODEL.components || []) if (!navIndex.has(c.id)) navIndex.set(c.id, [c.id]);
+}
+
+// ── View navigation (addendum §1) ──
+function curDepth()       { return state.viewPath.length; }
+function levelFor(d)      { return ["component", "file", "nano"][d] || "nano"; }
+function nodesAtCurrent() {
+  const d = curDepth();
+  if (d === 0) return MODEL.components || [];
+  const c = nodeIndex.get(state.viewPath[0]);
+  if (!c) return [];
+  if (d === 1) return c.children || [];
+  const m = (c.children || []).find(x => x.id === state.viewPath[1]);
+  return (m && m.children) || [];
+}
+function edgesAtCurrent() {
+  const d = curDepth();
+  if (d === 0) return MODEL.view_edges || [];
+  const c = nodeIndex.get(state.viewPath[0]);
+  if (!c) return [];
+  if (d === 1) return c.view_edges || [];
+  const m = (c.children || []).find(x => x.id === state.viewPath[1]);
+  return (m && m.view_edges) || [];
+}
+function stubsAtCurrent() {
+  const d = curDepth();
+  if (d < 1) return [];
+  const c = nodeIndex.get(state.viewPath[0]);
+  if (!c) return [];
+  if (d === 1) return c.stubs || [];
+  const m = (c.children || []).find(x => x.id === state.viewPath[1]);
+  return (m && m.stubs) || [];
+}
+function expandTo(id) {
+  if (state.viewPath.length >= 2) return;
+  state.viewPath = state.viewPath.concat([id]);
+  state.viewState = { tx: 0, ty: 0, scale: 1 };
+  paintView();
+}
+function popUp() {
+  if (!state.viewPath.length) return;
+  state.viewPath = state.viewPath.slice(0, -1);
+  state.viewState = { tx: 0, ty: 0, scale: 1 };
+  paintView();
+}
+function truncateTo(depth) {
+  state.viewPath = state.viewPath.slice(0, depth);
+  state.viewState = { tx: 0, ty: 0, scale: 1 };
+  paintView();
+}
+
+// ── Tiny DOM helpers (SVG-aware) ──
+function el(tag, attrs) {
+  const n = document.createElementNS(SVG_NS, tag);
+  if (attrs) for (const k in attrs) n.setAttribute(k, attrs[k]);
+  return n;
+}
+function rectEl(parent, x, y, w, h, cls, style) {
+  const r = el("rect", { x, y, width: w, height: h });
+  if (cls)   r.setAttribute("class", cls);
+  if (style) r.setAttribute("style", style);
+  parent.appendChild(r);
+  return r;
+}
+
+// ── Grid layout (ceil(sqrt(n)) cols; per addendum §1 / §5.2) ──
+function gridLayout(n) {
+  const lvl = levelFor(curDepth());
+  const w = CARD_W[lvl] || CARD_W.nano;
+  const h = CARD_H[lvl] || CARD_H.nano;
+  const pad = PAD[lvl] || PAD.nano;
+  const cols = Math.max(1, Math.ceil(Math.sqrt(n)));
+  const rows = Math.max(1, Math.ceil(n / cols));
+  const width  = cols * w + (cols - 1) * GAP + 2 * pad;
+  const height = rows * h + (rows - 1) * GAP + 2 * pad;
+  return { cols, rows, w, h, pad, width, height };
+}
+
+// ── Chip (decision OR prose) ──
+function paintChip(parent, x, y, w, h, label, badge) {
+  const g = el("g", { class: "chip-group" });
+  rectEl(g, x, y, w, h, "chip chip-" + (badge || "neutral"), null);
+  const t = el("text", {
+    x: x + w / 2, y: y + h / 2 + 3,
+    "text-anchor": "middle",
+    fill: CHIP_FG[badge] || CHIP_FG.neutral,
+    "font-size": "10", "font-weight": "500",
+  });
+  setText(t, label);
+  g.appendChild(t);
+  parent.appendChild(g);
+}
+
+// ── Card (the dumb mapper; trust chips + muting per addendum §2) ──
+function paintCard(node, x, y, lvl) {
+  const w = CARD_W[lvl] || CARD_W.nano;
+  const h = CARD_H[lvl] || CARD_H.nano;
+  const rx = lvl === "component" ? 12 : lvl === "file" ? 10 : 8;
+  const g = el("g", {
+    "class": "card",
+    "data-node-id": node.id,
+    "data-level": lvl,
+    transform: `translate(${x},${y})`,
+  });
+  const inner = el("g", { class: "card-inner" });
+  g.appendChild(inner);
+
+  // Body — class .node carries fill (bg-surface); stroke/border via style
+  rectEl(inner, 0, 0, w, h, "node", "stroke: var(--border); stroke-width: 1;").setAttribute("rx", rx);
+
+  // Badge strip
+  rectEl(inner, 0, 0, w, 20, "node-badge-fill", "fill: var(--badge-neutral-bg);").setAttribute("rx", rx);
+  paintWrappedText(inner, 8, 4, w - 16, 14, node.kind_label || node.kind || "", "node-badge-label");
+
+  // Title
+  paintWrappedText(inner, 12, 28, w - 24, 22, node.name || "", "node-title");
+
+  // Chips row (under title; addendum §2) — width-by-text approximation, fit inside card
+  let chipsY = 56;
+  for (const c of (node.chips || [])) {
+    if (chipsY + 16 > h - 32) break;
+    const text = c.label ? (c.name + " — " + c.label) : c.name;
+    const cw = Math.min(w - 24, 10 + text.length * 5.6);
+    paintChip(inner, 12, chipsY, cw, 14, text, c.badge);
+    chipsY += 18;
+  }
+
+  // Prose (muted when status=stale|proposed; addendum §2)
+  const prose = node.prose || { text: "", status: "none" };
+  const mutedClass = (prose.status === "stale" || prose.status === "proposed") ? "node-prose muted" : "node-prose";
+  const proseY = chipsY + 2;
+  const proseH = h - proseY - 26;
+  if (proseH > 14) paintWrappedText(inner, 12, proseY, w - 24, proseH, prose.text || "", mutedClass);
+
+  // Expand button — components & files ONLY (Block 4a; nanos never expand)
+  if (lvl === "component" || lvl === "file") {
+    const btnR = 10, cx = w - 16, cy = h - 16;
+    const btn = el("g", { class: "node-expand-btn-grp", "data-action": "expand", "data-node-id": node.id });
+    rectEl(btn, cx - btnR, cy - btnR, btnR * 2, btnR * 2, "node-expand-btn", null).setAttribute("rx", btnR);
+    const sym = el("text", {
+      x: cx, y: cy + 4, "text-anchor": "middle",
+      fill: "var(--badge-action-fg)",
+      "font-size": "14", "font-weight": "700",
+    });
+    setText(sym, "+");
+    btn.appendChild(sym);
+    g.appendChild(btn);
+  }
+
+  g.addEventListener("mouseenter", onCardEnter);
+  g.addEventListener("mouseleave", onCardLeave);
+  g.addEventListener("click", onCardClick);
+  return g;
+}
+
+// ── Stub card (addendum §3 + Decision 1 "OTHER FILE") ──
+function paintStub(stub, x, y) {
+  const w = STUB_W, h = STUB_ROW_H;
+  const nav = !!stub.stub_nav;                 // OQ-P5-1 + Decision 1
+  const g = el("g", {
+    class: "stub",
+    "data-owner-id": stub.owner_id,
+    "data-stub-label": stub.stub_label || "OTHER COMPONENT",
+    transform: `translate(${x},${y})`,
+    style: "cursor: " + (nav ? "pointer" : "default") + ";",
+  });
+  rectEl(g, 0, 0, w, h, "stub-card", null).setAttribute("rx", 10);
+  rectEl(g, 0, 0, w, 20, "stub-badge-strip", null);
+  paintWrappedText(g, 8, 4, w - 16, 14, stub.stub_label || "OTHER COMPONENT", "stub-badge-label");
+
+  const titleClass = nav ? "stub-title stub-title-nav" : "stub-title stub-title-inert";
+  paintWrappedText(g, 12, 28, w - (nav ? 32 : 24), h - 36, stub.owner_name || stub.owner_id, titleClass);
+
+  if (nav) {
+    const arrow = el("text", {
+      x: w - 14, y: h - 14, "text-anchor": "end",
+      fill: "var(--fg-body)", "font-size": "16", "font-weight": "600",
+    });
+    setText(arrow, "→");
+    g.appendChild(arrow);
+  }
+  g.addEventListener("click", onStubClick);
+  return g;
+}
+
+// ── Focus header panel (addendum §1 — §3.5 expanded-card look; top-level n/a) ──
+function paintFocusHeader(node, lvl) {
+  const cv = document.getElementById("canvas-wrap");
+  const w = Math.min(cv.clientWidth - MARGIN * 2, 960);
+  const h = 110, x = MARGIN, y = MARGIN;
+  const g = el("g", { class: "focus-panel" });
+  rectEl(g, x, y, w, h, "focus-panel-bg",
+    "fill: var(--bg-surface); stroke: var(--border); stroke-width: 1;").setAttribute("rx", 12);
+  rectEl(g, x, y, w, 20, "focus-panel-badge", "fill: var(--badge-neutral-bg);");
+  paintWrappedText(g, x + 8, y + 4, w - 16, 14, node.kind_label || "", "focus-panel-badge-label");
+  paintWrappedText(g, x + 16, y + 28, w - 100, 26, node.name || "", "focus-panel-title");
+
+  // collapse button (−)
+  const btnR = 12, bx = x + w - 24, by = y + 32;
+  const btn = el("g", { class: "focus-collapse-btn", "data-action": "pop" });
+  rectEl(btn, bx - btnR, by - btnR, btnR * 2, btnR * 2, "node-expand-btn", null).setAttribute("rx", btnR);
+  const sym = el("text", {
+    x: bx, y: by + 5, "text-anchor": "middle",
+    fill: "var(--badge-action-fg)", "font-size": "16", "font-weight": "700",
+  });
+  setText(sym, "−");   // U+2212 minus
+  btn.appendChild(sym);
+  btn.addEventListener("click", popUp);
+  g.appendChild(btn);
+
+  // chips (compact row)
+  let chipsX = x + 16, chipsY = y + 64;
+  for (const c of (node.chips || [])) {
+    const text = c.label ? (c.name + " — " + c.label) : c.name;
+    const cw = Math.min(w - 100, 10 + text.length * 5.6);
+    paintChip(g, chipsX, chipsY, cw, 14, text, c.badge);
+    chipsX += cw + 6;
+    if (chipsX > x + w - 100) break;
+  }
+  // prose (muted when status=stale|proposed)
+  const prose = node.prose || { text: "", status: "none" };
+  const mutedClass = (prose.status === "stale" || prose.status === "proposed")
+    ? "focus-panel-prose muted" : "focus-panel-prose";
+  paintWrappedText(g, x + 16, y + 84, w - 100, 22, prose.text || "", mutedClass);
+  return g;
+}
+
+// ── Edges (rounded curves + arrowhead + precomputed label pills; §7.3 + §7.5) ──
+function paintEdges(edges, positions) {
+  const g = el("g", { class: "edges" });
+  for (const e of edges || []) {
+    const a = positions[e.from], b = positions[e.to];
+    if (!a || !b) continue;
+    const ax = a.x + a.w / 2, ay = a.y + a.h / 2;
+    const bx = b.x + b.w / 2, by = b.y + b.h / 2;
+    const dx = bx - ax, dy = by - ay;
+    const useCurve = Math.abs(dx) > 2 && Math.abs(dy) > 2;
+    const d = useCurve
+      ? `M ${ax},${ay} C ${ax + dx * 0.5},${ay} ${bx - dx * 0.5},${by} ${bx},${by}`
+      : `M ${ax},${ay} L ${bx},${by}`;
+    const kindCls = e.kind === "calls" ? "edge edge-solid"
+                  : e.kind === "imports" ? "edge edge-dashed"
+                  : "edge edge-dotted";
+    const path = el("path", {
+      d, class: kindCls, "marker-end": "url(#arrowhead)",
+      "data-edge-from": e.from, "data-edge-to": e.to,
+    });
+    path.addEventListener("click", onEdgeClick);
+    g.appendChild(path);
+
+    if (e.label) {
+      const midX = (ax + bx) / 2, midY = (ay + by) / 2;
+      const labelW = e.label.length * 5.4 + 8;
+      rectEl(g, midX - labelW / 2, midY - 7, labelW, 12, "edge-label-bg",
+             "fill: var(--bg);").setAttribute("rx", 4);
+      const lt = el("text", {
+        x: midX, y: midY + 2, class: "edge-label", "text-anchor": "middle",
+      });
+      setText(lt, e.label);
+      g.appendChild(lt);
+    }
+  }
+  return g;
+}
+
+// ── Tooltip (F2 sink b′ — chip text first when present, then prose in muting) ──
+function showTooltip(nodeId) {
+  const tip = document.getElementById("tooltip");
+  if (!tip) return;
+  const n = nodeIndex.get(nodeId);
+  if (!n || !n.tooltip) { tip.style.display = "none"; return; }
+  tip.textContent = "";
+  const lines = n.tooltip.lines || [];
+  const hasChips = n.chips && n.chips.length;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const div = document.createElement("div");
+    let cls = "tt-line";
+    if      (i === 0)                          cls = "tt-name";
+    else if (i === 1)                          cls = "tt-kind";
+    else if (hasChips && i === 2)              cls = "tt-chip";   // chip text first
+    else if (/\d+:\d+/.test(line))             cls = "tt-caller";
+    // Mute later lines (prose + sample callers) when status is stale|proposed
+    const muted = n.prose && (n.prose.status === "stale" || n.prose.status === "proposed")
+                  && i >= (hasChips ? 3 : 2);
+    if (muted) cls += " muted";
+    div.className = cls;
+    setText(div, line);
+    tip.appendChild(div);
+  }
+  positionTooltip(tip);
+  tip.style.display = "block";
+}
+function hideTooltip() {
+  const tip = document.getElementById("tooltip");
+  if (tip) tip.style.display = "none";
+}
+function positionTooltip(tip) {
+  const wrap = document.getElementById("canvas-wrap");
+  const rect = wrap.getBoundingClientRect();
+  const m = state._mouse;
+  const tipW = tip.offsetWidth || 200, tipH = tip.offsetHeight || 80;
+  let left = m.x + 12, top = m.y - tipH - 8;
+  if (top < rect.top + 4)     top = m.y + 16;
+  if (left + tipW > rect.right - 4) left = m.x - tipW - 12;
+  if (left < rect.left + 4)   left = rect.left + 4;
+  tip.style.left = left + "px";
+  tip.style.top  = top  + "px";
+}
+
+let hoverTimer = null;
+function onCardEnter(e) {
+  const id = e.currentTarget.getAttribute("data-node-id");
+  if (hoverTimer) clearTimeout(hoverTimer);
+  hoverTimer = setTimeout(() => showTooltip(id), HOVER_DELAY);
+}
+function onCardLeave() {
+  if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
+  hideTooltip();
+}
+function onCardClick(e) {
+  // Expand-button child swallows click before card-wide handler
+  if (e.target.closest && e.target.closest('[data-action="expand"]')) {
+    const id = e.target.closest('[data-action="expand"]').getAttribute("data-node-id");
+    expandTo(id);
+    e.stopPropagation();
+    return;
+  }
+  state.selectedEdge = (state.selectedEdge === e.currentTarget.getAttribute("data-node-id"))
+    ? null : e.currentTarget.getAttribute("data-node-id");
+  repaintHighlight();
+}
+function onEdgeClick(e) {
+  e.stopPropagation();
+  const from = e.currentTarget.getAttribute("data-edge-from");
+  state.selectedEdge = (state.selectedEdge === from) ? null : from;
+  repaintHighlight();
+}
+function onStubClick(e) {
+  e.stopPropagation();
+  const g = e.currentTarget;
+  if (!g.style.cursor || g.style.cursor === "default") return;   // inert cue (§3)
+  const target = navIndex.get(g.getAttribute("data-owner-id"));
+  if (!target) return;
+  state.viewPath = target.slice();
+  state.viewState = { tx: 0, ty: 0, scale: 1 };
+  paintView();
+}
+function onEmptyCanvasClick(e) {
+  if (e.target.closest && e.target.closest(".card, .stub, .edges .edge, [data-action]")) return;
+  state.selectedEdge = null;
+  repaintHighlight();
+}
+function repaintHighlight() {
+  const all = document.querySelectorAll("#content .edges .edge");
+  all.forEach(p => {
+    p.classList.remove("edge-highlight", "edge-faded");
+    if (!state.selectedEdge) return;
+    if (p.getAttribute("data-edge-from") === state.selectedEdge ||
+        p.getAttribute("data-edge-to")   === state.selectedEdge) {
+      p.classList.add("edge-highlight");
+    } else {
+      p.classList.add("edge-faded");
+    }
+  });
+}
+
+// ── Breadcrumb (addendum §4 — name lookups only, truncates same as −) ──
+function paintBreadcrumb() {
+  const bc = document.getElementById("breadcrumb");
+  if (!bc) return;
+  bc.textContent = "";
+  if (!state.viewPath.length) { bc.style.display = "none"; return; }
+  bc.style.display = "";
+  const root = (MODEL.scope && MODEL.scope !== "full") ? nameAt(MODEL.scope) : (MODEL.title || "SSOT diagram");
+  const segments = [root].concat(state.viewPath.map(nameAt));
+  segments.forEach((label, idx) => {
+    if (idx > 0) {
+      const sep = document.createElement("span");
+      sep.className = "sep";
+      setText(sep, "  ›  ");     // › single chevron in fg-disabled per CSS
+      bc.appendChild(sep);
+    }
+    const seg = document.createElement("span");
+    seg.className = idx === segments.length - 1 ? "active" : "seg";
+    setText(seg, label);
+    if (idx < segments.length - 1) {
+      seg.addEventListener("click", () => truncateTo(idx));
+    }
+    bc.appendChild(seg);
+  });
+}
+function nameAt(id) {
+  const n = nodeIndex.get(id);
+  return n ? n.name : id;
+}
+
+// ── Header (title + subtitle + optional note) ──
+function paintHeader() {
+  const t = document.getElementById("title");
+  if (t) t.textContent = MODEL.title || "SSOT diagram";
+  const s = document.getElementById("subtitle");
+  if (s) s.textContent = (MODEL.subtitle || "") + (MODEL.note ? "  ·  " + MODEL.note : "");
+}
+
+// ── Legend (auto-show what's present; createElement + textContent ONLY) ──
+function buildLegend(vm) {
+  const leg = document.getElementById("legend");
+  if (!leg) return;
+  leg.textContent = "";
+  const data = (vm && vm.legend) || { node_types: [], edge_kinds: [], trust_chips: [] };
+  const hasAny = (data.node_types && data.node_types.length)
+              || (data.edge_kinds  && data.edge_kinds.length)
+              || (data.trust_chips && data.trust_chips.length);
+  if (!hasAny) { leg.style.display = "none"; return; }
+  leg.style.display = "";
+
+  const title = document.createElement("div");
+  title.id = "legend-title";
+  setText(title, "Legend");
+  leg.appendChild(title);
+
+  for (const nt of data.node_types || []) {
+    const row = document.createElement("div");
+    row.className = "legend-row";
+    const sw = document.createElement("div");
+    sw.className = "legend-sw";
+    row.appendChild(sw);
+    const lbl = document.createElement("span");
+    lbl.className = "legend-label";
+    setText(lbl, (nt.kind_label || "") + (nt.icon && nt.icon !== "default" ? "  ·  " + nt.icon : ""));
+    row.appendChild(lbl);
+    leg.appendChild(row);
+  }
+  if ((data.edge_kinds || []).length) {
+    const div = document.createElement("div");
+    div.id = "legend-divider";
+    leg.appendChild(div);
+    for (const ek of data.edge_kinds) {
+      const row = document.createElement("div");
+      row.className = "legend-row";
+      const sw = document.createElement("div");
+      sw.className = "legend-sw legend-edge";
+      row.appendChild(sw);
+      const lbl = document.createElement("span");
+      lbl.className = "legend-label";
+      setText(lbl, ek);
+      row.appendChild(lbl);
+      leg.appendChild(row);
+    }
+  }
+  if ((data.trust_chips || []).length) {
+    const div = document.createElement("div");
+    div.id = "legend-divider";
+    leg.appendChild(div);
+    for (const tc of data.trust_chips) {
+      const row = document.createElement("div");
+      row.className = "legend-row";
+      const sw = document.createElement("div");
+      sw.className = "legend-sw";
+      sw.style.background = `var(--badge-${tc.badge || "neutral"}-bg)`;
+      row.appendChild(sw);
+      const lbl = document.createElement("span");
+      lbl.className = "legend-label";
+      const text = tc.label ? (tc.name + " — " + tc.label) : tc.name;
+      setText(lbl, text);
+      row.appendChild(lbl);
+      leg.appendChild(row);
+    }
+  }
+}
+
+// ── paintView — full re-render per viewPath (addendum §1 + §3.5 outer transform) ──
+const content = () => document.getElementById("content");
+function paintView() {
+  paintHeader();
+  paintBreadcrumb();
+  buildLegend(MODEL);
+
+  const c = content();
+  if (!c) return;
+  c.textContent = "";
+  const d = curDepth();
+  const nodes = nodesAtCurrent();
+  const stubs = stubsAtCurrent();
+  const edges = edgesAtCurrent();
+
+  // Header panel (only on focus views)
+  let yOffset = MARGIN;
+  if (d > 0) {
+    const headerNode = nodeIndex.get(state.viewPath[d - 1]);
+    if (headerNode) {
+      c.appendChild(paintFocusHeader(headerNode, levelFor(d - 1)));
+      yOffset = MARGIN + 110 + GAP;
+    }
+  }
+
+  // Card grid
+  const layout = gridLayout(nodes.length);
+  const positions = {};
+  nodes.forEach((n, i) => {
+    const col = i % layout.cols;
+    const row = Math.floor(i / layout.cols);
+    const x = MARGIN + layout.pad + col * (layout.w + GAP);
+    const y = yOffset + layout.pad + row * (layout.h + GAP);
+    positions[n.id] = { x, y, w: layout.w, h: layout.h };
+    c.appendChild(paintCard(n, x, y, levelFor(d)));
+  });
+
+  // Stubs column (right of grid; one per distinct neighbor/sibling — Python precomputed)
+  const gridRightX = MARGIN + layout.width;
+  const gridTopY = yOffset;
+  stubs.forEach((s, i) => {
+    const sx = gridRightX + STUB_GAP;
+    const sy = gridTopY + i * (STUB_ROW_H + STUB_GAP);
+    c.appendChild(paintStub(s, sx, sy));
+  });
+
+  // Edges on top of cards
+  c.appendChild(paintEdges(edges, positions));
+
+  fitToView();
+}
+
+// ── Pan/zoom (§7.4) — transform on outer #viewport <g> (§3.5) ──
+function applyTransform() {
+  const vp = document.getElementById("viewport");
+  if (!vp) return;
+  const { tx, ty, scale } = state.viewState;
+  vp.setAttribute("transform", `translate(${tx},${ty}) scale(${scale})`);
+}
+function fitToView() {
+  const cv = document.getElementById("canvas-wrap");
+  const iw = cv.clientWidth || 800, ih = cv.clientHeight || 600;
+  const d = curDepth();
+  const nodes = nodesAtCurrent();
+  const stubs = stubsAtCurrent();
+  const L = gridLayout(nodes.length);
+  const paintW = MARGIN * 2 + L.width + (stubs.length ? STUB_W + STUB_GAP : 0);
+  const paintH = (d > 0 ? 110 + GAP : 0) + MARGIN + L.height + MARGIN;
+  const sx = iw / paintW, sy = ih / paintH;
+  const s = Math.max(0.25, Math.min(4, Math.min(sx, sy)));
+  state.viewState.scale = s;
+  state.viewState.tx = (iw - paintW * s) / 2;
+  state.viewState.ty = (ih - paintH * s) / 2;
+  applyTransform();
+}
+function installPanZoom() {
+  const svg = document.getElementById("diagram");
+  const wrap = document.getElementById("canvas-wrap");
+  let drag = null;
+  svg.addEventListener("mousedown", e => {
+    if (e.target.closest && e.target.closest(".card, .stub, [data-action], .edges .edge")) return;
+    drag = { x: e.clientX - state.viewState.tx, y: e.clientY - state.viewState.ty };
+    e.preventDefault();
+  });
+  window.addEventListener("mousemove", e => {
+    if (drag) {
+      state.viewState.tx = e.clientX - drag.x;
+      state.viewState.ty = e.clientY - drag.y;
+      applyTransform();
+    }
+  });
+  window.addEventListener("mouseup", () => { drag = null; });
+  svg.addEventListener("wheel", e => {
+    e.preventDefault();
+    const r = wrap.getBoundingClientRect();
+    const cx = e.clientX - r.left, cy = e.clientY - r.top;
+    const oldS = state.viewState.scale;
+    const newS = Math.max(0.25, Math.min(4, oldS * (e.deltaY < 0 ? 1.1 : 1 / 1.1)));
+    state.viewState.tx = cx - (cx - state.viewState.tx) * (newS / oldS);
+    state.viewState.ty = cy - (cy - state.viewState.ty) * (newS / oldS);
+    state.viewState.scale = newS;
+    applyTransform();
+  }, { passive: false });
+  svg.addEventListener("dblclick", e => {
+    if (e.target.closest && e.target.closest(".card, .stub, [data-action]")) return;
+    fitToView();
+  });
+  document.getElementById("zoom-in").addEventListener("click", () => {
+    state.viewState.scale = Math.min(4, state.viewState.scale * 1.2); applyTransform();
+  });
+  document.getElementById("zoom-out").addEventListener("click", () => {
+    state.viewState.scale = Math.max(0.25, state.viewState.scale / 1.2); applyTransform();
+  });
+  document.getElementById("zoom-fit").addEventListener("click", fitToView);
+  wrap.addEventListener("mousemove", e => {
+    const r = wrap.getBoundingClientRect();
+    state._mouse = { x: e.clientX - r.left, y: e.clientY - r.top };
+  });
+  svg.addEventListener("click", onEmptyCanvasClick);
+  // Touch: one-finger pan + two-finger pinch
+  let touchDrag = null, pinch = null;
+  svg.addEventListener("touchstart", e => {
+    if (e.touches.length === 1) {
+      const t = e.touches[0];
+      touchDrag = { x: t.clientX - state.viewState.tx, y: t.clientY - state.viewState.ty };
+    } else if (e.touches.length === 2) {
+      const [a, b] = e.touches;
+      pinch = { d0: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), s0: state.viewState.scale };
+      touchDrag = null;
+    }
+  }, { passive: true });
+  svg.addEventListener("touchmove", e => {
+    if (e.touches.length === 1 && touchDrag) {
+      const t = e.touches[0];
+      state.viewState.tx = t.clientX - touchDrag.x;
+      state.viewState.ty = t.clientY - touchDrag.y;
+      applyTransform();
+    } else if (e.touches.length === 2 && pinch) {
+      const [a, b] = e.touches;
+      const d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+      state.viewState.scale = Math.max(0.25, Math.min(4, pinch.s0 * (d / pinch.d0)));
+      applyTransform();
+    }
+  }, { passive: true });
+  svg.addEventListener("touchend", () => { touchDrag = null; pinch = null; });
+}
+
+// ── Theme (§7.6 — data-theme on <html>, localStorage 'diagram-theme') ──
+function setTheme(name) {
+  document.documentElement.setAttribute("data-theme", name);
+  try { localStorage.setItem("diagram-theme", name); } catch (e) {}
+  const btn = document.getElementById("theme-toggle");
+  if (btn) setText(btn, name === "dark" ? "☾" : "☀");
+}
+function installTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem("diagram-theme"); } catch (e) {}
+  if (saved !== "light" && saved !== "dark") {
+    saved = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  setTheme(saved);
+  const btn = document.getElementById("theme-toggle");
+  if (btn) btn.addEventListener("click", () => {
+    setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  });
+}
+
+// ── boot (Step 8 wires it all up — guarded so raw template stays previewable) ──
+function boot() {
+  installTheme();
+  installPanZoom();
+  paintView();
+}
+
+// Auto-boot after splice: raw template (MODEL === null) keeps its preview note.
+if (MODEL !== null) boot();
+</script>
+</body>
+</html>
