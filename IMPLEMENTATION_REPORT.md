@@ -1,49 +1,43 @@
-# Step 8 Implementation Report — JS painter body
+# Step 10 Implementation Report — test_render.py + Step-9 fixture fix
 
 ## Files changed
-- `ssot-diagram/render_template.html` — filled the painter stubs (showTooltip,
-  paintView, buildLegend, boot + supporting helpers). Template 325 -> 1007 lines.
+- `ssot-diagram/test_render.py` — NEW (24 tests: 3 pinned-sha goldens + structural +
+  injection + exit-codes + template-hygiene + scoped-view + regression).
+- `ssot-diagram/testdata/mkt_engine.narratives.fixture.json` — fixed the
+  "proposed" entry's stored signature: was all-zeros `..aa` (mismatched the real
+  node sig -> gm._derive_status derived 'stale' not 'proposed'); set to the
+  node's REAL live sig `2a9436e7...` so it correctly derives proposed (Step-9
+  fixture bug surfaced by Step-10's chip assertion).
 
-## Painter behaviors filled (Step 8 + UX addendum §1-4)
-Focus-view state machine (viewPath 0-2 + viewState pan/zoom, paintView fully
-re-renders per path); grid layout (ceil(sqrt(n)) cols, §5.2/5.3/5.4 spacings);
-focus header panel (§3.5 look); breadcrumb (from viewPath via name lookups,
-segments truncate path on click = same as panel `-`, hidden at top, scoped root);
-stubs (switch on stub/stub_nav flags only — navigable `->`+body+pointer+hover
-ring click->viewPath, inert disabled+no-glyph+edge-highlight-only, OTHER FILE
-badge label + OTHER COMPONENT); tooltips (data-node-id only, showTooltip fills
-via setText from precomputed node.tooltip, §7.2 trigger/position/box); legend
-(draw embedded legend verbatim via createElement+textContent); edge painting
-(rounded orthogonal + arrowhead + precomputed pill labels, highlight-on-click +
-unconnected fade, deselect on empty-click); theme toggle (data-theme +
-localStorage diagram-theme + prefers-color-scheme); pan/zoom (drag, wheel,
-0.25-4x, buttons, fit-to-view from layout data never getBBox, dblclick, touch).
+## Pinned golden shas (rendered post-Step-8 painter, re-pinned after fixes)
+- GOLDEN_NO_NARR_SHA      = b64e2136b6362a0d79d432c0094e0961894f71ef6e910b55c8e6784540901e27
+- GOLDEN_WITH_NARR_SHA    = 1f6dadf1be98128d320a986d1300a7dcff60cfea1e6a372ab1cfe1f09a9816d1
+- GOLDEN_TRUSTMATRIX_SHA = 2e2e2d98093e9b8574e8bed2529945797632dbaeb9586b39d87c5cb935192dc1
 
-## Dumb-painter invariant (ADR-0002)
-No arithmetic/conditionals on trust fields, no .get defaulting — every
-status/chip/label/tooltip is read from the embedded precomputed MODEL. load-time
-id->node index (Decision 11) built once; boot() wired only when MODEL !== null.
+## Verify (2026-07-10)
+- test_render.py: 24 passed.
+- Full suite: 129 passed / 3 failed — the 3 = ONLY the pre-existing TestGoldenLive
+  pilot-drift set (unchanged since the 105/3 baseline). 0 NEW failures.
+  (105 -> 129 = +24 new render tests, exactly matching test_render.py.)
+- golden model sha 56df3d86... intact after a full render run; graph_model.py +
+  testdata/mkt_engine.model.json byte-unchanged.
+- Double-oracle demo (Action 5): mutated the fixture's proposed-text -> sha
+  drifted (1f6dadf1 -> 565de28c) -> test_golden_with_narr_sha_pinned FAILED on
+  the sha; restored -> green (3 passed). Tripwire works.
 
-## Verify (2026-07-10, static)
-- sentinels each exactly once (VM 1 / FONT 1 / GENERATOR 1) — Step 7 splice
-  assert holds.
-- raw-HTML-sink word absent (0) — all model-derived strings via setText /
-  paintWrappedText / createElement+textContent. No prose in HTML attributes.
-- no <link>/@import (self-contained, zero network).
-- node --check on extracted <script> (29352 chars) -> JS-syntax OK.
-- boot() (line 997) called only when MODEL !== null (line 1004) — raw template
-  still previews clean.
-- E2E render: writes 338962-byte HTML exit 0; byte-deterministic across two
-  renders (sha b64e2136b6362a0d). Output grew vs Step 7 (was 313K) because the
-  painter JS now adds render content — expected; determinism is what holds.
-- graph_model.py + golden byte-unchanged; pytest 105/3 (0 new).
+## Orchestrator fixes to worker-shipped test bugs (all caught by independent runs)
+1. Self-recursive regression test (test_full_suite_baseline_no_new_fails shelled
+   out to run the WHOLE suite incl. itself -> ~2min+ / apparent hang). Fixed:
+   nested run `-k "not test_full_suite_baseline_no_new_fails"` + 180s timeout.
+2. Em-dash / middle-dot escape mismatch: chip + subtitle assertions used raw
+   U+2014 / U+00B7; ensure_ascii=True escapes them in the payload -> impossible
+   literal match. Fixed: assert encoding-invariant fragments.
+3. No subprocess timeout on _run_render / missing-template run. Fixed: 60s +
+   fail-on-timeout.
 
-NOTE: live interactive behavior (click/hover/pan/zoom/theme-persist) is NOT
-assertable headlessly — deferred to the phase-end E2E browser check.
-
-## Literal testCmd (Step-8 gate)
+## Literal testCmd (Step-10 gate)
 ```
-python3 ssot-diagram/render.py render --model ssot-diagram/testdata/mkt_engine.model.json --out /tmp/p5_s8.html
+/Users/phatchenh/.cache/writ/.venv/bin/python -m pytest ssot-diagram/test_render.py -q
 ```
 
 === END REPORT ===

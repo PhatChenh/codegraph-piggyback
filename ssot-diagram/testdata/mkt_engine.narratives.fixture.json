@@ -8,8 +8,8 @@
     },
     "nano:Home@app/page.tsx": {
       "node_id": "nano:Home@app/page.tsx",
-      "signature": "00000000000000000000000000000000000000000000000000000000000000aa",
-      "text": "Landing page server component — streams the latest public feed row (PROPOSED, signature placeholder).",
+      "signature": "2a9436e73561c29df789435dc8dc2b1405f581e29b11c6965ba81171577a7f5a",
+      "text": "Landing page server component — streams the latest public feed row (PROPOSED, signature matches live so gm._derive_status returns proposed).",
       "status": "proposed"
     },
     "micro:app/api/auth/login/route.ts": {
