@@ -144,6 +144,47 @@ inert-everywhere recommendation — INERT in `--component` scoped files).**
   `"stub": true` in the embedded data). One visual grammar for "this arrow
   leaves what you're looking at", learned once.
 
+#### §3.1 — "OTHER FILE" micro-stub extension (Decision 1, owner-ratified 2026-07-09)
+
+NOTE: this is a one-token extension of §3 — same card grammar as "OTHER
+COMPONENT", new badge label, distinct resolution scope. It is NOT a redesign
+of the FROZEN skeleton contracts (Block 4a/4b/5a/5b + Contract 6). Recorded
+in Step 5; painted in Step 8.
+
+- **Trigger:** in a **micro focus view**, an edge whose target resolves to a
+  sibling micro of the SAME component (i.e. a nano in another file under the
+  same component the user is currently drilling into). The user has descended
+  to one file, but a call/import points at a function in a different file of
+  the same component — the architecturally-honest destination is the file, not
+  the component, and not the individual function (the painter does not zoom
+  in further than the micro).
+- **Card grammar (identical to the "OTHER COMPONENT" stub above):**
+  Micro-size card (§3.1 level 2 dimensions), `var(--bg)` fill, `1px var(--border)`
+  stroke, badge strip in `--badge-neutral-bg` with label **"OTHER FILE"** (the
+  only difference — replaces "OTHER COMPONENT" for this trigger). No expand
+  button, no details inset, no decision chips, no trust chip. Stubs never
+  expand in place in either context.
+- **One stub per distinct sibling micro:** the Python join (`build_viewmodel`,
+  per-view precompute) walks every edge in the micro focus view, resolves
+  the target through the id→owning-micro map, and emits ONE stub per distinct
+  sibling micro any cross-view edge lands on — same one-stub-per-distinct-
+  outside-owner discipline as "OTHER COMPONENT" at the top/component levels.
+- **Navigable / inert — identical cue rules to the "OTHER COMPONENT" stub:**
+  full artifact → `→` glyph + `var(--fg-body)` title + `cursor: pointer` +
+  hover ring + click sets `viewPath = [siblingMicroId]` (`stub_nav: true` in
+  the embedded data); `--component` scoped file → no glyph +
+  `var(--fg-disabled)` title + no hover ring (`stub_nav: false`, inert). The
+  cue IS the difference; both stub types share it.
+- **Why file, not function:** the user is in a micro focus view (one file's
+  nanos). An edge to a function in a sibling file cannot resolve to that
+  function in the current view (it is not in the view's endpoint set), and
+  the spec's Block 4a forbids expanding further. The sibling micro IS in
+  scope of the current component, so "OTHER FILE" is the smallest honest
+  destination that respects the three-level ceiling while telling the user
+  exactly where the arrow points. If the owner later prefers
+  always-resolve-to-component, the change is local: drop the sibling-micro
+  branch in the per-view precompute + change the badge label. Reversible.
+
 ## 4. Breadcrumb behavior at 3 levels
 
 **In plain terms:** the top-center of the header always tells you where you
