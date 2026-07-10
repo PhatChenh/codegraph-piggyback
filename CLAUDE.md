@@ -128,3 +128,13 @@ in `docs/roadmap/roadmap.md`.
   not `impact-analyzer/`).
 - `arch-visualizer/` looks like an active stub — it isn't; ssot-diagram +
   plan-visualizer replaced it.
+- **minimax (M3) test code doesn't account for `ensure_ascii=True`** (P5, 2026-07-10):
+  it asserts chip/subtitle text with raw non-ASCII chars (em-dash `—` U+2014,
+  middle-dot `·` U+00B7), but `json.dumps(ensure_ascii=True)` escapes them to
+  `—`/`·` in the payload → impossible literal match. Verdict: assert
+  encoding-invariant fragments, never raw non-ASCII against an escaped payload.
+- **minimax (M3) stalls before writing its turn report** on long steps (P5 Step 10:
+  `turn_end{stall}`, file written but report absent). Its test code shipped 4 real
+  bugs (the escape one above + a self-recursive regression test + missing
+  subprocess timeout + a Step-9 fixture sig bug) caught ONLY because the
+  orchestrator ran the tests itself rather than trusting the (absent) report.
