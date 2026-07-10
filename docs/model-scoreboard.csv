@@ -5,3 +5,9 @@ date,model,role,risk_tier,outcome,note
 2026-07-04,writ:writ-red-team,red-team,B,findings-confirmed,Phase-end adversarial — edge data loss (660+ edges), decision sig sha256(id), --nano-cap dead code
 2026-07-06,writ:worker,review,B,findings-confirmed,P4 factual-code-verification (13 valid/0 invalid/2 unverifiable)
 2026-07-06,writ:worker,review,B,pass-first-try,P4 plan-from-specs (12 Steps; plan_verify --strict 19/19)
+2026-07-10,minimax-M3,implement,C,needed-fixes,P5 Step 3 render.py CLI plumbing — subparser deviation reverted to required per §7
+2026-07-10,minimax-M3,implement,A,pass-first-try,P5 Step 5 build_viewmodel (L2 trust join) + OTHER-FILE addendum — inline glm tier-A review approved
+2026-07-10,minimax-M3,implement,C,needed-fixes,P5 Step 8 JS painter body — first dispatch no-op (session-id masking) re-dispatched; static verified live E2E owed
+2026-07-10,minimax-M3,implement,C,needed-fixes,P5 Step 9 fixtures — proposed-entry sig was all-zeros (derived stale not proposed) fixed in Step 10
+2026-07-10,minimax-M3,implement,C,needed-fixes,P5 Step 10 test_render.py (24 tests) — 4 worker test bugs fixed (em-dash escape, recursive regression test, subprocess timeout)
+2026-07-10,glm-5.2,review,A,findings-false-positive,P5 Step 5 inline tier-A review (deepseek-pro av seat broken BUG-022) — worker code contract-faithful 0 defects
