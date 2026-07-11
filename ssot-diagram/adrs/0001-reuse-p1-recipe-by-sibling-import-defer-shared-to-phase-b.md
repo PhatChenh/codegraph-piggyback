@@ -4,6 +4,19 @@
 
 Accepted (2026-07-04).
 
+> **UPDATE 2026-07-09 (doc-sweep):** the `_shared/` extraction this ADR
+> *deferred* to Phase B has since SHIPPED — commit `82287f9` ("plan-verifier +
+> diff-verifier + _shared extraction") landed `_shared/db.py`, `sig.py`,
+> `resolve.py`, `queries.py`, `budget.py`, `hookio.py`, `manifest.py` at the repo
+> root, and `decision_index.py:44-57` now imports `_shared.db`/`resolve`/`sig`.
+> The "defer to Phase B" portion of the 2026-07-04 decision is therefore
+> SUPERSEDED in effect (phase B cutover happened, via the second-consumer rule,
+> when plan-verifier needed the resolver+signature code). The sibling-import
+> seam this ADR primarily establishes (`import decision_index as di`) remains
+> the live pattern for P3/P4/P5 tools. This note records the divergence per
+> DOC-SYNC-001; the original decision text below is left unchanged as a
+> historical record.
+
 ## Context
 
 The ssot-diagram pipeline has three phases of shared plumbing. Phase 1 (P1)

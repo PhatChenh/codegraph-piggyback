@@ -1,0 +1,9 @@
+{
+  "plan": "ssot-diagram/ai-artifacts/4_plans/p5-html-renderer.md",
+  "step": "Step 10",
+  "base": "93e7185",
+  "testCmd": "/Users/phatchenh/.cache/writ/.venv/bin/python -m pytest ssot-diagram/test_render.py -q",
+  "report": "IMPLEMENTATION_REPORT.md",
+  "allow": [],
+  "seats": { "impl": "minimax", "review": "glm", "orch": "glm" }
+}
