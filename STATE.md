@@ -1,64 +1,50 @@
 # STATE.md — codegraph-piggyback
 
-> **Pick-up point for the next AI session.** Read this first, then the files it
-> names. Last updated 2026-07-04.
+> **Pick-up point for the next AI session.**
 
-## What is happening right now (repo-wide)
+## Current position
 
-Last action: **plan-verifier + diff-verifier + `_shared/` BUILT 2026-07-05** on
-branch `fable/plan-verifier-diff-verifier` (NOT merged — owner HITL). Built by
-Claude Fable 5 (owner-approved queue, see `~/all-projects/vibe-coding-setup/ATLAS.md`):
-- `_shared/` extracted (db/sig/resolve/queries/budget/hookio + manifest.py);
-  `decision_index.py` clean-cutover per Block 1 — all pre-existing tests green.
-- `plan-verifier/plan_verify.py` — 24 tests; CLI `--strict` + PostToolUse hook;
-  manifest incl. `tier:/gates:/qualifiers:` extension (Block 2a AMENDED, dated).
-- `diff-verifier/` (NEW dir) — design.md + `diff_verify.py`, 14 tests; wave-end
-  verdicts OUT-OF-SCOPE-TOUCH / QUALIFIER-FAIL / NOT-DELIVERED / NOT-REMOVED /
-  TESTS-MISSING; restricted qualifier verb grammar (no raw shell).
-- `manifest.json` + `piggyback.py` gained optional `args` field (hook `--hook`).
-- Full suite 67 pass + 3 PRE-EXISTING TestGoldenLive failures (golden vs LIVE
-  mkt_engine pilot DB drifted after mkt_engine P8/P14 merges — needs a golden
-  refresh via ssot P6 regeneration path, NOT a P3 bug; fails identically on main).
+**ssot-diagram P5 (interactive HTML renderer) MERGED to main `a51384e`
+(2026-07-10)** + pushed `bf1570a`. 129 pytest / 3 pre-existing `TestGoldenLive`
+pilot-drift (0 NEW); golden sha `56df3d86…` intact; render E2E 339KB
+self-contained, byte-deterministic. Run report:
+`docs/AI_artifacts/9_runs/2026-07-10-p5-html-renderer.md`.
 
-Before that: **ssot-diagram P3 merged to main** (`ba02a56`, 2026-07-04) — pushed
-to origin (verified 2026-07-05). All other tools specced in `<tool>/design.md`,
-build order in `docs/roadmap/roadmap.md`.
+**plan-verifier + diff-verifier MERGED to main** (`82287f9` ship + BUG-024
+fix via `57c0961`).
 
-## Per-tool state pointers
+## NEXT (in order)
 
-- **ssot-diagram** — phases P0–P6. P1 (decision-index) + P2 (curation) + P3
-  (diagram-model extractor) all DONE; P4 (narrative sidecar) next. Pick-up point:
-  `ssot-diagram/STATE.md`. Roadmap: `ssot-diagram/roadmap.md`. Rules:
-  `ssot-diagram/CLAUDE.md`.
-- _(other tools — impact-analyzer, codegraph-gate, _shared, plan-verifier,
-  plan-visualizer, changeset-context, repo-map, impact-precommit, drift-digest,
-  sot-enrichment, dead-code-finder, doc-coverage — have no per-tool STATE yet;
-  see `docs/roadmap/roadmap.md` for status.)_
+1. **Live painter E2E** — owner browser-check `/tmp/p5.html` (click
+   macro→micro→nano, hover PROPOSED/UNNARRATABLE, pan/zoom, theme). Deferred,
+   not headlessly assertable. `ssot-diagram/STATE.md` owns.
+2. **ssot P6** — PostToolUse re-extract hook (`ssot-diagram/roadmap.md`).
+3. Mid-build debt: av-orchestrate `BUG-023`/`BUG-024` workarounds in run
+   report + `agent_village/BUGS.md`.
 
-## OPEN human-authority items (repo-wide, deferred)
+## Per-tool pointers
 
-- **OQ-FOLDER-001 (product-identity):** repo is on the legacy artifact-folder scheme
-  (`0_scout/1_design/2_specs/3_factual-code-verification/4_plans/`). The DOC-ARTIFACT-001
-  rule wants the new scheme (`0_draft/1_scout/2_ux/3_design/4_specs/5_factual-code-verification/6_plans/…`).
-  Migration deferred to post-pipeline — do NOT migrate mid-build.
-- **OQ-A24 (operating-burden):** whether CI has the pilot DB checked out. The `extract`
-  CLI must skip-if-absent (warn, not fail) so this stays non-blocking.
+- **ssot-diagram** — P5 done; P6 next; live painter E2E OPEN.
+  `ssot-diagram/STATE.md` (canonical); `ssot-diagram/roadmap.md`.
+- **plan-verifier / diff-verifier** — SHIPPED, on main. `plan-verifier/design.md`.
+- All others (impact-analyzer, codegraph-gate, plan-visualizer,
+  changeset-context, repo-map, impact-precommit, drift-digest, sot-enrichment,
+  dead-code-finder, doc-coverage) — `docs/roadmap/roadmap.md`.
 
-## Tools (verified online 2026-07-04)
+## OPEN human-authority items
 
-- CodeGraph: ✅ online. CLI at `codegraph` (nvm bin); repo has `.codegraph/`; file
-  watcher + hooks active (`codegraph-gate.py`, `decision_hook.py`). Use codegraph MCP
-  tools (`codegraph_explore`/`codegraph_node`/`codegraph_callers`) or the shell CLI as
-  the primary explore tool. Never write to the DB.
-- Writ daemon: ✅ up (port 9130). Set writ mode before working:
-  `/Users/phatchenh/.cache/writ/.venv/bin/python /Users/phatchenh/all-projects/vibe-coding-setup/falkor-writ/bin/lib/writ-session.py mode set <work|review> <session-id>`.
-- Subagent casting rule (CLAUDE.md §10): `general-purpose`/`claude`/omitted
-  subagent_type are BLOCKED (hook bounce). Cast a leaf: writes → `writ:worker` or
-  `writ:writ-implementer` (plan-driven); read-only → `writ:writ-explorer`/`Explore`;
-  review → `writ:writ-plan-reviewer` then `writ:writ-code-quality-reviewer`.
+- **OQ-FOLDER-001** — legacy `0_scout/1_design/…`; new scheme per
+  DOC-ARTIFACT-001. Migration deferred post-pipeline.
+- **OQ-A24** — CI pilot-DB presence; extract CLI must skip-if-absent.
+  Non-blocking.
 
-## Refused alternatives (repo-wide, do not re-debate)
+## Tools online
+
+- CodeGraph ✅ — `codegraph` CLI; MCP `codegraph_explore`/`codegraph_node`/`codegraph_callers` primary explore. Never write to DB.
+- Writ daemon ✅ port 9130. Set mode via `writ-session.py` (path in repo `CLAUDE.md` §10).
+- Subagent casting BLOCKED for `general-purpose`/`claude`/omitted. Use `writ:worker` / `writ:writ-implementer` (writes); `writ:writ-explorer` / `Explore` (read); `writ:writ-plan-reviewer` → `writ:writ-code-quality-reviewer` (review).
+
+## Refused alternatives (do not re-debate)
 
 - Pilot = this repo (no decision index; misses the decision-merge path).
-- Extract `_shared/` NOW instead of Phase B (scope creep delaying ships; coupling is
-  convention-guarded in the interim per the per-tool ADR).
+- Defer `_shared/` to Phase B → SUPERSEDED (shipped `82287f9`).

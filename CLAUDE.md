@@ -102,16 +102,17 @@ curation DONE (2026-07-04), **ssot P3 diagram-model extractor DONE (merged main
 DONE 2026-07-06 (merged main `65f3982`; design→spec→FCV→plan→implement→review
 complete, plan-verify 19/19; 105/108 pytest, 0 P4 regressions, byte-deterministic,
 F6 laundering-hole close E2E-verified; TD-P4-1 empty-sig quarantine CLOSED, Block
-5b amendment owner-ratified). **P5 HTML renderer IMPLEMENTATION COMPLETE 2026-07-10**
-(branch `dsk/p5-html-renderer`, 12 commits, NOT merged). 11 steps shipped via
-av-orchestrate (minimax worker seats on Steps 5/8/9/10 — glm orchestrator
-inline-reviewing tier-A + authoring the verbatim steps): `render.py` +
-`render_template.html` + `test_render.py` (24 tests) + 3 font binaries + OFL +
-4 fixtures + `ssot-render` manifest entry + OTHER-FILE addendum note.
-**129 pytest pass / 3 pre-existing `TestGoldenLive` pilot-drift (0 NEW)**; golden
+5b amendment owner-ratified). **P5 HTML renderer MERGED to main `a51384e` (2026-07-10)** + pushed via `bf1570a`.
+11 steps shipped via av-orchestrate (minimax worker seats on Steps 5/8/9/10 —
+glm orchestrator inline-reviewing tier-A + authoring the verbatim steps):
+`render.py` + `render_template.html` + `test_render.py` (24 tests) + 3 font
+binaries + OFL + 4 fixtures + `ssot-render` manifest entry + OTHER-FILE
+addendum note. **129 pytest pass / 3 pre-existing `TestGoldenLive` pilot-drift (0 NEW)**; golden
 model sha `56df3d86…` intact; render E2E = 339KB self-contained,
-byte-deterministic, zero network. **NEXT: live painter E2E browser check
-(deferred — click/hover/pan/zoom not headlessly assertable) + merge to main.**
+byte-deterministic, zero network. **NEXT: live painter E2E (deferred —
+click/hover/pan/zoom not headlessly assertable) + ssot P6 PostToolUse re-extract
+hook.** plan-verifier + diff-verifier SHIPPED + MERGED to main (initial `82287f9`
++ BUG-024 fix via `57c0961`).
 av-orchestrate gaps logged: BUG-023 (staged-cwd unreachable → sequential-only),
 BUG-024 (verify-wave category-21 phase-scoped → per-wave gate can't pass mid-phase).
 `_shared/` extraction SHIPPED (commit `82287f9`, alongside plan-verifier)
