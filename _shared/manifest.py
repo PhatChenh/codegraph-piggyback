@@ -21,6 +21,10 @@ Entry forms: `path::symbol` | bare path | bare symbol. Multiple blocks per
 document allowed (one per plan Step); lists concatenate. Qualifiers use the
 restricted verb grammar ONLY (no raw shell — decided 2026-07-05):
     grep-absent "<literal>" <glob>   pattern absent from files matching glob
+    grep-present "<literal>" <glob>  pattern PRESENT in ≥1 file matching glob
+                                     (added 2026-07-19: lets a plan demand e.g.
+                                     a real-protocol schema import in a probe —
+                                     the P9-w2b stub-drift guard)
     byte-unchanged <path>            path untouched by the diff
     diff-only-within <dir>[ <dir>…]  all diff files under the listed dirs
 
@@ -38,7 +42,7 @@ from dataclasses import dataclass, field
 
 VALID_TIERS = {"A", "B", "C"}
 GATE_PREFIXES = ("research:", "human:")
-QUALIFIER_VERBS = ("grep-absent", "byte-unchanged", "diff-only-within")
+QUALIFIER_VERBS = ("grep-absent", "grep-present", "byte-unchanged", "diff-only-within")
 
 _BLOCK_RE = re.compile(r"^<!--\s*plan-verify\s*$(.*?)^-->\s*$",
                        re.MULTILINE | re.DOTALL)

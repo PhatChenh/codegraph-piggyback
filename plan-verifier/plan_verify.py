@@ -33,8 +33,17 @@ UNACKNOWLEDGED-BLAST. Gate semantics (frozen, Block 3b): default advisory
 exit 0; --strict exit 1 on any manifest MISSING / COLLISION / BLOCKED.
 AMBIGUOUS + UNACKNOWLEDGED-BLAST warn-only even in strict.
 
+  Tier 3 — spec-reuse cross-check (`--spec <spec.md>`, added 2026-07-19 after
+    the P9-w2b Step 5 probe defect): every row of the spec's "Already built
+    (reuse, do not rebuild)" table whose Depth column says `deep` must be
+    referenced somewhere in the plan (symbol name, path, or path basename).
+    A dropped row is exactly how the w2b plan lost the canonical ACP client
+    and the implementer invented a protocol. Verdict REUSE-DROPPED is
+    warn-only (never fails --strict) — the reuse table's shape varies across
+    specs, so this is a loud flag, not a gate.
+
 Usage:
-  plan_verify.py <plan.md> [--strict] [--json] [--db PATH]
+  plan_verify.py <plan.md> [--spec <spec.md>] [--strict] [--json] [--db PATH]
   plan_verify.py --hook          # Claude Code PostToolUse:Write|Edit hook mode
 """
 
@@ -116,6 +125,71 @@ def sweep_tokens(text: str, already: set[str]) -> list[str]:
     return out
 
 
+# ── spec-reuse cross-check (tier 3) ──────────────────────────────────────────
+
+_REUSE_HEADING_RE = re.compile(r"^#{1,6}\s+.*already built.*$",
+                               re.IGNORECASE | re.MULTILINE)
+_ANY_HEADING_RE = re.compile(r"^#{1,6}\s+", re.MULTILINE)
+_BACKTICKED_RE = re.compile(r"`([^`]+)`")
+_LOC_LINE_SUFFIX = re.compile(r":[\dL+#-]+\+?$")     # acp.ts:406+ → acp.ts
+
+
+def spec_reuse_rows(spec_text: str) -> list[tuple[str, str]]:
+    """Parse the spec's 'Already built (reuse, do not rebuild)' table.
+
+    Returns (name, path) per row whose LAST cell contains 'deep' (the depth
+    column). name = first backticked token of cell 1 (else its plain text);
+    path = first backticked token of cell 2 with any :line suffix stripped.
+    Empty list when the heading or table is absent — the caller notes that.
+    """
+    hm = _REUSE_HEADING_RE.search(spec_text)
+    if not hm:
+        return []
+    section = spec_text[hm.end():]
+    nm = _ANY_HEADING_RE.search(section)
+    if nm:
+        section = section[:nm.start()]
+    rows: list[tuple[str, str]] = []
+    for line in section.splitlines():
+        line = line.strip()
+        if not line.startswith("|"):
+            continue
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        if len(cells) < 2 or all(set(c) <= {"-", ":", " "} for c in cells):
+            continue                                   # separator row
+        if "deep" not in cells[-1].lower():
+            continue                                   # header row / shallow row
+        name_m = _BACKTICKED_RE.search(cells[0])
+        name = (name_m.group(1) if name_m else cells[0]).strip()
+        path_m = _BACKTICKED_RE.search(cells[1])
+        path = _LOC_LINE_SUFFIX.sub("", path_m.group(1).strip()) if path_m else ""
+        if name or path:
+            rows.append((name, path))
+    return rows
+
+
+def check_spec_reuse(spec_text: str, plan_text: str) -> tuple[list[dict], list[str]]:
+    """REUSE-DROPPED findings + notes. A row passes when its symbol name, its
+    path, or its path basename appears anywhere in the plan text."""
+    rows = spec_reuse_rows(spec_text)
+    if not rows:
+        return [], ["spec-reuse: no 'Already built' table with deep rows found "
+                    "in the spec — cross-check skipped"]
+    dropped = []
+    for name, path in rows:
+        if name and name in plan_text:
+            continue
+        if path and (path in plan_text or Path(path).name in plan_text):
+            continue
+        dropped.append({
+            "verdict": "REUSE-DROPPED",
+            "name": name, "path": path,
+            "evidence": f"spec reuse row `{name}` ({path or 'no path'}) depth=deep "
+                        "is never referenced by the plan — the step that needs it "
+                        "may reinvent it (P9-w2b failure shape)"})
+    return dropped, []
+
+
 # ── verdict computation ──────────────────────────────────────────────────────
 
 def _mentions(plan_text: str, caller: dict) -> bool:
@@ -182,12 +256,19 @@ def verdict_claim(con: sqlite3.Connection, claim: Claim, plan_text: str,
         claim.evidence = f"{node.loc} ({len(callers)} callers)"
 
 
-def verify(plan_path: Path, db_path: Path | None) -> dict:
+def verify(plan_path: Path, db_path: Path | None,
+           spec_path: Path | None = None) -> dict:
     text = plan_path.read_text(errors="replace")
     db = db_path or find_db(plan_path.resolve().parent)
     if db is None:
         return {"error": "no .codegraph/codegraph.db found walking up from the plan"}
     con = open_db(db)
+
+    reuse_dropped: list[dict] = []
+    reuse_notes: list[str] = []
+    if spec_path is not None:
+        reuse_dropped, reuse_notes = check_spec_reuse(
+            spec_path.read_text(errors="replace"), text)
 
     manifest = parse_manifest(text)
     already = {c.raw for c in manifest.claims} | {
@@ -212,6 +293,8 @@ def verify(plan_path: Path, db_path: Path | None) -> dict:
         "meta_problems": manifest.meta_problems,
         "counts": {"manifest": n_manifest, "swept": len(swept)},
         "strict_fail": strict_fail,
+        "reuse_dropped": reuse_dropped,
+        "reuse_notes": reuse_notes,
     }
 
 
@@ -238,6 +321,10 @@ def render(result: dict, problems_only: bool = False) -> str:
         rows.append(_row("swept", c))
     for p in result["meta_problems"]:
         rows.append(f"  meta   {p}")
+    for d in result.get("reuse_dropped", []):
+        rows.append(f"  reuse  {d['name']:<42} {'REUSE-DROPPED':<22} {d['evidence']}")
+    for n in result.get("reuse_notes", []):
+        rows.append(f"  note   {n}")
     if result["gates"]:
         rows.append(f"  gates  {', '.join(result['gates'])} (orchestrator may not "
                     "cross without recorded sign-off)")
@@ -261,6 +348,8 @@ def to_json(result: dict) -> str:
         "tiers": result["tiers"], "gates": result["gates"],
         "qualifiers": result["qualifiers"],
         "meta_problems": result["meta_problems"],
+        "reuse_dropped": result.get("reuse_dropped", []),
+        "reuse_notes": result.get("reuse_notes", []),
         "strict_fail": bool(result["strict_fail"]),
     }, indent=2)
 
@@ -304,6 +393,9 @@ def main() -> None:
     ap.add_argument("plan", nargs="?", help="path to the plan markdown")
     ap.add_argument("--strict", action="store_true",
                     help="exit 1 on any manifest MISSING/COLLISION/BLOCKED")
+    ap.add_argument("--spec", help="spec markdown to cross-check: every deep row "
+                    "of its 'Already built (reuse)' table must be referenced by "
+                    "the plan (REUSE-DROPPED warn otherwise; never fails --strict)")
     ap.add_argument("--json", action="store_true", help="machine-readable output")
     ap.add_argument("--db", help="path to .codegraph/codegraph.db (default: walk up)")
     ap.add_argument("--hook", action="store_true", help="hook mode (stdin JSON)")
@@ -319,8 +411,12 @@ def main() -> None:
     if not plan.is_file():
         print(f"error: no such plan file: {plan}", file=sys.stderr)
         sys.exit(2)
+    spec = Path(args.spec) if args.spec else None
+    if spec is not None and not spec.is_file():
+        print(f"error: no such spec file: {spec}", file=sys.stderr)
+        sys.exit(2)
     try:
-        result = verify(plan, Path(args.db) if args.db else None)
+        result = verify(plan, Path(args.db) if args.db else None, spec_path=spec)
     except (FileNotFoundError, SchemaError) as e:
         print(f"error: {e}", file=sys.stderr)
         sys.exit(2)

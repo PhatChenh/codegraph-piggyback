@@ -111,7 +111,26 @@ def run_qualifier(q: str, repo_root: Path, changed: list[str],
                 hits.append(str(f.relative_to(repo_root)))
         return (f"{literal!r} found in: {', '.join(hits[:5])}" if hits else None)
 
-    return f"unknown verb {verb!r} (allowed: grep-absent, byte-unchanged, diff-only-within)"
+    if verb == "grep-present":
+        # Safety-class like grep-absent (--allow never bypasses it). Added
+        # 2026-07-19 (P9-w2b stub-drift guard): a plan can demand that the
+        # delivered code references a required artifact — e.g. the real
+        # protocol's schema validator in a probe — so green-against-own-stub
+        # can't clear wave-end.
+        if len(args) != 2:
+            return 'grep-present wants: "<literal>" <glob>'
+        literal, glob = args
+        matched_any = False
+        for f in sorted(repo_root.glob(glob)):
+            if f.is_file():
+                matched_any = True
+                if literal in f.read_text(errors="replace"):
+                    return None
+        return (f"{literal!r} not found in any file matching {glob!r}"
+                if matched_any else f"no file matches {glob!r}")
+
+    return (f"unknown verb {verb!r} (allowed: grep-absent, grep-present, "
+            "byte-unchanged, diff-only-within)")
 
 
 # ── core ─────────────────────────────────────────────────────────────────────

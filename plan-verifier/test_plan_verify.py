@@ -233,6 +233,63 @@ class TestCli:
         assert r.returncode == 2
 
 
+# ── spec-reuse cross-check (tier 3, 2026-07-19) ──────────────────────────────
+
+SPEC_REUSE = """# Spec
+
+## Already built (reuse, do not rebuild)
+
+| Function/Module | Location | What it does | How this spec uses it | Depth |
+|---|---|---|---|---|
+| `AcpTransport` | `daemon/transport/acp.ts:406+` | transport | staging | deep |
+| `validateAcpFrame` | `test/probes/lib/acp-schema.mjs` | schema check | probe frames | deep |
+| `helperThing` | `src/util/helper.ts` | misc | trivial | shallow |
+
+## Next section
+"""
+
+
+class TestSpecReuse:
+    def test_rows_parse_deep_only(self):
+        rows = pv.spec_reuse_rows(SPEC_REUSE)
+        assert rows == [("AcpTransport", "daemon/transport/acp.ts"),
+                        ("validateAcpFrame", "test/probes/lib/acp-schema.mjs")]
+
+    def test_dropped_row_flagged(self):
+        plan = "The probe reuses `validateAcpFrame` for every frame."
+        dropped, notes = pv.check_spec_reuse(SPEC_REUSE, plan)
+        assert notes == []
+        assert [d["name"] for d in dropped] == ["AcpTransport"]
+        assert dropped[0]["verdict"] == "REUSE-DROPPED"
+
+    def test_basename_mention_satisfies(self):
+        plan = "Stage the bundle into acp.ts stateDir; validate via acp-schema.mjs."
+        dropped, _ = pv.check_spec_reuse(SPEC_REUSE, plan)
+        assert dropped == []
+
+    def test_missing_table_noted_not_failed(self):
+        dropped, notes = pv.check_spec_reuse("# Spec\nno table here\n", "plan")
+        assert dropped == [] and any("skipped" in n for n in notes)
+
+    def test_cli_spec_warn_only_never_strict_fails(self, repo):
+        plan = write_plan(repo, "<!-- plan-verify\ntouch: src/auth.py::validate_token\n-->\n"
+                                "Callers in routes.py, cli.py, test_auth.py updated.")
+        spec = repo / "docs/spec.md"
+        spec.write_text(SPEC_REUSE)
+        r = subprocess.run([sys.executable, str(CLI), str(plan),
+                            "--spec", str(spec), "--strict"],
+                           capture_output=True, text=True)
+        assert "REUSE-DROPPED" in r.stdout
+        assert r.returncode == 0          # warn-only: strict gate unaffected
+
+    def test_cli_missing_spec_file_exit2(self, repo):
+        plan = write_plan(repo, MANIFEST_GOOD)
+        r = subprocess.run([sys.executable, str(CLI), str(plan),
+                            "--spec", str(repo / "nope.md")],
+                           capture_output=True, text=True)
+        assert r.returncode == 2
+
+
 # ── hook mode ────────────────────────────────────────────────────────────────
 
 class TestHook:

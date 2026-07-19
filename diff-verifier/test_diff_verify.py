@@ -110,6 +110,21 @@ class TestQualifiers:
         ok = dv.run_qualifier('grep-absent "nonexistent" src/*.py', tmp_path, [])
         assert ok is None
 
+    def test_grep_present(self, tmp_path):
+        (tmp_path / "test").mkdir()
+        (tmp_path / "test/probe.mjs").write_text('import { v } from "./lib/acp-schema.mjs";\n')
+        ok = dv.run_qualifier('grep-present "acp-schema" test/*.mjs', tmp_path, [])
+        assert ok is None
+        fail = dv.run_qualifier('grep-present "validateAcpFrame" test/*.mjs', tmp_path, [])
+        assert fail and "not found" in fail
+
+    def test_grep_present_no_matching_files(self, tmp_path):
+        fail = dv.run_qualifier('grep-present "x" nowhere/*.py', tmp_path, [])
+        assert fail and "no file matches" in fail
+
+    def test_grep_present_bad_arity(self, tmp_path):
+        assert "wants" in dv.run_qualifier("grep-present onlyone", tmp_path, [])
+
     def test_unknown_verb_fails_closed(self, tmp_path):
         assert "unknown verb" in dv.run_qualifier("rm -rf /", tmp_path, [])
 
