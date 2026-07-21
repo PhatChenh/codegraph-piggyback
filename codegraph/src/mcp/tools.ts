@@ -700,6 +700,28 @@ export class ToolHandler {
   }
 
   /**
+   * Does the catch-up gate apply to a call with this `projectPath` argument?
+   * True when the call reads the default project's index (no projectPath, or
+   * one that resolves to the default root — same comparison `getCodeGraph`
+   * uses to reuse the default instance). A call targeting a different project
+   * reads a different database; the default index's reconcile is irrelevant
+   * to it. Resolution failures fall through to `getCodeGraph`'s own error
+   * path, which never touches the default index either.
+   */
+  private gateAppliesTo(projectPath: unknown): boolean {
+    if (typeof projectPath !== 'string' || projectPath.length === 0) return true;
+    if (!this.cg) return true;
+    let defaultRoot: string;
+    try {
+      defaultRoot = this.cg.getProjectRoot();
+    } catch {
+      return true; // can't compare — stay conservative and await
+    }
+    const resolvedRoot = findNearestCodeGraphRoot(projectPath);
+    return resolvedRoot === defaultRoot;
+  }
+
+  /**
    * Whether a default CodeGraph instance is available
    */
   hasDefaultCodeGraph(): boolean {
@@ -1131,7 +1153,14 @@ export class ToolHandler {
       // running. The gate is cleared after first await — subsequent calls
       // pay nothing. Catch-up failures are logged by the engine; we
       // proceed regardless so a transient sync error never breaks tools.
-      if (this.catchUpGate) {
+      //
+      // Scoped to calls that actually read the DEFAULT project's index: the
+      // gate reconciles that index and nothing else, so a cross-project call
+      // (explicit projectPath resolving to a different root) gains nothing by
+      // waiting — and on a huge default index the wait is minutes, which
+      // showed up as tool calls hanging in the host. The gate stays armed for
+      // the first default-project call.
+      if (this.catchUpGate && this.gateAppliesTo(args.projectPath)) {
         const gate = this.catchUpGate;
         this.catchUpGate = null;
         try { await gate; } catch { /* engine already logged */ }
@@ -2230,7 +2259,32 @@ export class ToolHandler {
     });
 
     if (subgraph.nodes.size === 0) {
-      return this.textResult(`No relevant code found for "${query}"`);
+      // Silent-empty used to mask "nothing indexed here" or "borrowed another
+      // worktree's index" as a legitimate zero-match, and a worker looping on
+      // the same query burns a whole session (agent_village §2/§9/§11).
+      // Reuse the existing worktree-mismatch detector plus the index's node
+      // count to distinguish the two failure modes from a healthy no-match,
+      // and surface the warning IN the result so the model sees it. A healthy
+      // populated index with a genuine no-match keeps the original silent
+      // message — false positives here would teach abandonment (see "errors
+      // teach abandonment" in server-instructions.ts).
+      let emptyWarn: string | null = null;
+      try {
+        if (cg.getStats().nodeCount === 0) {
+          emptyWarn =
+            '⚠ codegraph index is empty here (0 nodes indexed) — ' +
+            'run `codegraph init -i` in this directory before exploring.';
+        } else {
+          const mismatch = this.worktreeMismatchFor(args.projectPath as string | undefined);
+          if (mismatch) {
+            emptyWarn = worktreeMismatchNotice(mismatch);
+          }
+        }
+      } catch {
+        /* stats/detection failed — fall through to the silent message rather than mask a real bug */
+      }
+      const base = `No relevant code found for "${query}"`;
+      return this.textResult(emptyWarn ? `${emptyWarn}\n\n${base}` : base);
     }
 
     // Graph-aware glue: findRelevantContext builds the subgraph from name/text
