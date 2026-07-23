@@ -1,7 +1,40 @@
 # codegraph-gate — usage feedback
 
+
+## 2026-07-23 — plan_verify REUSE-DROPPED needs exact unicode name (Iris run, run-id p8-slice-bc)
+**Seat:** ORCH first-hand
+**Category:** confusing
+**Symptom:** Spec reuse row ``claim_one(stage=…)`` (unicode ellipsis) stayed REUSE-DROPPED after plan cited `claim_one` / `claim_one(stage='process')` / `ingestion/queue.py` heavily — matcher requires exact name substring or full weird path cell.
+**Why it bites:** False warn after a correct reuse citation; forced a second AV turn + surgical token patch.
+**Suggested fix:** Normalize reuse names (strip `(…)` / ascii-fold ellipsis) or also match leading identifier before `(`.
+
 Friction/bugs found while operating under the CodeGraph-first PreToolUse gate.
 Each entry: symptom, why it bites, suggested fix. Newest first.
+
+---
+
+## 2026-07-22 — Empty/uninitialized index returns silently empty (agent_village UX batch item 3)
+
+**Source:** agent_village improve-batch
+(`docs/AI_artifacts/0_draft/next-improve-batch-av-village-ux.md` item 3);
+cross-project friction from mkt_engine tooluse runs driving village workers.
+Filed here (not agent_village) — symptom is codegraph MCP/index, not village.
+
+**Symptom:** `codegraph_explore` (and siblings) on a worktree with no
+`.codegraph/db`, or an empty/uninitialized index, returns **silently empty**
+instead of a clear warning. Worker loops forever retrying query variants
+with zero signal that the index itself is the problem.
+
+**Why it bites:** agent treats empty as “wrong query,” not “no index.” Burns
+turns; masks the real fix (`codegraph init` / wait for index). Distinct from
+agent_village’s cwd-trust `codegraphIndexTrusted` security precondition
+(already shipped) — this is **emptiness detection**, not path-escape.
+
+**Suggested fix:** when index missing or zero symbols, return an explicit
+error/warning payload (e.g. `index_empty` / `index_missing`) with remediation
+(`codegraph init` in this worktree), never a bare empty success.
+
+**Status:** OPEN (feedback only; not yet implemented).
 
 ---
 
