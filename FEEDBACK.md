@@ -1,5 +1,12 @@
 # codegraph-gate — usage feedback
 
+## 2026-07-23 — verify-wave literal backslash-pipe + stale worktree index (Iris run, run-id p8-slice-bc)
+**Seat:** ORCH first-hand
+**Category:** confusing
+**Symptom:** (1) Plan qualifiers grep-present with a\|b require literal backslash+pipe on disk; workers write real pipe or double-backslash in normal docstrings and fail category 21. (2) av verify-wave auto-heal codegraph init -i does not reindex; NOT-DELIVERED until manual codegraph index in the task worktree.
+**Why it bites:** Extra fix rounds on every Slice B/C step; false NOT-DELIVERED after green tests.
+**Suggested fix:** Document literal backslash-pipe marker recipe in verify skill; auto-heal should codegraph index (or sync) not only init; optional normalize a|b as OR in qualifier parser.
+
 
 ## 2026-07-23 — plan_verify REUSE-DROPPED needs exact unicode name (Iris run, run-id p8-slice-bc)
 **Seat:** ORCH first-hand
