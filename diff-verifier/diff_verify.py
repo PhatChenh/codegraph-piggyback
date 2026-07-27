@@ -51,6 +51,8 @@ QUALIFIER_FAIL = "QUALIFIER-FAIL"
 NOT_DELIVERED = "NOT-DELIVERED"
 NOT_REMOVED = "NOT-REMOVED"
 TESTS_MISSING = "TESTS-MISSING"
+MANIFEST_EMPTY = "MANIFEST-EMPTY"
+PLAN_MALFORMED_MARKER = "PLAN-MALFORMED:"
 
 TEST_GLOBS = ("test_*", "*_test.*", "*.test.*")
 
@@ -135,6 +137,25 @@ def run_qualifier(q: str, repo_root: Path, changed: list[str],
 
 # ── core ─────────────────────────────────────────────────────────────────────
 
+def _manifest_empty_unknown_keys(meta_problems: list[str]) -> list[str]:
+    """Extract unknown-key names from a `parse_manifest` meta_problems list.
+    Added 2026-07-27 (Bucket B Step 3) so `verify()` can name them in a
+    MANIFEST-EMPTY finding (Step 3 / D1 / RT M-5: a finding, not a note, so
+    wave-end fails closed rather than merely narrating)."""
+    out: list[str] = []
+    for p in meta_problems:
+        prefix = "unknown manifest key: '"
+        if p.startswith(prefix) and p.endswith("'"):
+            out.append(p[len(prefix):-1])
+        elif p.startswith("unknown manifest key: "):
+            # fall back: strip the static prefix and any surrounding quotes
+            rest = p[len("unknown manifest key: "):].strip()
+            if len(rest) >= 2 and rest[0] in "\"'" and rest[-1] == rest[0]:
+                rest = rest[1:-1]
+            out.append(rest)
+    return out
+
+
 def verify(plan_path: Path, changed: list[str], repo_root: Path,
            allow: list[str], skip_db: bool, db_path: Path | None,
            step: str | None = None) -> dict:
@@ -164,6 +185,20 @@ def verify(plan_path: Path, changed: list[str], repo_root: Path,
         if f in declared or f in allowed:
             continue
         findings.append({"verdict": OUT_OF_SCOPE, "evidence": f})
+
+    # 1b — MANIFEST-EMPTY: unknown-key manifest with NO declared paths —
+    # OUT-OF-SCOPE will silently check every changed file (the §0.3 trap that
+    # teaches an ORCH to widen --allow until it stops). Step 3 / D1 / RT M-5:
+    # emit a FINDING (not a note) naming the unknown keys. Appended OUTSIDE
+    # the --allow admission path so widening globs cannot clear it
+    # (capability C-06b). Gate-only empty with no unknown keys stays untouched
+    # (legitimate `tier:` + `gates: human:…` step — §0.7's PASS class).
+    unknown_keys = _manifest_empty_unknown_keys(manifest.meta_problems)
+    if not declared and unknown_keys:
+        findings.append({
+            "verdict": MANIFEST_EMPTY,
+            "evidence": f"unknown manifest keys: {', '.join(unknown_keys)}",
+        })
 
     # 2 — qualifiers (scope-class verbs exempt --allow-admitted files;
     #     safety-class verbs never do)
@@ -249,10 +284,95 @@ def per_step_records(plan_path: Path) -> list[dict]:
             "tierProblems": r.tier_problems,
             "gates": r.gates,
             "qualifiers": r.qualifiers,
+            "unknownKeys": r.unknown_keys,
             "stepIdSource": "heading" if not r.step_id.startswith("block-")
                             else "synthetic",
         })
     return records
+
+
+def _block_body(text: str, block_index: int) -> str:
+    """Return the body (lines between the `<!-- plan-verify` opener and the
+    `-->` closer) of the Nth plan-verify block in `text`. Internal helper.
+    """
+    from _shared.manifest import _BLOCK_RE  # type: ignore
+    for i, m in enumerate(_BLOCK_RE.finditer(text), start=1):
+        if i == block_index:
+            return m.group(1)
+    return ""
+
+
+def _per_block_claim_counts(plan_path: Path) -> list[int]:
+    """Re-parse each plan-verify block's body and return the count of
+    touch/new/remove claim entries (path- OR symbol-bearing). Used to
+    distinguish D1's case 2 (claims present, no path) from case 3
+    (gate-only, no claims at all). Cheap: a parse per block, no DB.
+    """
+    text = plan_path.read_text(errors="replace")
+    counts: list[int] = []
+    for b in iter_blocks(text):
+        body = _block_body(text, b.block_index)
+        snippet = f"<!-- plan-verify\n{body}\n-->\n"
+        counts.append(len(parse_manifest(snippet).claims))
+    return counts
+
+
+def apply_d1_three_way_rule(plan_path: Path, records: list[dict]
+                            ) -> list[dict]:
+    """Apply D1's three-way rule (plan §1 / §0.7) to the per-step records.
+    Returns the offending-step descriptors (empty when the plan is fine or
+    has only warn / silent-pass zero-file steps). Each descriptor shape::
+
+        {"stepId": str, "unknownKeys": list[str]}
+
+    Three cases (matches the partition inventORied under §0.7's corpus probe):
+
+    1. `files == []` AND unknown keys present → collect for refusal.
+    2. `files == []`, no unknown keys, ≥1 claim (any intent) → warn on stderr.
+       Bare-symbol claims (`touch: av`) are a documented form; warn because
+       `touch: av` is also the §0.1 trap — refusing would break a documented
+       shape.
+    3. `files == []`, no unknown keys, no claims → gate-only step, silent pass.
+       These are correct `tier:` + `gates: human:…` blocks (§0.7's PASS class).
+
+    The caller prints the `PLAN-MALFORMED:` marker and exits 2 (CLI side
+    effects — kept out of this pure function).
+    """
+    claim_counts = _per_block_claim_counts(plan_path)
+    warnings_to_emit: list[str] = []
+    offenders: list[dict] = []
+    for rec, n in zip(records, claim_counts):
+        if rec["files"]:  # non-empty → not a zero-file case
+            continue
+        unknown = list(rec.get("unknownKeys", []))
+        if unknown:
+            offenders.append({"stepId": rec["stepId"],
+                               "unknownKeys": unknown})
+        elif n > 0:
+            warnings_to_emit.append(
+                f"step {rec['stepId']!r} declares only symbols; "
+                "if you meant a path, write path::symbol"
+            )
+        # else: gate-only, silent pass
+    for w in warnings_to_emit:
+        print(f"warning: {w}", file=sys.stderr)
+    return offenders
+
+
+def print_plan_malformed_block(plan_path: Path,
+                                offenders: list[dict]) -> None:
+    """Emit the stable `PLAN-MALFORMED:` block to stderr (one line per
+    offending step + the fix). Step 3b consumes this marker at the `av`
+    layer to rephrase the ORCH-facing headline.
+    """
+    print(f"{PLAN_MALFORMED_MARKER} {plan_path}", file=sys.stderr)
+    for off in offenders:
+        keys = ", ".join(repr(k) for k in off["unknownKeys"])
+        print(
+            f"  step {off['stepId']!r} has unknown manifest key(s) {keys}; "
+            "use touch:/new:, and path::symbol for extensionless paths",
+            file=sys.stderr,
+        )
 
 
 def main() -> None:
@@ -295,6 +415,19 @@ def main() -> None:
             records = per_step_records(plan)
         except (FileNotFoundError, SchemaError) as e:
             print(f"error: {e}", file=sys.stderr)
+            sys.exit(2)
+        # D1 three-way rule (plan §1 / §0.7). Refusals block the wave at
+        # preflight with the stable PLAN-MALFORMED marker (consumed by
+        # Step 3b at the `av` layer). Exit 2 — the existing setup/usage
+        # failure code (lines :290, :298, :306, :323), NOT a new code
+        # (capability C-15: the `av` exit-code table is byte-unchanged).
+        try:
+            offenders = apply_d1_three_way_rule(plan, records)
+        except (FileNotFoundError, SchemaError) as e:
+            print(f"error: {e}", file=sys.stderr)
+            sys.exit(2)
+        if offenders:
+            print_plan_malformed_block(plan, offenders)
             sys.exit(2)
         print(json.dumps(records, indent=2))
         sys.exit(0)

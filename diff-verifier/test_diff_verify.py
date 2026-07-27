@@ -388,3 +388,201 @@ class TestStepScope:
             capture_output=True, text=True)
         assert r.returncode == 2, r.stdout + r.stderr
         assert "--per-step" in r.stderr or "--diff" in r.stderr
+
+
+# ── Bucket B Step 3 — D1 three-way rule + MANIFEST-EMPTY finding ─────────────
+
+FIXTURES = HERE / "fixtures"
+
+
+def run_cli(plan_path: Path, *flags: str) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        [sys.executable, str(CLI), str(plan_path), *flags],
+        capture_output=True, text=True)
+
+
+class TestPerStepUnknownKeys:
+    """Capability C-03: unknownKeys channel reaches the consumer's record."""
+
+    def test_unknown_keys_present_in_records(self, tmp_path):
+        plan = tmp_path / "plan.md"
+        plan.write_text(
+            "# Step 1\n\n<!-- plan-verify\nfiles: src/auth.py\n-->"
+        )
+        r = run_per_step(plan)
+        # exit 2 because files == [] + unknown keys → REFUSE.
+        assert r.returncode == 2, r.stdout + r.stderr
+        # Stdout is empty on refusal; the marker lives on stderr.
+        assert r.stdout.strip() == ""
+        assert "PLAN-MALFORMED:" in r.stderr
+        assert "'files'" in r.stderr
+
+    def test_unknown_keys_in_json_when_record_is_kept(self, tmp_path):
+        # A block with a valid path + an unknown key has files != [] so it
+        # does not refuse — the unknownKeys field must still surface so the
+        # consumer can act on it (wave-end, dashboards, gates).
+        plan = tmp_path / "plan.md"
+        plan.write_text(
+            "# Step 1\n\n<!-- plan-verify\n"
+            "files: src/other.py\n"
+            "touch: src/auth.py\n"
+            "-->"
+        )
+        r = run_per_step(plan)
+        assert r.returncode == 0, r.stdout + r.stderr
+        records = json.loads(r.stdout)
+        assert records[0]["unknownKeys"] == ["files"]
+        assert records[0]["files"] == ["src/auth.py"]
+
+
+class TestPerStepD1ThreeWay:
+    """Capability C-05 / C-05b / C-05c — proven against checked-in fixtures."""
+
+    def test_unknown_key_fixture_exits_2_with_marker(self):
+        """C-05: --per-step on the unknown-key fixture exits 2 and the
+        stderr block begins with the stable PLAN-MALFORMED marker that
+        Step 3b consumes at the `av` layer."""
+        fx = FIXTURES / "unknown_key.md"
+        r = run_cli(fx, "--per-step")
+        assert r.returncode == 2, r.stdout + r.stderr
+        assert r.stdout.strip() == ""   # no JSON payload on refusal
+        assert r.stderr.startswith(dv.PLAN_MALFORMED_MARKER), r.stderr
+        assert "'files'" in r.stderr
+        assert "Step 1 — declare paths via the wrong key" in r.stderr
+
+    def test_gate_only_fixture_exits_0_silently(self):
+        """C-05b: --per-step on the gate-only fixture exits 0; stderr has
+        no PLAN-MALFORMED marker AND no warning; JSON is emitted."""
+        fx = FIXTURES / "gate_only.md"
+        r = run_cli(fx, "--per-step")
+        assert r.returncode == 0, r.stdout + r.stderr
+        records = json.loads(r.stdout)
+        assert isinstance(records, list)
+        assert len(records) == 1
+        assert records[0]["files"] == []
+        assert records[0]["unknownKeys"] == []
+        # Gate-only is silent — neither refuse marker nor warning.
+        assert dv.PLAN_MALFORMED_MARKER not in r.stderr
+        assert "warning:" not in r.stderr
+
+    def test_symbol_only_fixture_exits_0_with_warning(self):
+        """C-05c: --per-step on the symbol-only fixture exits 0; stderr
+        carries a warning line; no PLAN-MALFORMED marker (the marker is
+        reserved for the refuse path)."""
+        fx = FIXTURES / "symbol_only.md"
+        r = run_cli(fx, "--per-step")
+        assert r.returncode == 0, r.stdout + r.stderr
+        records = json.loads(r.stdout)
+        assert isinstance(records, list)
+        assert len(records) == 1
+        assert records[0]["files"] == []   # bare-symbol entries excluded
+        assert records[0]["unknownKeys"] == []
+        # Warning, not refusal — Step 1's bare `touch: av` is the §0.1 trap.
+        assert dv.PLAN_MALFORMED_MARKER not in r.stderr
+        assert "declares only symbols" in r.stderr
+
+    def test_correct_plan_still_exits_0(self, tmp_path):
+        """Regression: a correct manifest (touch: + new: on real paths)
+        still passes --per-step with exit 0 and no stderr noise."""
+        plan = tmp_path / "plan.md"
+        plan.write_text(
+            "# Step 1\n\n<!-- plan-verify\n"
+            "touch: src/auth.py::login\n"
+            "new:   src/auth.py::logout\n"
+            "tier: A\n"
+            "-->"
+        )
+        r = run_per_step(plan)
+        assert r.returncode == 0, r.stdout + r.stderr
+        records = json.loads(r.stdout)
+        assert records[0]["files"] == ["src/auth.py"]
+        assert records[0]["unknownKeys"] == []
+        assert r.stderr == ""
+
+
+class TestManifestEmptyFinding:
+    """Capability C-06 / C-06b: verify() emits MANIFEST-EMPTY (a finding,
+    not a note), outside the --allow admission path so widening globs
+    cannot clear it."""
+
+    def _repo_with_unknown_key_manifest(self, tmp_path: Path) -> Path:
+        """A repo where the plan declares paths under an unknown key
+        (`files:`). declared_paths() is empty, meta_problems carries the
+        unknown-key entries → MUST yield a MANIFEST-EMPTY finding."""
+        (tmp_path / "src").mkdir()
+        (tmp_path / "src/auth.py").write_text("def login(): pass\n")
+        (tmp_path / "src/secret.py").write_text("def ok(): pass\n")
+        plan = tmp_path / "plan.md"
+        plan.write_text(
+            "# wrong-key\n\n<!-- plan-verify\nfiles: src/auth.py, tests/test_x.py\n-->"
+        )
+        return tmp_path
+
+    def test_manifest_empty_finding_emitted(self, tmp_path):
+        repo = self._repo_with_unknown_key_manifest(tmp_path)
+        r = subprocess.run(
+            [sys.executable, str(CLI), str(repo / "plan.md"),
+             "--files", "src/auth.py", "--repo-root", str(repo),
+             "--strict", "--skip-db"],
+            capture_output=True, text=True)
+        assert r.returncode == 1, r.stdout + r.stderr
+        assert "MANIFEST-EMPTY" in r.stdout
+        assert "files" in r.stdout    # names the unknown key in evidence
+
+    def test_manifest_empty_survives_allow_star(self, tmp_path):
+        """C-06b: an --allow '*' glob admits ALL changed files (so
+        OUT-OF-SCOPE-TOUCH is gone), but MANIFEST-EMPTY MUST still be
+        emitted — it is appended OUTSIDE the --allow admission path so
+        the gate cannot be widened-to-green (RT M-5)."""
+        repo = self._repo_with_unknown_key_manifest(tmp_path)
+        # Changed file: src/secret.py — declared_paths() is empty
+        # (the unknown `files:` key produces no Claim entries), so the
+        # only path under --allow is the changed file itself.
+        r = subprocess.run(
+            [sys.executable, str(CLI), str(repo / "plan.md"),
+             "--files", "src/secret.py",
+             "--repo-root", str(repo),
+             "--allow", "*", "--strict", "--skip-db"],
+            capture_output=True, text=True)
+        assert r.returncode == 1, r.stdout + r.stderr
+        assert "MANIFEST-EMPTY" in r.stdout
+        # OUT-OF-SCOPE-TOUCH must NOT be the only finding — the gate
+        # refused for the diagnosis, not for the allow path.
+        assert "OUT-OF-SCOPE" not in r.stdout
+
+    def test_gate_only_empty_no_manifest_empty(self, tmp_path):
+        """Gate-only step with declared_paths() empty and NO unknown keys
+        must NOT emit MANIFEST-EMPTY (legitimate `tier:` + `gates:`
+        block — §0.7 PASS class). Existing OUT-OF-SCOPE semantics apply,
+        which is correct for a step claiming to touch nothing."""
+        (tmp_path / "src").mkdir()
+        (tmp_path / "src/secret.py").write_text("def ok(): pass\n")
+        plan = tmp_path / "plan.md"
+        plan.write_text(
+            "# Step 1\n\n<!-- plan-verify\n"
+            "tier: C\n"
+            "gates: human:live-spend-authorization\n"
+            "-->"
+        )
+        make_db(tmp_path, delivered=True, removed=True)
+        r = subprocess.run(
+            [sys.executable, str(CLI), str(plan),
+             "--files", "src/secret.py",
+             "--repo-root", str(tmp_path),
+             "--allow", "src/secret.py", "--strict", "--skip-db"],
+            capture_output=True, text=True)
+        # Must NOT contain MANIFEST-EMPTY — unknown keys absent.
+        assert "MANIFEST-EMPTY" not in r.stdout
+        # The verdict here is whatever changed-file semantics give (allow
+        # admitted the file → PASS); assert no MANIFEST-EMPTY is the
+        # load-bearing check, not the verdict shape.
+
+    def test_existing_correct_plan_still_exits_0(self, repo):
+        """Regression: the GOOD_DIFF plan from the TestScope fixture still
+        passes with exit 0 — Step 3's changes must not disturb correct
+        plans (capability `correct plan still exits 0`)."""
+        make_db(repo, delivered=True, removed=True)
+        r = run(repo, GOOD_DIFF, "--strict")
+        assert r.returncode == 0, r.stdout + r.stderr
+        assert "MANIFEST-EMPTY" not in r.stdout
+        assert "PASS" in r.stdout
