@@ -47,7 +47,7 @@ QUALIFIER_VERBS = ("grep-absent", "grep-present", "byte-unchanged", "diff-only-w
 _BLOCK_RE = re.compile(r"^<!--\s*plan-verify\s*$(.*?)^-->\s*$",
                        re.MULTILINE | re.DOTALL)
 _LINE_RE = re.compile(r"^\s*(touch|new|remove|tier|gates|qualifiers)\s*:\s*(.*)$")
-_ANY_KEY_RE = re.compile(r"^\s*([A-Za-z][\w-]*)\s*:\s*(.*)$")
+_ANY_KEY_RE = re.compile(r"^\s*([a-z][a-z0-9_-]*)\s*:\s*(.*)$")
 _PATHISH_HINT = re.compile(r"^[\w./-]+\.[A-Za-z0-9]+$")
 # Heading form used by the build-pipeline plans: `### Step N — title`.
 # Falls back to any `#`/`##`/`###` heading if the canonical form is absent.
