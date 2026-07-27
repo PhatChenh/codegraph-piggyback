@@ -47,6 +47,7 @@ QUALIFIER_VERBS = ("grep-absent", "grep-present", "byte-unchanged", "diff-only-w
 _BLOCK_RE = re.compile(r"^<!--\s*plan-verify\s*$(.*?)^-->\s*$",
                        re.MULTILINE | re.DOTALL)
 _LINE_RE = re.compile(r"^\s*(touch|new|remove|tier|gates|qualifiers)\s*:\s*(.*)$")
+_ANY_KEY_RE = re.compile(r"^\s*([A-Za-z][\w-]*)\s*:\s*(.*)$")
 _PATHISH_HINT = re.compile(r"^[\w./-]+\.[A-Za-z0-9]+$")
 # Heading form used by the build-pipeline plans: `### Step N — title`.
 # Falls back to any `#`/`##`/`###` heading if the canonical form is absent.
@@ -94,6 +95,7 @@ class BlockRecord:
     tier_problems: list[str] = field(default_factory=list)
     gates: list[str] = field(default_factory=list)
     qualifiers: list[str] = field(default_factory=list)
+    unknown_keys: list[str] = field(default_factory=list)
 
 
 def looks_pathish(token: str) -> bool:
@@ -120,6 +122,9 @@ def parse_manifest(text: str) -> Manifest:
         for line in block.splitlines():
             lm = _LINE_RE.match(line)
             if not lm:
+                ak = _ANY_KEY_RE.match(line)
+                if ak:
+                    m.meta_problems.append(f"unknown manifest key: {ak.group(1)!r}")
                 continue
             key, val = lm.group(1), lm.group(2).strip()
             if key in ("touch", "new", "remove"):
@@ -175,7 +180,7 @@ def parse_manifest_for_step(text: str, step_id: str) -> tuple[Manifest, bool]:
         if not (this_step == step_id or (want_ordinal is not None and idx == want_ordinal)):
             continue
         matched = True
-        claims, tier, tier_problems, gates, qualifiers = _parse_block_body(mo.group(1))
+        claims, tier, tier_problems, gates, qualifiers, unknown_keys = _parse_block_body(mo.group(1))
         m.claims.extend(claims)
         if tier is not None:
             m.tiers.append(tier)
@@ -191,26 +196,35 @@ def parse_manifest_for_step(text: str, step_id: str) -> tuple[Manifest, bool]:
                 m.meta_problems.append(
                     f"qualifier {q!r} not one of {list(QUALIFIER_VERBS)} "
                     "(raw shell is not allowed)")
+        for uk in unknown_keys:
+            m.meta_problems.append(f"unknown manifest key: {uk!r}")
     return m, matched
 
 
 def _parse_block_body(block_text: str) -> tuple[list[Claim], str | None,
-                                                  list[str], list[str], list[str]]:
+                                                  list[str], list[str], list[str],
+                                                  list[str]]:
     """Parse one plan-verify block's lines. Returns
-    (claims, last_tier, tier_problems, gates, qualifiers).
+    (claims, last_tier, tier_problems, gates, qualifiers, unknown_keys).
 
     Mirrors `parse_manifest`'s per-block behavior — claims accumulate; `tier:`
     collapses to the last value (None if absent); `gates:` and `qualifiers:`
-    are per-block lists. Tier-problems are scoped to this block.
+    are per-block lists. Tier-problems are scoped to this block. Unknown keys
+    (lines that look like `<key>:` but fail `_LINE_RE`) are captured in order
+    for callers that surface them to the user.
     """
     claims: list[Claim] = []
     last_tier: str | None = None
     tier_problems: list[str] = []
     gates: list[str] = []
     qualifiers: list[str] = []
+    unknown_keys: list[str] = []
     for line in block_text.splitlines():
         lm = _LINE_RE.match(line)
         if not lm:
+            ak = _ANY_KEY_RE.match(line)
+            if ak:
+                unknown_keys.append(ak.group(1))
             continue
         key, val = lm.group(1), lm.group(2).strip()
         if key in ("touch", "new", "remove"):
@@ -226,7 +240,7 @@ def _parse_block_body(block_text: str) -> tuple[list[Claim], str | None,
         elif key == "qualifiers":
             for q in filter(None, (e.strip() for e in val.split(";"))):
                 qualifiers.append(q)
-    return claims, last_tier, tier_problems, gates, qualifiers
+    return claims, last_tier, tier_problems, gates, qualifiers, unknown_keys
 
 
 def _nearest_heading(text: str, block_start: int) -> str:
@@ -255,7 +269,7 @@ def iter_blocks(text: str) -> list[BlockRecord]:
     out: list[BlockRecord] = []
     for idx, m in enumerate(_BLOCK_RE.finditer(text), start=1):
         body = m.group(1)
-        claims, tier, tier_problems, gates, qualifiers = _parse_block_body(body)
+        claims, tier, tier_problems, gates, qualifiers, unknown_keys = _parse_block_body(body)
         # Preserve document order of the FIRST occurrence of each path; dedup
         # later duplicates (a path that appears under both `touch:` and
         # `new:` should not appear twice in the consumer's per-step record).
@@ -275,5 +289,6 @@ def iter_blocks(text: str) -> list[BlockRecord]:
             tier_problems=list(tier_problems),
             gates=list(gates),
             qualifiers=list(qualifiers),
+            unknown_keys=list(unknown_keys),
         ))
     return out
