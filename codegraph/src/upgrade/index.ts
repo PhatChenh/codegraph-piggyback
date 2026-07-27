@@ -283,6 +283,64 @@ export interface UpgradeDeps {
   warn: (msg: string) => void;
   error: (msg: string) => void;
   platform: NodeJS.Platform;
+  /** Test seam: override local-patches detection (defaults to {@link localPatchesInfo}). */
+  localPatchesInfo?: () => LocalPatchesInfo | null;
+}
+
+/** Contents of the `.local-patches.json` marker a local deploy drops next to `dist/`. */
+export interface LocalPatchesInfo {
+  patchedAt?: string;
+  source?: string;
+  baseVersion?: string;
+  note?: string;
+  /** Path to the update runbook (UPDATING.md in the source checkout). */
+  docs?: string;
+}
+
+/**
+ * Marker file a locally-patched deploy writes into the installed tree
+ * (sibling of `dist/`, i.e. `lib/.local-patches.json`). Its presence means the
+ * running binary was built from a local source checkout and any upgrade would
+ * silently revert those patches — so `codegraph upgrade` and the installer's
+ * `npm install -g` step refuse while it exists.
+ */
+export function localPatchesMarkerPath(): string {
+  // dist/upgrade/index.js (or src/upgrade/index.ts under tsx) → two levels up
+  // is the directory holding dist/ — same resolution as version.ts.
+  return path.join(__dirname, '..', '..', '.local-patches.json');
+}
+
+/** Parse the marker, or null when absent/unreadable (no marker = normal install). */
+export function localPatchesInfo(markerPath: string = localPatchesMarkerPath()): LocalPatchesInfo | null {
+  try {
+    return JSON.parse(fs.readFileSync(markerPath, 'utf8')) as LocalPatchesInfo;
+  } catch {
+    return null;
+  }
+}
+
+/** `CODEGRAPH_ALLOW_CLOBBER=1` opts out of the local-patches upgrade block. */
+export function clobberAllowed(env: NodeJS.ProcessEnv = process.env): boolean {
+  const raw = env.CODEGRAPH_ALLOW_CLOBBER?.trim().toLowerCase();
+  return raw === '1' || raw === 'true';
+}
+
+/** Human-readable refusal explaining why the upgrade is blocked and how to proceed. */
+export function localPatchesBlockMessage(info: LocalPatchesInfo): string {
+  const lines = [
+    'Upgrade blocked: this CodeGraph install carries LOCAL PATCHES that an upgrade would silently revert.',
+    info.note ? `  Patches: ${info.note}` : null,
+    info.source ? `  Source:  ${info.source}` : null,
+    info.patchedAt ? `  Since:   ${info.patchedAt}` : null,
+    info.docs
+      ? `  READ THE RUNBOOK FIRST: ${info.docs}`
+      : null,
+    info.source
+      ? `  To update: pull/patch in the source checkout, then rebuild + redeploy dist/ from ${info.source}.`
+      : '  To update: rebuild + redeploy dist/ from the patched source checkout.',
+    '  To upgrade anyway (reverts the patches): CODEGRAPH_ALLOW_CLOBBER=1 codegraph upgrade',
+  ].filter((l): l is string => l !== null);
+  return lines.join('\n');
 }
 
 const c = {
@@ -309,6 +367,17 @@ export function reindexAdvisory(): string {
  */
 export async function runUpgrade(opts: UpgradeOptions, deps: UpgradeDeps): Promise<number> {
   const { currentVersion, method } = deps;
+
+  // Local-patches guard: a locally-built dist was deployed over this install.
+  // Any upgrade path below would replace it with the registry build and
+  // silently revert the patches — refuse before even resolving versions.
+  if (!clobberAllowed()) {
+    const patches = (deps.localPatchesInfo ?? localPatchesInfo)();
+    if (patches) {
+      deps.error(localPatchesBlockMessage(patches));
+      return 1;
+    }
+  }
 
   // Resolve the target version (pinned or latest).
   let latest: string;

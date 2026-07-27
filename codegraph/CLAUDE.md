@@ -1,5 +1,16 @@
 # CLAUDE.md
 
+> **⛔ LOCAL FORK — READ [UPDATING.md](UPDATING.md) BEFORE ANY UPGRADE, REINSTALL,
+> OR VERSION WORK.** This directory is the source of truth for a locally-patched
+> CodeGraph install (base v1.0.1; live binary reports 999.0.0 on purpose). The
+> npm package is uninstalled deliberately — `npm install/update -g`,
+> `codegraph upgrade`, or installer re-runs would silently revert the local
+> patches. Deploy = `npm run build` + rsync `dist/` into
+> `~/.codegraph/versions/v1.0.1/lib/dist/` — the full runbook, patch list, and
+> upstream-merge procedure are in [UPDATING.md](UPDATING.md).
+> (The release/npm-publish sections below describe the UPSTREAM project's
+> process and do not apply to this fork.)
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview

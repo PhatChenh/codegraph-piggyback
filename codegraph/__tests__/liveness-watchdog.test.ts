@@ -7,7 +7,11 @@ import {
   deriveCheckIntervalMs,
   installMainThreadWatchdog,
   DEFAULT_WATCHDOG_TIMEOUT_MS,
+  countRecentWatchdogKills,
+  watchdogKillMarkerPath,
+  WATCHDOG_KILL_LOOP_WINDOW_MS,
 } from '../src/mcp/liveness-watchdog';
+import * as os from 'os';
 
 describe('config parsing', () => {
   it('parseWatchdogTimeoutMs falls back for missing/invalid input', () => {
@@ -130,4 +134,60 @@ describe('liveness watchdog (spawned, real watchdog process)', () => {
     expect(signal).toBeNull();
     expect(code).toBe(3);
   }, 12000);
+});
+
+/**
+ * Kill-loop breaker ledger: the watchdog child appends an epoch-ms line per
+ * kill; the next daemon start counts recent lines and refuses to respawn into
+ * a wedge loop. The counter prunes aged-out lines so the ledger self-heals.
+ */
+describe('countRecentWatchdogKills (kill-loop ledger)', () => {
+  it('returns 0 for a missing ledger', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cg-wd-ledger-'));
+    try {
+      expect(countRecentWatchdogKills(path.join(dir, 'nope.log'))).toBe(0);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('counts only kills inside the window, drops garbage, and prunes the file', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cg-wd-ledger-'));
+    const marker = path.join(dir, 'watchdog-kills.log');
+    const now = 10_000_000_000;
+    const lines = [
+      String(now - 1000),                                   // recent
+      String(now - 2000),                                   // recent
+      String(now - WATCHDOG_KILL_LOOP_WINDOW_MS - 1),       // aged out
+      'not-a-number',                                       // garbage
+      String(now + 60_000),                                 // future clock skew -> dropped
+      '',
+    ];
+    fs.writeFileSync(marker, lines.join('\n'));
+    try {
+      expect(countRecentWatchdogKills(marker, now)).toBe(2);
+      // Pruned in place: only the two recent lines survive.
+      const kept = fs.readFileSync(marker, 'utf8').trim().split('\n');
+      expect(kept).toHaveLength(2);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('deletes the ledger when everything aged out', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cg-wd-ledger-'));
+    const marker = path.join(dir, 'watchdog-kills.log');
+    const now = 10_000_000_000;
+    fs.writeFileSync(marker, String(now - WATCHDOG_KILL_LOOP_WINDOW_MS - 5) + '\n');
+    try {
+      expect(countRecentWatchdogKills(marker, now)).toBe(0);
+      expect(fs.existsSync(marker)).toBe(false);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('watchdogKillMarkerPath lives under the project .codegraph dir', () => {
+    expect(watchdogKillMarkerPath('/repo')).toBe('/repo/.codegraph/watchdog-kills.log');
+  });
 });

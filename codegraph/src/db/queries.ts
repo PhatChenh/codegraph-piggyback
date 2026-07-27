@@ -1704,7 +1704,12 @@ export class QueryBuilder {
       const chunkRows = this.db
         .prepare(`SELECT * FROM unresolved_refs WHERE file_path IN (${placeholders})`)
         .all(...chunk) as UnresolvedRefRow[];
-      rows.push(...chunkRows);
+      // Append with a loop, not `push(...chunkRows)`: a 900-file chunk can
+      // return >100k rows (big repos average hundreds of refs per file), and
+      // spreading that many arguments overflows the call stack with
+      // "Maximum call stack size exceeded" — observed killing catch-up sync
+      // on a ~50k-file index.
+      for (const row of chunkRows) rows.push(row);
     }
 
     return rows.map((row) => ({

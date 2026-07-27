@@ -124,6 +124,10 @@ in `docs/roadmap/roadmap.md`.
 
 ## What AI Gets Wrong
 
+- **`codegraph/` is a LOCAL FORK of the CodeGraph engine (base v1.0.1, binary
+  reports 999.0.0 on purpose). NEVER `npm install/update -g @colbymchenry/codegraph`
+  or `codegraph upgrade` — both silently revert the local patches. All update
+  work follows `codegraph/UPDATING.md`.**
 - README's "Planned scripts per tool" section is legacy; BLUEPRINT + per-tool
   `design.md` supersede it (e.g. commit-time impact checking is `impact-precommit/`,
   not `impact-analyzer/`).

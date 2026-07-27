@@ -205,3 +205,43 @@ describe('runMaintenance', () => {
     expect(() => db.runMaintenance()).not.toThrow();
   });
 });
+
+/**
+ * Regression: getUnresolvedReferencesByFiles aggregated each chunk with
+ * `rows.push(...chunkRows)`. One 900-file chunk can return >100k rows, and
+ * spreading that many arguments overflows the call stack ("Maximum call stack
+ * size exceeded") — observed killing catch-up sync on a ~50k-file index.
+ */
+describe('getUnresolvedReferencesByFiles (huge result set)', () => {
+  let dir: string;
+  let db: DatabaseConnection;
+  let q: QueryBuilder;
+
+  beforeEach(() => {
+    dir = fs.mkdtempSync(path.join(os.tmpdir(), 'db-unresolved-large-'));
+    db = DatabaseConnection.initialize(path.join(dir, 'test.db'));
+    q = new QueryBuilder(db.getDb());
+  });
+
+  afterEach(() => {
+    db.close();
+    if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('returns 150k rows for one file without a stack overflow', () => {
+    q.insertNodes([makeNode('origin')]);
+    const N = 150_000;
+    const refs = Array.from({ length: N }, (_, i) => ({
+      fromNodeId: 'origin',
+      referenceName: `ref_${i}`,
+      referenceKind: 'calls' as const,
+      line: 1,
+      column: 0,
+      filePath: 'big.ts',
+      language: 'typescript' as const,
+    }));
+    q.insertUnresolvedRefsBatch(refs);
+    const out = q.getUnresolvedReferencesByFiles(['big.ts']);
+    expect(out).toHaveLength(N);
+  });
+});

@@ -51,7 +51,14 @@ import { connectWithHello, runLocalHandshakeProxy } from './proxy';
 import { getDaemonSocketPath } from './daemon-paths';
 import { getTelemetry } from '../telemetry';
 import { supervisionLostReason } from './ppid-watchdog';
-import { installMainThreadWatchdog, WatchdogHandle } from './liveness-watchdog';
+import {
+  installMainThreadWatchdog,
+  WatchdogHandle,
+  watchdogKillMarkerPath,
+  countRecentWatchdogKills,
+  WATCHDOG_KILL_LOOP_LIMIT,
+  WATCHDOG_KILL_LOOP_WINDOW_MS,
+} from './liveness-watchdog';
 import { treatStdinFailureAsShutdown } from './stdin-teardown';
 import { HOST_PPID_ENV } from '../extraction/wasm-runtime-flags';
 
@@ -367,6 +374,26 @@ export class MCPServer {
    */
   private async startDaemonProcess(): Promise<void> {
     const root = resolveDaemonRoot(this.projectPath) ?? this.projectPath ?? process.cwd();
+
+    // Kill-loop breaker: every daemon for this project recently wedged and got
+    // SIGKILLed by the liveness watchdog. Respawning would wedge again within
+    // ~60s — an infinite kill/respawn loop that burns CPU and floods
+    // daemon.log (observed for hours on an accidental $HOME index). Refuse to
+    // start; clients fall back to their in-process engine, and after a quiet
+    // window the ledger ages out and daemons start normally again.
+    const markerPath = watchdogKillMarkerPath(root);
+    const recentKills = countRecentWatchdogKills(markerPath);
+    if (recentKills >= WATCHDOG_KILL_LOOP_LIMIT) {
+      process.stderr.write(
+        `[CodeGraph daemon] Refusing to start: the liveness watchdog killed ${recentKills} ` +
+        `wedged daemons for ${root} in the last ${Math.round(WATCHDOG_KILL_LOOP_WINDOW_MS / 60_000)} ` +
+        `minutes. Something about this project wedges the daemon (huge or corrupt index?). ` +
+        `Sessions fall back to in-process mode; daemons resume after a quiet window, or delete ` +
+        `${markerPath} to retry now.\n`
+      );
+      process.exit(0);
+    }
+
     for (let attempt = 0; attempt < TAKEOVER_MAX_RETRIES; attempt++) {
       const lock = tryAcquireDaemonLock(root);
 
@@ -377,8 +404,9 @@ export class MCPServer {
         this.mode = 'daemon';
         // The detached daemon has no PPID watchdog or stdin lifeline, so a
         // wedged main thread would pin a core forever (#850). The liveness
-        // watchdog is its only recovery path.
-        this.livenessWatchdog = installMainThreadWatchdog();
+        // watchdog is its only recovery path. The kill marker feeds the
+        // kill-loop breaker above on the NEXT daemon start.
+        this.livenessWatchdog = installMainThreadWatchdog({ killMarkerPath: markerPath });
         return; // the net.Server keeps the process alive
       }
 

@@ -155,12 +155,63 @@ export function unsafeIndexRootReason(projectRoot: string): string | null {
   return null;
 }
 
+/**
+ * Does a path still contain an unexpanded `${...}` template variable?
+ *
+ * MCP hosts substitute variables like `${workspaceFolder}` into server args —
+ * except when they don't (Cursor passes the literal string in agent/background
+ * windows). The literal never exists on disk, so resolving it relative to cwd
+ * and walking up lands on whatever index happens to sit above cwd — in the
+ * observed incident, an accidental multi-GB `$HOME` index. Callers treat such
+ * a path as "no path given" instead of resolving it.
+ */
+export function isUnexpandedTemplatePath(p: string): boolean {
+  return p.includes('${');
+}
+
+/** `CODEGRAPH_ALLOW_UNSAFE_ROOT=1` opts back into resolving $HOME/root indexes. */
+function allowUnsafeRoot(): boolean {
+  const raw = process.env.CODEGRAPH_ALLOW_UNSAFE_ROOT?.trim().toLowerCase();
+  return raw === '1' || raw === 'true';
+}
+
+// Warn once per unsafe root per process — the walk runs on every tool call.
+const warnedUnsafeRoots = new Set<string>();
+
+function warnUnsafeRootSkipped(root: string, reason: string): void {
+  if (warnedUnsafeRoots.has(root)) return;
+  warnedUnsafeRoots.add(root);
+  // stderr only — stdout is the MCP protocol channel.
+  console.error(
+    `[codegraph] Ignoring the index at ${path.join(root, codeGraphDirName())} — ` +
+      `refusing to use ${reason} as a project root (see #845: home/root indexes ` +
+      `are never intended and wedge the server). Set CODEGRAPH_ALLOW_UNSAFE_ROOT=1 to override.`
+  );
+}
+
+/**
+ * An initialized directory the walk-up may actually return. `init`/`index`
+ * refuse to CREATE an index at an unsafe root (#845), but until now the walk
+ * happily RESOLVED one that already existed — which is how a stray `$HOME`
+ * index silently captured every session whose path fell through to home.
+ */
+function isUsableRoot(dir: string): boolean {
+  if (!isInitialized(dir)) return false;
+  if (allowUnsafeRoot()) return true;
+  const reason = unsafeIndexRootReason(dir);
+  if (reason) {
+    warnUnsafeRootSkipped(dir, reason);
+    return false;
+  }
+  return true;
+}
+
 export function findNearestCodeGraphRoot(startPath: string): string | null {
   let current = path.resolve(startPath);
   const root = path.parse(current).root;
 
   while (current !== root) {
-    if (isInitialized(current)) {
+    if (isUsableRoot(current)) {
       return current;
     }
     const parent = path.dirname(current);
@@ -169,7 +220,7 @@ export function findNearestCodeGraphRoot(startPath: string): string | null {
   }
 
   // Check root as well
-  if (isInitialized(current)) {
+  if (isUsableRoot(current)) {
     return current;
   }
 

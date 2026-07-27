@@ -85,10 +85,15 @@ const CHILD_SOURCE = `
 const fs = require('fs');
 const parentPid = Number(process.argv[1]);
 const timeoutMs = Number(process.argv[2]);
+const killMarkerPath = process.argv[3] || '';
 const secs = Math.round(timeoutMs / 1000);
 const MSG = Buffer.from('[CodeGraph] Main thread unresponsive for ~' + secs + 's — killing the wedged process so a fresh one can start (#850). Disable with CODEGRAPH_NO_WATCHDOG=1.\\n');
 function kill() {
   try { fs.writeSync(2, MSG); } catch (e) {}
+  // Best-effort kill ledger: one epoch-ms line per kill. The next daemon start
+  // reads this to detect a wedge LOOP (kill -> respawn -> wedge -> kill ...)
+  // and refuse to keep feeding it.
+  if (killMarkerPath) { try { fs.appendFileSync(killMarkerPath, Date.now() + '\\n'); } catch (e) {} }
   try { process.kill(parentPid, 'SIGKILL'); } catch (e) {}
   process.exit(0);
 }
@@ -99,13 +104,57 @@ process.stdin.on('error', () => process.exit(0)); // pipe broke -> parent gone
 process.stdin.resume();
 `;
 
+/** Kill-loop breaker: refuse a daemon start after this many watchdog kills… */
+export const WATCHDOG_KILL_LOOP_LIMIT = 3;
+/** …inside this window. After a quiet window the ledger ages out and daemons start again. */
+export const WATCHDOG_KILL_LOOP_WINDOW_MS = 15 * 60_000;
+
+/** Where a project's watchdog-kill ledger lives (best-effort, appended by the child). */
+export function watchdogKillMarkerPath(projectRoot: string): string {
+  return `${projectRoot}/.codegraph/watchdog-kills.log`;
+}
+
+/**
+ * Count watchdog kills recorded within the window, pruning aged-out lines in
+ * place so the ledger can't grow forever. Malformed lines are dropped. Never
+ * throws — an unreadable ledger reads as zero kills (the breaker must never
+ * keep a healthy daemon from starting).
+ */
+export function countRecentWatchdogKills(
+  markerPath: string,
+  now: number = Date.now(),
+  windowMs: number = WATCHDOG_KILL_LOOP_WINDOW_MS
+): number {
+  let raw: string;
+  try {
+    raw = fs.readFileSync(markerPath, 'utf8');
+  } catch {
+    return 0;
+  }
+  const recent = raw
+    .split('\n')
+    .map((line) => Number(line.trim()))
+    .filter((t) => Number.isFinite(t) && now - t >= 0 && now - t < windowMs);
+  try {
+    if (recent.length > 0) fs.writeFileSync(markerPath, recent.join('\n') + '\n');
+    else fs.unlinkSync(markerPath);
+  } catch {
+    /* pruning is best-effort */
+  }
+  return recent.length;
+}
+
 /**
  * Install the main-thread liveness watchdog for a long-lived process. Returns a
  * handle to stop it, or `null` when disabled or when the child can't be spawned
  * (degraded, never throws — a missing watchdog must never keep a process from
  * starting).
+ *
+ * `opts.killMarkerPath` (daemon mode only): file the child appends an epoch-ms
+ * line to right before SIGKILLing the parent, feeding the kill-loop breaker in
+ * the daemon startup path.
  */
-export function installMainThreadWatchdog(): WatchdogHandle | null {
+export function installMainThreadWatchdog(opts: { killMarkerPath?: string } = {}): WatchdogHandle | null {
   if (isEnvTruthy(process.env.CODEGRAPH_NO_WATCHDOG)) return null;
 
   const timeoutMs = parseWatchdogTimeoutMs(process.env.CODEGRAPH_WATCHDOG_TIMEOUT_MS);
@@ -118,7 +167,7 @@ export function installMainThreadWatchdog(): WatchdogHandle | null {
     // fd 2 so the kill notice lands wherever the parent logs (daemon.log).
     child = spawn(
       process.execPath,
-      ['-e', CHILD_SOURCE, String(process.pid), String(timeoutMs)],
+      ['-e', CHILD_SOURCE, String(process.pid), String(timeoutMs), opts.killMarkerPath ?? ''],
       {
         stdio: ['pipe', 'ignore', 'inherit'],
         windowsHide: true,

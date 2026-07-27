@@ -1,5 +1,12 @@
 # codegraph-gate — usage feedback
 
+## 2026-07-26 — plan-verify unrecognised `files:` key → empty files[] (td-avdispatch)
+**Seat:** ORCH first-hand (pipeline then impl)
+**Category:** tool-bug / process
+**Symptom:** Plan steps used `files:` YAML lists. Parser (`_shared/manifest.py`) only accepts `touch|new|remove|tier|gates|qualifiers`, so `files[]` empty for 16 steps. Floor lint + out-of-scope-touch passed vacuously. Five red-team rounds never ran the parser.
+**Why it bites:** Compliance gates look green while switched off.
+**Suggested fix:** (a) reject unknown keys loud; (b) refuse empty `files[]` in verify-wave preflight; (c) build-pipeline hard-gate `diff_verify.py --per-step` before first red-team (owner Q6-a 2026-07-26).
+
 ## 2026-07-23 — verify-wave literal backslash-pipe + stale worktree index (Iris run, run-id p8-slice-bc)
 **Seat:** ORCH first-hand
 **Category:** confusing

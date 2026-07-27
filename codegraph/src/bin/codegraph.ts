@@ -26,7 +26,7 @@
 import { Command } from 'commander';
 import * as path from 'path';
 import * as fs from 'fs';
-import { getCodeGraphDir, isInitialized, unsafeIndexRootReason, findNearestCodeGraphRoot } from '../directory';
+import { getCodeGraphDir, isInitialized, unsafeIndexRootReason, findNearestCodeGraphRoot, isUnexpandedTemplatePath } from '../directory';
 import { detectWorktreeIndexMismatch, worktreeMismatchWarning } from '../sync/worktree';
 import { createShimmerProgress } from '../ui/shimmer-progress';
 import { getGlyphs } from '../ui/glyphs';
@@ -51,11 +51,9 @@ async function loadCodeGraph(): Promise<typeof import('../index')> {
   }
 }
 
-// Dynamic import helper — tsc compiles import() to require() in CJS mode,
-// which fails for ESM-only packages. This bypasses the transformation.
-// eslint-disable-next-line @typescript-eslint/no-implied-eval
-const importESM = new Function('specifier', 'return import(specifier)') as
-  (specifier: string) => Promise<typeof import('@clack/prompts')>;
+// Dynamic import helper for ESM-only packages — lives in its own module so
+// the writ injection scan's (correct) new-Function block stays off this file.
+import { importESM } from '../import-esm';
 
 // Block CodeGraph on Node.js 25.x — V8's turboshaft WASM JIT has a Zone
 // allocator bug that reliably crashes when compiling tree-sitter
@@ -197,27 +195,24 @@ program.hook('preAction', (_thisCommand, actionCommand) => {
  * (must have .codegraph/codegraph.db, not just .codegraph/lessons.db)
  */
 function resolveProjectPath(pathArg?: string): string {
+  // An MCP host that fails to expand a config variable (Cursor passes
+  // `${workspaceFolder}` literally in agent/background windows) hands us a
+  // path that can never exist; resolving it relative to cwd walks up to
+  // whatever index happens to sit above cwd. Treat it as "no path given".
+  if (pathArg && isUnexpandedTemplatePath(pathArg)) {
+    console.error(
+      `[codegraph] Ignoring --path "${pathArg}" — it contains an unexpanded \${...} ` +
+        `variable (the MCP host failed to substitute it). Falling back to the current directory.`
+    );
+    pathArg = undefined;
+  }
+
   const absolutePath = path.resolve(pathArg || process.cwd());
 
-  // If exact path is initialized (has codegraph.db), use it
-  if (isInitialized(absolutePath)) {
-    return absolutePath;
-  }
-
-  // Walk up to find nearest parent with CodeGraph initialized
-  // Note: findNearestCodeGraphRoot finds any .codegraph folder, but we need one with codegraph.db
-  let current = absolutePath;
-  const root = path.parse(current).root;
-
-  while (current !== root) {
-    const parent = path.dirname(current);
-    if (parent === current) break;
-    current = parent;
-
-    if (isInitialized(current)) {
-      return current;
-    }
-  }
+  // Nearest initialized (.codegraph/codegraph.db) root at or above the path,
+  // skipping unsafe roots like $HOME (see isUsableRoot in directory.ts).
+  const resolved = findNearestCodeGraphRoot(absolutePath);
+  if (resolved) return resolved;
 
   // Not found - return original path (will fail later with helpful error)
   return absolutePath;

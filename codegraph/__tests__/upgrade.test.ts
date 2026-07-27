@@ -17,6 +17,9 @@ import {
   NPM_PACKAGE,
   type InstallMethod,
   type UpgradeDeps,
+  localPatchesInfo,
+  localPatchesBlockMessage,
+  clobberAllowed,
 } from '../src/upgrade';
 import { EXTRACTION_VERSION } from '../src/extraction/extraction-version';
 import { CodeGraph } from '../src';
@@ -405,5 +408,87 @@ describe('index extraction-version stamp / isIndexStale', () => {
     );
     expect(cg.isIndexStale()).toBe(true);
     cg.destroy();
+  });
+});
+
+/**
+ * Local-patches guard: a deploy of a locally-built dist drops
+ * `.local-patches.json` next to dist/; while it exists, `codegraph upgrade`
+ * must refuse (the registry build would silently revert the patches), unless
+ * CODEGRAPH_ALLOW_CLOBBER opts in.
+ */
+describe('runUpgrade local-patches guard', () => {
+  const method: InstallMethod = { kind: 'npm' } as InstallMethod;
+  let prevAllow: string | undefined;
+
+  beforeEach(() => {
+    prevAllow = process.env.CODEGRAPH_ALLOW_CLOBBER;
+    delete process.env.CODEGRAPH_ALLOW_CLOBBER;
+  });
+  afterEach(() => {
+    if (prevAllow === undefined) delete process.env.CODEGRAPH_ALLOW_CLOBBER;
+    else process.env.CODEGRAPH_ALLOW_CLOBBER = prevAllow;
+  });
+
+  it('blocks the upgrade and explains when local patches are present', async () => {
+    const { deps, calls } = makeDeps({
+      method,
+      currentVersion: '1.0.1',
+      resolveLatest: async () => { throw new Error('must not resolve versions when blocked'); },
+    });
+    deps.localPatchesInfo = () => ({ note: 'hang fixes', source: '/repo/codegraph', patchedAt: '2026-07-19' });
+    const code = await runUpgrade({}, deps);
+    expect(code).toBe(1);
+    expect(calls.errors.join('\n')).toContain('LOCAL PATCHES');
+    expect(calls.errors.join('\n')).toContain('/repo/codegraph');
+    expect(calls.runs).toHaveLength(0); // no npm/bundle command ran
+  });
+
+  it('CODEGRAPH_ALLOW_CLOBBER=1 lets the upgrade proceed', async () => {
+    process.env.CODEGRAPH_ALLOW_CLOBBER = '1';
+    const { deps, calls } = makeDeps({ method, currentVersion: '1.0.1', resolveLatest: async () => 'v1.0.1' });
+    deps.localPatchesInfo = () => ({ note: 'hang fixes' });
+    const code = await runUpgrade({}, deps);
+    expect(code).toBe(0); // already up to date -> clean no-op, but NOT blocked
+    expect(calls.errors).toHaveLength(0);
+  });
+
+  it('no marker -> no block (normal upgrade path untouched)', async () => {
+    const { deps, calls } = makeDeps({ method, currentVersion: '1.0.1', resolveLatest: async () => 'v1.0.1' });
+    deps.localPatchesInfo = () => null;
+    const code = await runUpgrade({}, deps);
+    expect(code).toBe(0);
+    expect(calls.errors).toHaveLength(0);
+  });
+
+  it('localPatchesInfo parses a real marker file and returns null when absent', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cg-marker-'));
+    try {
+      const marker = path.join(dir, '.local-patches.json');
+      expect(localPatchesInfo(marker)).toBeNull();
+      fs.writeFileSync(marker, JSON.stringify({ note: 'x', baseVersion: '1.0.1' }));
+      expect(localPatchesInfo(marker)).toEqual({ note: 'x', baseVersion: '1.0.1' });
+      fs.writeFileSync(marker, 'not json');
+      expect(localPatchesInfo(marker)).toBeNull();
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('clobberAllowed honors 1/true only', () => {
+    expect(clobberAllowed({ CODEGRAPH_ALLOW_CLOBBER: '1' })).toBe(true);
+    expect(clobberAllowed({ CODEGRAPH_ALLOW_CLOBBER: 'true' })).toBe(true);
+    expect(clobberAllowed({ CODEGRAPH_ALLOW_CLOBBER: '0' })).toBe(false);
+    expect(clobberAllowed({})).toBe(false);
+  });
+
+  it('localPatchesBlockMessage names the source, the runbook, and the override', () => {
+    const msg = localPatchesBlockMessage({ note: 'n', source: '/src', patchedAt: 'd', docs: '/src/UPDATING.md' });
+    expect(msg).toContain('LOCAL PATCHES');
+    expect(msg).toContain('/src');
+    expect(msg).toContain('READ THE RUNBOOK FIRST: /src/UPDATING.md');
+    expect(msg).toContain('CODEGRAPH_ALLOW_CLOBBER=1');
+    // docs line is optional — message still renders without it
+    expect(localPatchesBlockMessage({ note: 'n' })).not.toContain('RUNBOOK');
   });
 });

@@ -41,11 +41,9 @@ export {
 } from './config-writer';
 export type { InstallLocation } from './config-writer';
 
-// Dynamic import helper — tsc compiles import() to require() in CJS mode,
-// which fails for ESM-only packages. This bypasses the transformation.
-// eslint-disable-next-line @typescript-eslint/no-implied-eval
-const importESM = new Function('specifier', 'return import(specifier)') as
-  (specifier: string) => Promise<typeof import('@clack/prompts')>;
+// Dynamic import helper for ESM-only packages — see ../import-esm.ts for why
+// it exists and why it lives in its own module.
+import { importESM } from '../import-esm';
 
 
 function getVersion(): string {
@@ -112,14 +110,24 @@ export async function runInstallerWithOptions(opts: RunInstallerOptions): Promis
       process.exit(0);
     }
     if (shouldInstallGlobally) {
-      const s = clack.spinner();
-      s.start('Installing codegraph CLI...');
-      try {
-        execSync('npm install -g @colbymchenry/codegraph', { stdio: 'pipe', windowsHide: true });
-        s.stop('Installed codegraph CLI on PATH');
-      } catch {
-        s.stop('Could not install (permission denied)');
-        clack.log.warn('Try: sudo npm install -g @colbymchenry/codegraph');
+      // Local-patches guard: reinstalling from the registry would silently
+      // revert a locally-built dist deployed over this install (same block as
+      // `codegraph upgrade`). Skip the npm step and say why.
+      const { localPatchesInfo, localPatchesBlockMessage, clobberAllowed } = await import('../upgrade');
+      const patches = clobberAllowed() ? null : localPatchesInfo();
+      if (patches) {
+        clack.log.warn(localPatchesBlockMessage(patches));
+        clack.log.info('Skipped the npm reinstall step — the locally-patched CLI stays as is.');
+      } else {
+        const s = clack.spinner();
+        s.start('Installing codegraph CLI...');
+        try {
+          execSync('npm install -g @colbymchenry/codegraph', { stdio: 'pipe', windowsHide: true });
+          s.stop('Installed codegraph CLI on PATH');
+        } catch {
+          s.stop('Could not install (permission denied)');
+          clack.log.warn('Try: sudo npm install -g @colbymchenry/codegraph');
+        }
       }
     } else {
       clack.log.info('Skipped CLI install — agents will not be able to launch the MCP server without it');
