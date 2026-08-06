@@ -38,6 +38,11 @@ fix via `57c0961`).
 - **OQ-A24** — CI pilot-DB presence; extract CLI must skip-if-absent.
   Non-blocking.
 
+## Open tech debt
+
+- **TD-01** — no post-`codegraph init` completion hook for consumers
+  (`docs/TECH_DEBT.md`). Filed from falkor-writ C11–C16 run 2026-08-06.
+
 ## Tools online
 
 - CodeGraph ✅ — `codegraph` CLI; MCP `codegraph_explore`/`codegraph_node`/`codegraph_callers` primary explore. Never write to DB.

@@ -1,5 +1,12 @@
 # codegraph-gate — usage feedback
 
+## 2026-08-06 — plan_verify `--strict` MISSING on existing non-Python `touch:` paths (falkor-writ run, run-id c11-c16-inference-gates)
+**Seat:** ORCH first-hand + worker-observed (via av turn)
+**Category:** bug
+**Symptom:** `plan_verify.py --strict` exit 1 with 4 `touch:` MISSING rows for `hooks/hooks.json` and three `integrated_skills/build-pipeline/handoffs/*.md` files that **exist on disk** (`[ -f ]` true). Codegraph’s Python-only index cannot see them; verifier does not fall back to a filesystem stat for non-indexed paths. Swept prose tokens also flood MISSING.
+**Why it bites:** Orchestrators must manually cross-check FAIL before re-dispatching planners; workers burn turns documenting a tooling blind spot; exit 1 cannot mean “ghost” vs “unindexed but real.”
+**Suggested fix:** For `touch:`/`new:` file paths, `stat` the filesystem when the index has no node; reserve MISSING for true absence. Optionally silence or demote `swept` prose tokens under `--strict`.
+
 ## 2026-07-26 — plan-verify unrecognised `files:` key → empty files[] (td-avdispatch)
 **Seat:** ORCH first-hand (pipeline then impl)
 **Category:** tool-bug / process
