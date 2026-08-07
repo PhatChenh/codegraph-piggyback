@@ -1,3 +1,10 @@
+## 2026-08-07 — plan_verify swept MISSING on prose / cross-repo tokens (agent_village run, run-id 2026-08-07-a6-work-mode-tdd)
+**Seat:** ORCH first-hand
+**Category:** enhancement · confusing
+**Symptom:**  PASS on manifests, but Tier-2 sweep floods MISSING for English words (, , ) and cross-repo paths not in this repo's codegraph index. Noise rate high enough ORCH must ignore swept lines.
+**Why it bites:** trains ignore-the-sweep reflex; hard to spot real ghosts.
+**Suggested fix:**  / suppress prose tokens; or scope sweep to / symbols only when .
+
 # codegraph-gate — usage feedback
 
 ## 2026-08-06 — plan_verify `--strict` MISSING on existing non-Python `touch:` paths (falkor-writ run, run-id c11-c16-inference-gates)
