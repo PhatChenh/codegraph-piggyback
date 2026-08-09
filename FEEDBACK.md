@@ -1,3 +1,11 @@
+## 2026-08-09 — plan_verify Prisma schema touch still unindexed (mkt_engine run, run-id 2026-08-09-p17-w2-asset-page)
+**Seat:** ORCH first-hand
+**Category:** bug | enhancement
+**Symptom:** `touch: prisma/schema.prisma` and `touch: prisma/schema.prisma::Asset` both MISSING under `--strict` — Prisma schema not in codegraph index. Same class as prior non-Python path bug. REUSE-DROPPED for `runFalQueue(...)` until plan Facts cited the live `_shared.ts` symbol (spec path `fal/queue.ts` stale).
+**Why it bites:** ORCH hand-patches every Prisma plan step; planners copy W1 waiver prose and still FAIL until touch dropped.
+**Suggested fix:** filesystem `stat` fallback for `touch:`/`new:` paths; teach REUSE matcher to accept Facts cites of relocated symbols.
+**Product report:** `mkt_engine/docs/AI_artifacts/9_runs/2026-08-09-p17-w2-asset-page.md`
+
 ## 2026-08-07 — plan_verify swept MISSING on prose / cross-repo tokens (agent_village run, run-id 2026-08-07-a6-work-mode-tdd)
 **Seat:** ORCH first-hand
 **Category:** enhancement · confusing
