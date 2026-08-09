@@ -33,6 +33,11 @@ listing mode) walks the same blocks but preserves per-block attribution:
 each yielded record carries its step heading text, its declared file paths,
 the `tier:` value (or `None` if absent — explicit marker for the tier-law
 check), the `gates:` list, and any per-block meta problems.
+
+`external: <abs-path>` (item 21.4, Step 7) is the cross-repo claim form: an
+abs-shape value (`/`- or `~/`-prefixed) that is excluded from
+`BlockRecord.files` (diff scoping is repo-local) and verdicts OK in
+plan_verify without file resolution.
 """
 
 from __future__ import annotations
