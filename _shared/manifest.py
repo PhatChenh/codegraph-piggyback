@@ -292,3 +292,21 @@ def iter_blocks(text: str) -> list[BlockRecord]:
             unknown_keys=list(unknown_keys),
         ))
     return out
+
+
+def block_line_spans(text: str) -> list[tuple[int, int]]:
+    """Return one 1-indexed `(start_line, end_line)` span per
+    `<!-- plan-verify -->` block, in document order (added 2026-08-09
+    for the falkor-writ checks that address block lines — C5 rescope,
+    C10 BODYSYNC).
+
+    A span runs from the block comment's opening line through its
+    closing `-->` line, inclusive. The start line is the 1-indexed line
+    of `m.start()`; the end line is the newline count up to `m.end()`
+    — `_BLOCK_RE`'s trailing `\\s*$` consumes the newline terminating
+    the `-->` line, so counting newlines before `m.end()` lands on the
+    closing line. Spans pair 1:1 with `iter_blocks` records.
+    """
+    return [(text.count("\n", 0, m.start()) + 1,
+             text.count("\n", 0, m.end()))
+            for m in _BLOCK_RE.finditer(text)]

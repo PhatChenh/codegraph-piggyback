@@ -115,3 +115,43 @@ class TestEntryClassification:
         assert len(m.claims) == 1
         assert m.claims[0].path == "av"
         assert m.claims[0].symbol == "doctor"
+
+
+class TestBlockLineSpans:
+    """Writ item 21.3 Step 1 (2026-08-09) — the new `block_line_spans`
+    export: one 1-indexed `(start_line, end_line)` span per
+    `<!-- plan-verify -->` block, in document order. Gives consumers
+    (falkor-writ C5 rescope, C10 BODYSYNC) a way to address block lines
+    without re-deriving a block-detection grammar."""
+
+    def test_two_blocks_return_two_spans_covering_comment_lines(self):
+        """Case (a): a doc with two blocks returns two spans covering
+        exactly the comment lines — from the `<!-- plan-verify` opening
+        line through the `-->` closing line, inclusive."""
+        text = block("tier: A", "# Step 1") + "\n" + block("tier: B", "# Step 2")
+        assert mf.block_line_spans(text) == [(3, 5), (9, 11)]
+
+    def test_no_blocks_returns_empty(self):
+        """Case (b): a doc with no plan-verify blocks returns []."""
+        text = "# Step 1\n\ntouch: src/auth.py\n\n# Step 2\n"
+        assert mf.block_line_spans(text) == []
+
+    def test_spans_agree_with_iter_blocks_order(self):
+        """Case (c): spans correspond 1:1 with `iter_blocks` records in
+        document order — same block count, same first-line ordering, and
+        each span covers exactly its block's comment lines."""
+        text = (block("tier: A", "# Step 1") + "\n"
+                + block("tier: B", "# Step 2") + "\n"
+                + block("tier: C", "# Step 3"))
+        spans = mf.block_line_spans(text)
+        recs = mf.iter_blocks(text)
+        assert len(spans) == len(recs) == 3
+        for (start, end), rec in zip(spans, recs):
+            assert start < end
+            # the span covers exactly this block's comment lines
+            lines = text.splitlines()[start - 1 : end]
+            assert lines[0].strip() == "<!-- plan-verify"
+            assert lines[-1].strip() == "-->"
+            assert rec.block_index > 0
+        # document order: spans start in strictly ascending line order
+        assert [s[0] for s in spans] == sorted(s[0] for s in spans)
