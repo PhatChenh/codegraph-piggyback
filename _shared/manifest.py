@@ -33,6 +33,11 @@ listing mode) walks the same blocks but preserves per-block attribution:
 each yielded record carries its step heading text, its declared file paths,
 the `tier:` value (or `None` if absent — explicit marker for the tier-law
 check), the `gates:` list, and any per-block meta problems.
+
+`external: <abs-path>` (item 21.4, Step 7) is the cross-repo claim form: an
+abs-shape value (`/`- or `~/`-prefixed) that is excluded from
+`BlockRecord.files` (diff scoping is repo-local) and verdicts OK in
+plan_verify without file resolution.
 """
 
 from __future__ import annotations
@@ -63,6 +68,7 @@ class Claim:
     verdict: str = ""
     evidence: str = ""
     notes: list[str] = field(default_factory=list)
+    external: bool = False   # `external: <abs-path>` value form (item 21.4)
 
 
 @dataclass
@@ -104,6 +110,22 @@ def looks_pathish(token: str) -> bool:
 
 def parse_entry(intent: str, raw: str) -> Claim:
     raw = raw.strip()
+    if raw.startswith("external:"):
+        rest = raw[len("external:"):].strip()
+        # Owner lock 12b (2026-08-09): quote-wrapped abs paths carry spaces
+        # (`external: "/abs/path with spaces/f.py"`, `external: '/abs/x.py::sym'`).
+        # Unquoted spaced paths still truncate at the first space; the quoted
+        # form is the fix.
+        if len(rest) >= 2 and rest[0] == rest[-1] and rest[0] in "\"'":
+            rest = rest[1:-1].strip()
+        if rest.startswith("/") or rest.startswith("~/"):
+            if "::" in rest:
+                p, s = rest.split("::", 1)
+                return Claim(intent, raw, p.strip() or None, s.strip() or None,
+                             external=True)
+            return Claim(intent, raw, rest, None, external=True)
+        # relative remainder: no flag — falls through to the normal branches
+        # unchanged; the caller records the abs-shape meta_problem.
     if "::" in raw:
         p, s = raw.split("::", 1)
         return Claim(intent, raw, p.strip() or None, s.strip() or None)
@@ -129,7 +151,11 @@ def parse_manifest(text: str) -> Manifest:
             key, val = lm.group(1), lm.group(2).strip()
             if key in ("touch", "new", "remove"):
                 for raw in filter(None, (e.strip() for e in val.split(","))):
-                    m.claims.append(parse_entry(key, raw))
+                    c = parse_entry(key, raw)
+                    m.claims.append(c)
+                    if raw.startswith("external:") and not c.external:
+                        m.meta_problems.append(
+                            "external: value must be an absolute path")
             elif key == "tier":
                 m.tiers.append(val)
                 if val not in VALID_TIERS:
@@ -229,7 +255,14 @@ def _parse_block_body(block_text: str) -> tuple[list[Claim], str | None,
         key, val = lm.group(1), lm.group(2).strip()
         if key in ("touch", "new", "remove"):
             for raw in filter(None, (e.strip() for e in val.split(","))):
-                claims.append(parse_entry(key, raw))
+                c = parse_entry(key, raw)
+                claims.append(c)
+                # Relative-external detection lives here (not in parse_entry,
+                # which stays pure). tier_problems is the per-block problems
+                # channel (BlockRecord docstring: "any per-block meta problems").
+                if raw.startswith("external:") and not c.external:
+                    tier_problems.append(
+                        "external: value must be an absolute path")
         elif key == "tier":
             last_tier = val
             if val not in VALID_TIERS:
@@ -276,6 +309,11 @@ def iter_blocks(text: str) -> list[BlockRecord]:
         seen: set[str] = set()
         files: list[str] = []
         for c in claims:
+            # external claims stay in `claims` but their abs paths are
+            # excluded from `files` — diff_verify per-step diff scoping is
+            # repo-local; an abs path outside the tree has no meaning there.
+            if c.external:
+                continue
             if c.path and c.path not in seen:
                 seen.add(c.path)
                 files.append(c.path)
@@ -292,3 +330,21 @@ def iter_blocks(text: str) -> list[BlockRecord]:
             unknown_keys=list(unknown_keys),
         ))
     return out
+
+
+def block_line_spans(text: str) -> list[tuple[int, int]]:
+    """Return one 1-indexed `(start_line, end_line)` span per
+    `<!-- plan-verify -->` block, in document order (added 2026-08-09
+    for the falkor-writ checks that address block lines — C5 rescope,
+    C10 BODYSYNC).
+
+    A span runs from the block comment's opening line through its
+    closing `-->` line, inclusive. The start line is the 1-indexed line
+    of `m.start()`; the end line is the newline count up to `m.end()`
+    — `_BLOCK_RE`'s trailing `\\s*$` consumes the newline terminating
+    the `-->` line, so counting newlines before `m.end()` lands on the
+    closing line. Spans pair 1:1 with `iter_blocks` records.
+    """
+    return [(text.count("\n", 0, m.start()) + 1,
+             text.count("\n", 0, m.end()))
+            for m in _BLOCK_RE.finditer(text)]

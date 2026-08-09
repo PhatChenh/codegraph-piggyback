@@ -196,6 +196,43 @@ class TestVerdicts:
         assert r["strict_fail"] == []          # swept never gates
 
 
+# ── external claims (item 21.4, Step 8) ──────────────────────────────────────
+
+class TestExternal:
+    def run(self, repo: Path, body: str) -> dict:
+        plan = write_plan(repo, body)
+        return pv.verify(plan, None)
+
+    def test_external_abs_verdicts_ok(self, repo):
+        r = self.run(repo, "<!-- plan-verify\ntouch: external: /abs/x.py::sym\n-->")
+        c = r["manifest_claims"][0]
+        assert c.external is True
+        assert c.verdict == pv.OK
+        assert c.evidence == "declared outside the indexed repo (external:)"
+
+    def test_external_quoted_spaced_verdicts_ok(self, repo):
+        r = self.run(repo,
+                     '<!-- plan-verify\ntouch: external: "/abs/path with spaces/f.py"\n-->')
+        c = r["manifest_claims"][0]
+        assert c.external is True
+        assert c.path == "/abs/path with spaces/f.py"
+        assert c.verdict == pv.OK
+
+    def test_external_relative_no_short_circuit(self, repo):
+        r = self.run(repo, "<!-- plan-verify\ntouch: external: src/local.py\n-->")
+        c = r["manifest_claims"][0]
+        assert c.external is False
+        assert c.verdict == pv.MISSING
+        assert any("absolute path" in p for p in r["meta_problems"])
+
+    def test_json_surfaces_external_flag(self, repo):
+        plan = write_plan(repo, "<!-- plan-verify\ntouch: external: /abs/x.py::sym\n-->")
+        r = subprocess.run([sys.executable, str(CLI), str(plan), "--json"],
+                           capture_output=True, text=True)
+        doc = json.loads(r.stdout)
+        assert doc["manifest"][0]["external"] is True
+
+
 # ── CLI gate semantics ───────────────────────────────────────────────────────
 
 class TestCli:
