@@ -207,6 +207,11 @@ def _caller_evidence(callers: list[dict], unmentioned: list[dict]) -> str:
 
 def verdict_claim(con: sqlite3.Connection, claim: Claim, plan_text: str,
                   dynamic_names: set[str]) -> None:
+    if claim.external:
+        # `external: <abs-path>` declares a target outside the indexed repo —
+        # no node/file to resolve, so verdict OK with honest evidence (21.4).
+        claim.verdict, claim.evidence = OK, "declared outside the indexed repo (external:)"
+        return
     token = claim.symbol or claim.path or claim.raw
     res = _rs.resolve(con, token, file_hint=claim.path if claim.symbol else None)
 
@@ -340,7 +345,7 @@ def render(result: dict, problems_only: bool = False) -> str:
 def to_json(result: dict) -> str:
     def claim_dict(c: Claim) -> dict:
         return {"intent": c.intent, "raw": c.raw, "verdict": c.verdict,
-                "evidence": c.evidence, "notes": c.notes}
+                "evidence": c.evidence, "notes": c.notes, "external": c.external}
     return json.dumps({
         "plan": result["plan"],
         "manifest": [claim_dict(c) for c in result["manifest_claims"]],
