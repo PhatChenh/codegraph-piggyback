@@ -1,3 +1,11 @@
+## 2026-08-12 — grep-absent on directory path passes vacuously (mkt_engine run, run-id 2026-08-12-p17-w4b-ref-tags-ui)
+**Seat:** worker-observed (via av turn / judge)
+**Category:** bug
+**Symptom:** `grep-absent "LoRA" components/refs/` resolves the directory; `f.is_file()` filters it out → 0 files scanned → qualifier always None/pass.
+**Why it bites:** plan's only mechanical PROJ-MODELPICK-001 guard was a no-op until rewritten to `components/refs/*.ts*`.
+**Suggested fix:** treat directory globs as error (or expand to children) instead of vacuous pass; document that qualifiers must name files/`*.ext`.
+
+
 ## 2026-08-09 — plan_verify Prisma schema touch still unindexed (mkt_engine run, run-id 2026-08-09-p17-w2-asset-page)
 **Seat:** ORCH first-hand
 **Category:** bug | enhancement
