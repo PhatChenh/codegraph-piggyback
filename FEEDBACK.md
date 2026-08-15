@@ -1,3 +1,11 @@
+## 2026-08-15 — blast-gate Write deny `found: {none}` while `.codegraph/codegraph.db` exists (mkt_engine, post-return p18-lite-part1)
+**Seat:** ORCH first-hand (Cursor Grok 4.6 Desktop)
+**Category:** bug
+**Symptom:** Writ blast-gate **denied** `StrReplace`/`Write` on a village worktree `.tsx` with `unrecognized schema version (found: {none}; reader supports: {1, 5})`. `{none}` is writ `codegraph_index.probe` when `SELECT version FROM schema_versions` raises (empty found set), **not** an unknown integer version. Cursor workspace was `mkt_engine` **main**; the file lived in `.village/worktrees/p18-lite-part1`. That worktree already had `.codegraph/codegraph.db` (~19MB) + idle-killed daemon.log. `writ` not on PATH. `writ codegraph-init -f` rejected `-f`. `codegraph init` printed **Already initialized**. `codegraph index` in the worktree made probe `usable`; writes then passed. Main checkout also had a live `codegraph serve --mcp` + 295MB db + WAL. Session hook warned DEPLOY DRIFT (hooks from a different village worktree). Distinct from 2026-07-22 silent-empty MCP, 2026-07-23 verify-wave init-no-reindex, 2026-08-14 `${workspaceFolder}`.
+**Why it bites:** fail-closed blocks all product-code edits in a worktree until a human guesses `codegraph index`. The named fix (`writ codegraph-init`) no-ops.
+**Suggested fix:** (codegraph) if the db file exists but `schema_versions` is missing/unreadable (WAL/ro, pre-schema db), fail loud with `index_unreadable` + “run `codegraph index` in this worktree”, never a fake schema `{none}`. (writ) map that state to the `missing`/`stale` deny copy, and make `writ codegraph-init` call `codegraph index` when already initialized. Do not treat sqlite errors as “unknown schema version.”
+**Product:** mkt_engine P18 lite Part 1 post-return (Kiểm tra lại drop); no new 9_runs file.
+
 ## 2026-08-15 — --allow glob `[id]` is a fnmatch char class (mkt_engine run, run-id 2026-08-15-p18-lite-part1-impl)
 **Seat:** ORCH first-hand
 **Category:** confusing
