@@ -1,3 +1,11 @@
+## 2026-08-15 — --allow glob `[id]` is a fnmatch char class (mkt_engine run, run-id 2026-08-15-p18-lite-part1-impl)
+**Seat:** ORCH first-hand
+**Category:** confusing
+**Symptom:** `.av-verify.json` allow `app/api/assets/[id]/route.ts` did not admit the changed Next dynamic-segment file. `fnmatch` treats `[id]` as one of `{i,d}`. Workaround: `app/api/assets/*/route.ts`.
+**Why it bites:** verify-wave 21 OUT-OF-SCOPE-TOUCH on a file the plan named; extra judge/allow round.
+**Suggested fix:** document that Next `[id]` paths must be written `[[]id]` or `*` in `--allow`; or escape brackets in allow matching.
+**Product report:** `mkt_engine/docs/AI_artifacts/9_runs/2026-08-15-p18-lite-part1-impl.md`
+
 ## 2026-08-12 — grep-absent on directory path passes vacuously (mkt_engine run, run-id 2026-08-12-p17-w4b-ref-tags-ui)
 **Seat:** worker-observed (via av turn / judge)
 **Category:** bug
@@ -20,6 +28,15 @@
 **Symptom:**  PASS on manifests, but Tier-2 sweep floods MISSING for English words (, , ) and cross-repo paths not in this repo's codegraph index. Noise rate high enough ORCH must ignore swept lines.
 **Why it bites:** trains ignore-the-sweep reflex; hard to spot real ghosts.
 **Suggested fix:**  / suppress prose tokens; or scope sweep to / symbols only when .
+
+## 2026-08-14 — ACP/village MCP `codegraph_explore` returns no body; `--path ${workspaceFolder}` literal; exit 6 (mkt_engine, run-id 2026-08-14-p17.5-collected-edit)
+**Status:** OPEN
+**Seat:** ORCH first-hand (Cursor Grok 4.6 Desktop) · village `p17.5-collected-edit-orch` `:19781` · grok-46 SIDs `0f7f379e` / `133760bf` / `f98be08a` (all `non_convergence` exit 6)
+**Category:** bug
+**Symptom:** CLI `codegraph explore "AssetDetail isOwner …"` from `mkt_engine` returns ~25k of real source. Same query via Cursor ACP MCP `codegraph_explore` on three fresh grok-46 sessions: 5× `session/request_permission` (auto-allowed), **zero completed MCP `rawOutput`**. Grok thought “The codegraph output was truncated,” retried, village loop-breaker: `repeat-threshold after 5 progress-free events (last command: mcp__codegraph__codegraph_explore)`. Live processes on this host include `codegraph serve --mcp --path ${workspaceFolder}` — **placeholder not expanded**. This Desktop session’s CodeGraph MCP stayed `serverStatus: loading` / “no callable tools.” Index daemon log: idle/inactivity backstop restarts (even with `clients=4`); no error lines. Village writer: `agent_village/daemon/cursor-bundle.ts` `buildVillageMcpConfig()` args `"--path","${workspaceFolder}"` (Desktop substitution; ACP does not expand). ADR-0015: MCP cannot ride `session/new mcpServers` — delivery is `.cursor/mcp.json`.
+**Why it bites:** Strong RT cannot finish on grok-46 if R12/skills say CodeGraph first. Three SIDs + one daemon bounce burned; no report file. Workaround this run: forbid CodeGraph MCP/CLI; Read named files.
+**Suggested fix:** (codegraph) reject or resolve a literal `${workspaceFolder}` instead of indexing a garbage path; fail loud on MCP if the daemon is loading/idle-killing under clients. (village) write an **absolute** `--path <worktree cwd>` into staged `.cursor/mcp.json` for ACP; keep `${workspaceFolder}` only for Desktop. (skill) Cursor ACP briefs: CodeGraph MCP cap 0–1 then Read; do not treat R12 as load-bearing on ACP.
+**Run-report:** `mkt_engine/docs/AI_artifacts/9_runs/2026-08-14-p17.5-collected-edit.state.md`
 
 # codegraph-gate — usage feedback
 
