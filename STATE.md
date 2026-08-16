@@ -15,12 +15,15 @@ fix via `57c0961`).
 
 ## NEXT (in order)
 
+0. **FEEDBACK bugs + TD-01 scope (2026-08-16)** — pickup:
+   `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`.
+   ROI pickup: 1 village ACP → 2 grep-absent → 4 codegraph CLI →
+   3 plan_verify → 6 writ probe → 5 codegraph MCP.
+   BUG-023 is FIXED (`1e48ad2`); do not re-open from this file's old bullet 3.
 1. **Live painter E2E** — owner browser-check `/tmp/p5.html` (click
    macro→micro→nano, hover PROPOSED/UNNARRATABLE, pan/zoom, theme). Deferred,
    not headlessly assertable. `ssot-diagram/STATE.md` owns.
 2. **ssot P6** — PostToolUse re-extract hook (`ssot-diagram/roadmap.md`).
-3. Mid-build debt: av-orchestrate `BUG-023`/`BUG-024` workarounds in run
-   report + `agent_village/BUGS.md`.
 
 ## Per-tool pointers
 
@@ -40,8 +43,10 @@ fix via `57c0961`).
 
 ## Open tech debt
 
-- **TD-01** — no post-`codegraph init` completion hook for consumers
-  (`docs/TECH_DEBT.md`). Filed from falkor-writ C11–C16 run 2026-08-06.
+- **TD-01** — in scope as Bucket 4 (`codegraph init` repairs unusable) +
+  Bucket 6 (writ wrapper runs `index`). Spec:
+  `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`. Still OPEN
+  until those buckets land (`docs/TECH_DEBT.md`).
 
 ## Tools online
 

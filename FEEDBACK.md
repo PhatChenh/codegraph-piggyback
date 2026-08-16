@@ -1,3 +1,17 @@
+## 2026-08-16 — `av preflight --brief` uses basename only; first `av turn --brief` refuses after preflight staged it (feedback-scope-scout, run-id 2026-08-16-feedback-scope-scout)
+**Status:** OPEN
+**Seat:** ORCH first-hand (Cursor Grok 4.6) · SID `76933935-f63c-4520-b008-fc11fc9b04c7` · profile `clx-deepseek-v4-pro` · daemon `orch-feedback-scope-scout` :19341
+**Category:** burden
+**Symptom:** `av preflight --session … --brief .village/runs/…/channel/SCOUT.md` → exit 24 `brief_unresolved: SCOUT.md not found under effective cwd` (basename lookup, path ignored). Copy to `$PWD/SCOUT.md` → preflight ok. Immediately `av turn --brief SCOUT.md` → `bad_request` `brief refused: SCOUT.md already exists (pass overwrite:true to replace)` because preflight had staged it. Needed `--overwrite-brief`. Turn then ok=true ~319s, digest 15KB, `spentTokens` 118943 (`usageSeen: true`). Harness `Task` subagents aborted; operator required `av` + private daemon.
+**Why it bites:** two dispatch failures before any worker token; easy to think the session is broken. Copying a brief to repo root also leaves a dirty `SCOUT.md`.
+**Burden:**
+- `av preflight --brief` matches **basename under cwd**, not the path you passed
+- preflight that succeeds **stages** the brief, so the following `av turn --brief` needs `--overwrite-brief`
+- pin `VILLAGE_PORT` to the daemon you started; never 8877 when other orch villages are live
+- clx `contextGate` 32000 with `bootstrapTokens` 20000 leaves ~7k for brief+repo; keep briefs tiny
+**Suggested fix:** (av) preflight `--brief` should resolve the given relative path, or print “need basename at cwd”. (av) first turn after a successful preflight should not require overwrite, or preflight should be read-only. (skill) av-use: “preflight then turn” recipe with `--overwrite-brief`.
+**Run-report:** `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`
+
 ## 2026-08-15 — blast-gate Write deny `found: {none}` while `.codegraph/codegraph.db` exists (mkt_engine, post-return p18-lite-part1)
 **Seat:** ORCH first-hand (Cursor Grok 4.6 Desktop)
 **Category:** bug
