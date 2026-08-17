@@ -196,3 +196,10 @@ DECIDED:
 DEFERRED: none knowable in advance. Runtime-only: verify-wave 20–23 diffs, livecert FAIL retry, spawn-fail after 3+fallback.
 OPEN: none — leftovers recorded as recommended and locked this kickoff
 
+## impl-complete — 2026-08-17 22:55
+POSITION: All plan waves merged on `bkt4-codegraph-cli`. Whole-diff FIX 1 merged `e8acbf7`. Live rsync after FIX 1. `codegraph --version` 999.0.0; `status '${workspaceFolder}'` exit 1. Docs + run-report this commit. **No push / no main merge.**
+ARTIFACTS: `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.md`
+DECIDED: Important 1 CONFIRM + folded minors; Step 6/7 cat21 dismissed as recorded; IMPL reseat DeepSeek after cmd-pro usage_limit
+DEFERRED: human merge to main; worktree prune; FEEDBACK buckets 3→6→5
+OPEN: none on the phase branch
+

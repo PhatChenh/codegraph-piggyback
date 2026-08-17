@@ -1,4 +1,9 @@
 date,model,role,risk_tier,outcome,note
+2026-08-17,cmd-pro,implement,C,needed-fixes,Bkt4 Step 1 report testCmd literal; Step 4 timeout+usage_limit reseated
+2026-08-17,clx-deepseek-v4-pro,implement,A,needed-fixes,Bkt4 Steps 4–7 + whole-diff FIX 1; Step 5 prompt-too-long then FIX
+2026-08-17,cursor-grok-4.6,review,A,findings-confirmed,Bkt4 tier-A Steps 2/5 CHANGES_REQUESTED then APPROVE after judge FIX; Step 4 + FIX 1 APPROVE
+2026-08-17,syn-2-kimi-k3,review,A,findings-confirmed,Bkt4 whole-diff CHANGES_REQUESTED Important 1 (fresh-init repair label)
+2026-08-17,claude-opus,judge,A,findings-confirmed,Bkt4 Important 1 CONFIRM; minors 1–3 fold; 4–5 dismiss
 2026-07-04,deepseek-v4-flash,implement,B,needed-fixes,P3 graph_model.py + tests + golden + config + manifest (14-step plan)
 2026-07-04,writ:writ-plan-reviewer,review,B,findings-confirmed,Stage 1 plan-compliance — 6 issues (default paths, --force, nano name, guard [:1], micro/collapsed id forms)
 2026-07-04,writ:writ-code-quality-reviewer,review,B,findings-confirmed,Stage 2 code-quality — supersedes literal, decisions[] sort, SystemExit swallow

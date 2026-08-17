@@ -1,3 +1,19 @@
+## 2026-08-17 — ACP report sentinel fenced + 32k briefs + dual `.village/` trees (bkt4-codegraph-cli, run-id 2026-08-17-bkt4-codegraph-cli)
+**Status:** ACCEPTED process
+**Seat:** ORCH first-hand (Cursor Grok 4.6) · impl `822f1d33` (clx-deepseek-v4-pro) · judge `df93a896` · daemon `orch-bkt4-cg-cli` :19817
+**Category:** burden
+**Symptom:** DeepSeek FIX 1 wrote a correct disk report but wrapped `=== END REPORT ===` in a markdown fence in the ACP reply → verify-wave check 4 category 22. Same run: cmd-pro 32k `contextGate` + 10min wall; Step 5 `Prompt is too long`; judge stamps first landed in repo-root `.village/runs/` not the worktree channel.
+**Why it bites:** gate red after green tests; extra exemption; wasted impl tokens on oversized briefs.
+**Burden:**
+- `=== END REPORT ===` must be unfenced last line of the **reply** and of WT-root `IMPLEMENTATION_REPORT.md`
+- `av preflight --brief` is basename-under-cwd; turn needs `--overwrite-brief`
+- clx `contextGate` 32000 with ~20k bootstrap → tiny briefs
+- two trees share run-id path names: INT WT `.village/` vs parent checkout `.village/`
+- sibling SIDs on one git common-dir need `reportExempt` + `exemptionAudit`
+- pin `VILLAGE_PORT=19817`; never 8877
+**Suggested fix:** (av) reject fenced sentinel as “found in fence, not last line”. (skill) worker-task.md: report lives at WT root, never `codegraph/IMPLEMENTATION_REPORT.md`. (ORCH) copy judge briefs into the WT that will be read.
+**Run-report:** `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.md`
+
 ## 2026-08-16 — `av preflight --brief` uses basename only; first `av turn --brief` refuses after preflight staged it (feedback-scope-scout, run-id 2026-08-16-feedback-scope-scout)
 **Status:** OPEN
 **Seat:** ORCH first-hand (Cursor Grok 4.6) · SID `76933935-f63c-4520-b008-fc11fc9b04c7` · profile `clx-deepseek-v4-pro` · daemon `orch-feedback-scope-scout` :19341
