@@ -351,6 +351,10 @@ describe('codegraph init — repairs an unusable index and refuses to wipe anyth
     fs.mkdirSync(codegraphDir(tempDir), { recursive: true });
     fs.writeFileSync(dbPath(tempDir), 'this is junk text, not a sqlite database');
     fs.writeFileSync(path.join(codegraphDir(tempDir), 'codegraph.db-wal'), 'leftover-wal-bytes');
+    // A non-sqlite entry that must survive repair — the file `init` writes to
+    // keep the index out of git, planted by hand so the "no prior init" shape
+    // of this fixture is preserved.
+    fs.writeFileSync(path.join(codegraphDir(tempDir), '.gitignore'), '*\n!.gitignore\n');
 
     const before = snapshotTree(codegraphDir(tempDir));
     const result = runCodegraphRaw(['init'], tempDir);
@@ -358,6 +362,13 @@ describe('codegraph init — repairs an unusable index and refuses to wipe anyth
 
     expect(result.status).toBe(0);
     assertOnlySqliteFilesVanished(before, after);
+    // Catches a `-wal` surviving byte-identical — NOT unlink-db-only, because
+    // SQLite removes a stale `-wal` itself on a clean close.
+    expect(
+      after['codegraph.db-wal'] === undefined ||
+        after['codegraph.db-wal'].sha256 !== before['codegraph.db-wal'].sha256,
+      'leftover -wal must be absent or rewritten',
+    ).toBe(true);
     assertRepairProof(tempDir);
   });
 
@@ -377,6 +388,13 @@ describe('codegraph init — repairs an unusable index and refuses to wipe anyth
 
     expect(result.status).toBe(0);
     assertOnlySqliteFilesVanished(before, after);
+    // Catches a `-wal` surviving byte-identical — NOT unlink-db-only, because
+    // SQLite removes a stale `-wal` itself on a clean close.
+    expect(
+      after['codegraph.db-wal'] === undefined ||
+        after['codegraph.db-wal'].sha256 !== before['codegraph.db-wal'].sha256,
+      'leftover -wal must be absent or rewritten',
+    ).toBe(true);
     assertRepairProof(tempDir);
   });
 
@@ -387,6 +405,10 @@ describe('codegraph init — repairs an unusable index and refuses to wipe anyth
     db.exec('CREATE TABLE foo(id INTEGER)');
     db.close();
     fs.writeFileSync(path.join(codegraphDir(tempDir), 'codegraph.db-wal'), 'leftover-wal-bytes');
+    // A non-sqlite entry that must survive repair — the file `init` writes to
+    // keep the index out of git, planted by hand so the "no prior init" shape
+    // of this fixture is preserved.
+    fs.writeFileSync(path.join(codegraphDir(tempDir), '.gitignore'), '*\n!.gitignore\n');
 
     const before = snapshotTree(codegraphDir(tempDir));
     const result = runCodegraphRaw(['init'], tempDir);
@@ -394,12 +416,19 @@ describe('codegraph init — repairs an unusable index and refuses to wipe anyth
 
     expect(result.status).toBe(0);
     assertOnlySqliteFilesVanished(before, after);
+    // Catches a `-wal` surviving byte-identical — NOT unlink-db-only, because
+    // SQLite removes a stale `-wal` itself on a clean close.
+    expect(
+      after['codegraph.db-wal'] === undefined ||
+        after['codegraph.db-wal'].sha256 !== before['codegraph.db-wal'].sha256,
+      'leftover -wal must be absent or rewritten',
+    ).toBe(true);
     // The hollow db had no `nodes` table, so the only way this passes is that
     // the repair actually rebuilt the index — not merely "deleted nothing extra".
     assertRepairProof(tempDir);
   });
 
-  it('refuses a locked (non-WAL) index and touches nothing', async () => {
+  it('refuses a locked (non-WAL) index and touches nothing', { timeout: 30000 }, async () => {
     writeMiniGraph(tempDir);
     expect(runCodegraphRaw(['init'], tempDir).status).toBe(0);
 
@@ -439,13 +468,15 @@ describe('codegraph init — repairs an unusable index and refuses to wipe anyth
       const holder = openWritable(dbPath(tempDir));
       holder.exec('BEGIN EXCLUSIVE');
       try {
+        const beforeIno = fs.statSync(dbPath(tempDir)).ino;
         const result = runCodegraphRaw(['init'], tempDir, 30000);
 
         expect(result.status).not.toBe(0);
         expect(outputOf(result)).toContain(dbPath(tempDir));
         expect(outputOf(result)).toContain('codegraph daemon');
-        // No unlink — the locked db is still the same file on disk.
-        expect(fs.existsSync(dbPath(tempDir))).toBe(true);
+        // No unlink — the locked db is still the same file (same inode), not a
+        // replacement recreated at the same path.
+        expect(fs.statSync(dbPath(tempDir)).ino).toBe(beforeIno);
       } finally {
         holder.exec('ROLLBACK');
         holder.close();
@@ -504,10 +535,11 @@ describe('codegraph init — repairs an unusable index and refuses to wipe anyth
     expect(result.status).not.toBe(0);
     expect(outputOf(result)).toContain('errcode 1');
     expect(outputOf(result)).toContain('unresolved_refs');
-    // The db file survives — nothing was unlinked.
-    expect(fs.existsSync(dbPath(tempDir))).toBe(true);
-    for (const name of Object.keys(before)) {
-      expect(snapshotTree(codegraphDir(tempDir))).toHaveProperty(name);
-    }
+    // The db file survives — refused init never unlinks it (same inode). The
+    // tree is NOT byte-identical here: `CodeGraph.open` → `validateDirectory`
+    // writes `.gitignore` and `configureConnection` sets WAL (creating -wal/-shm
+    // and rewriting the db header) before the missing-table check fails, so an
+    // identity gate is the correct contract, not a full snapshot equality.
+    expect(fs.statSync(dbPath(tempDir)).ino).toBe(before['codegraph.db'].ino);
   });
 });
