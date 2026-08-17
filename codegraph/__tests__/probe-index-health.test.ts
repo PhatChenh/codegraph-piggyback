@@ -182,6 +182,7 @@ describe.skipIf(!nodeSqliteAvailable)('probeIndexHealth', () => {
     // path is coerced and fails before SQLite reports an error). This pins the
     // guard the probe relies on: a throw with no numeric errcode must not crash
     // the catch dispatch.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { DatabaseSync } = require('node:sqlite');
     const open = () => new DatabaseSync(12345 as never);
     let caught: unknown;

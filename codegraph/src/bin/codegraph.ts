@@ -530,11 +530,15 @@ function unlinkUnreadableIndex(projectPath: string): void {
  * Abort a repair write with the right message and exit code. A locked db
  * (errcode 5) is busy — name the db path and `codegraph daemon`, never unlink.
  * Anything else is unclassified — name the raw errcode + message, never unlink.
+ * A repair (unreadable unlinked / empty cleared) reports "Cannot repair index";
+ * a fresh init reports "Failed to initialize". Append `(errcode N)` only when
+ * the throw actually carries a numeric errcode — never a literal `undefined`.
  */
 function abortRepairWrite(
   clack: typeof import('@clack/prompts'),
   projectPath: string,
   err: unknown,
+  repairing: boolean,
 ): void {
   const errcode = (err as { errcode?: unknown }).errcode;
   const message = err instanceof Error ? err.message : String(err);
@@ -544,7 +548,9 @@ function abortRepairWrite(
     clack.outro('');
     process.exit(1);
   }
-  clack.log.error(`Cannot repair index (errcode ${errcode}): ${message}`);
+  const label = repairing ? 'Cannot repair index' : 'Failed to initialize';
+  const suffix = typeof errcode === 'number' ? ` (errcode ${errcode})` : '';
+  clack.log.error(`${label}${suffix}: ${message}`);
   process.exit(1);
 }
 
@@ -581,6 +587,12 @@ program
         return;
       }
 
+      // A repair (unreadable unlinked, or empty cleared) reports differently
+      // than a fresh init. Set only on those two fall-through paths — never
+      // from `isInitialized` re-checked after unlink, which makes unreadable
+      // repair look like a fresh init.
+      let repairing = false;
+
       if (isInitialized(projectPath)) {
         const health = probeIndexHealth(projectPath);
 
@@ -609,6 +621,7 @@ program
         // errcode + message, touch nothing.
         if (health.status === 'unclassified') {
           clack.log.error(`Cannot repair index (errcode ${health.errcode}): ${health.message}`);
+          clack.outro('');
           process.exit(1);
         }
 
@@ -616,9 +629,13 @@ program
         // SQLite files, then fall through to a fresh init below.
         if (health.status === 'unreadable') {
           unlinkUnreadableIndex(projectPath);
+          repairing = true;
         }
 
         // empty = 0-node full schema → falls through to the open+clear repair below.
+        if (health.status === 'empty') {
+          repairing = true;
+        }
       }
 
       // Repair write-path: fresh init (not initialized, or unreadable just
@@ -639,7 +656,7 @@ program
         clack.outro('Done');
         cg.destroy();
       } catch (err) {
-        abortRepairWrite(clack, projectPath, err);
+        abortRepairWrite(clack, projectPath, err, repairing);
       }
     } catch (err) {
       clack.log.error(`Failed: ${err instanceof Error ? err.message : String(err)}`);
