@@ -1,6 +1,6 @@
 # Plan: Bucket 4 — codegraph CLI `${…}` refusal + `init` repair
 _Last updated: 2026-08-17_
-_Status: [ ] pending_
+_Status: [ ] pending — impl Away armed 2026-08-17; waves not started_
 
 Spec: `docs/AI_artifacts/4_specs/2026-08-17-bkt4-codegraph-cli.md` (components 1–9). FCV: `docs/AI_artifacts/5_factual-code-verification/2026-08-17-bkt4-codegraph-cli.md` (A1–A19 resolved; no `## Invalidated Assumptions`). Design: `docs/AI_artifacts/3_design/2026-08-17-bkt4-codegraph-cli.md`. Do not re-litigate A13/A19.
 

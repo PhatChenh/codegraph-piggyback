@@ -1,60 +1,46 @@
-# STATE.md — codegraph-piggyback
+# STATE — codegraph-piggyback            _Last updated: 2026-08-17_
 
-> **Pick-up point for the next AI session.**
+> Cap ~80 lines. History → `CHANGELOG.md`.
 
 ## Current position
 
-**ssot-diagram P5 (interactive HTML renderer) MERGED to main `a51384e`
-(2026-07-10)** + pushed `bf1570a`. 129 pytest / 3 pre-existing `TestGoldenLive`
-pilot-drift (0 NEW); golden sha `56df3d86…` intact; render E2E 339KB
-self-contained, byte-deterministic. Run report:
-`docs/AI_artifacts/9_runs/2026-07-10-p5-html-renderer.md`.
+FEEDBACK-scope **Buckets 1+2 done in source** (uncommitted on this checkout). **Bucket 4 LIGHT pipeline DONE** (design→RT→spec→FCV→plan; docs commit `21221ce`). **Impl Away armed** — waves not started.
 
-**plan-verifier + diff-verifier MERGED to main** (`82287f9` ship + BUG-024
-fix via `57c0961`).
+## Next action
 
-## NEXT (in order)
+**Bucket 4 Wave A** (Steps 1 ∥ 2 ∥ 6) on phase branch `bkt4-codegraph-cli`, isolated tree. Plan: `docs/AI_artifacts/6_plans/2026-08-17-bkt4-codegraph-cli.md`. RUN_STATE + away ledger: `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.state.md`.
 
-0. **FEEDBACK bugs + TD-01 scope (2026-08-16)** — pickup:
-   `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`.
-   ROI pickup: 1 village ACP → 2 grep-absent → 4 codegraph CLI →
-   3 plan_verify → 6 writ probe → 5 codegraph MCP.
-   BUG-023 is FIXED (`1e48ad2`); do not re-open from this file's old bullet 3.
-1. **Live painter E2E** — owner browser-check `/tmp/p5.html` (click
-   macro→micro→nano, hover PROPOSED/UNNARRATABLE, pan/zoom, theme). Deferred,
-   not headlessly assertable. `ssot-diagram/STATE.md` owns.
-2. **ssot P6** — PostToolUse re-extract hook (`ssot-diagram/roadmap.md`).
+## Working tree
 
-## Per-tool pointers
+- piggyback `main` (ahead of origin). Dirty leftover **not** this run: `diff-verifier/*`, `FEEDBACK.md`, live-cert under `docs/AI_artifacts/8_verification/2026-08-16-bkt1-acp-livecert/`.
+- Impl integration WT: `.village/worktrees/bkt4-codegraph-cli` (create after docs commit).
+- village: reuse labeled daemon `orch-bkt4-cg-cli` `:19817` if live; else new same-label high port. Do not stop other orch daemons. Prior pins `:19341`/`:19581`/`:19621` were **not live** at 2026-08-17 kickoff.
 
-- **ssot-diagram** — P5 done; P6 next; live painter E2E OPEN.
-  `ssot-diagram/STATE.md` (canonical); `ssot-diagram/roadmap.md`.
-- **plan-verifier / diff-verifier** — SHIPPED, on main. `plan-verifier/design.md`.
-- All others (impact-analyzer, codegraph-gate, plan-visualizer,
-  changeset-context, repo-map, impact-precommit, drift-digest, sot-enrichment,
-  dead-code-finder, doc-coverage) — `docs/roadmap/roadmap.md`.
+## Hazards / do-not-touch
 
-## OPEN human-authority items
+- **TD-01** still OPEN until Buckets 4+6 (`docs/TECH_DEBT.md`).
+- **A5** skipped: no ACP skill file; do not invent one.
+- Village ACP `--path` fix is in **this checkout’s `dist/`**. Other live daemons still old until rebuild+bounce. Desktop `${workspaceFolder}` stays.
+- BUG-023 FIXED (`1e48ad2`) — do not re-open.
+- Fork: never `npm i -g @colbymchenry/codegraph` / `codegraph upgrade`.
+- Workers: no `src/mcp/**`, no installer `cursor.ts`, no `.codegraph/ready`.
 
-- **OQ-FOLDER-001** — legacy `0_scout/1_design/…`; new scheme per
-  DOC-ARTIFACT-001. Migration deferred post-pipeline.
-- **OQ-A24** — CI pilot-DB presence; extract CLI must skip-if-absent.
-  Non-blocking.
+## Locked decisions
 
-## Open tech debt
+- Q2-a ACP mcp `--path` = absolute worktree cwd; Desktop keeps `${workspaceFolder}` → scope §2.
+- Q3-a `grep-absent` 0 files = fail, same as `grep-present` → scope §2.
+- Full freeze table → scope §7.
+- **Impl Away 2026-08-17:** I1–I8 accepted; **I9 DELTA** = grok 4.6 harness subagent for **tier-A review only**; all other seats `av`. Seats + bounds in RUN_STATE.
 
-- **TD-01** — in scope as Bucket 4 (`codegraph init` repairs unusable) +
-  Bucket 6 (writ wrapper runs `index`). Spec:
-  `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`. Still OPEN
-  until those buckets land (`docs/TECH_DEBT.md`).
+## Key docs
 
-## Tools online
+- Scope: `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`
+- Plan: `docs/AI_artifacts/6_plans/2026-08-17-bkt4-codegraph-cli.md`
+- Bucket 1 live cert: `docs/AI_artifacts/8_verification/2026-08-16-bkt1-acp-livecert/verdict.md`
+- Roadmap: `docs/roadmap/roadmap.md` · ssot P6: `ssot-diagram/STATE.md`
 
-- CodeGraph ✅ — `codegraph` CLI; MCP `codegraph_explore`/`codegraph_node`/`codegraph_callers` primary explore. Never write to DB.
-- Writ daemon ✅ port 9130. Set mode via `writ-session.py` (path in repo `CLAUDE.md` §10).
-- Subagent casting BLOCKED for `general-purpose`/`claude`/omitted. Use `writ:worker` / `writ:writ-implementer` (writes); `writ:writ-explorer` / `Explore` (read); `writ:writ-plan-reviewer` → `writ:writ-code-quality-reviewer` (review).
+## Resume steps
 
-## Refused alternatives (do not re-debate)
-
-- Pilot = this repo (no decision index; misses the decision-merge path).
-- Defer `_shared/` to Phase B → SUPERSEDED (shipped `82287f9`).
+1. Read RUN_STATE last entry. Do **not** re-run Stage 4.
+2. Pin `VILLAGE_PORT` to this run’s labeled daemon.
+3. Wave A from integration WT; IMPL `cmd-pro` (fallback `clx-deepseek-v4-pro`); tier-A review = this harness grok 4.6 Task; whole-diff `syn-2-kimi-k3`; judge `claude-opus`.

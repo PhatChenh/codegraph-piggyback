@@ -11,9 +11,9 @@ A contract frozen by an earlier bucket is not reopenable by a later one — touc
 
 **6 IN items in 3 tiers, packed into 6 buckets. 2 items DONE in prior work (not in the queue).**
 
-**Progress 2026-08-16:** Buckets **1** and **2** landed (uncommitted). Bucket 1 **LIVE-VERIFIED** (`docs/AI_artifacts/8_verification/2026-08-16-bkt1-acp-livecert/verdict.md`). A5 skill note skipped (no ACP skill file; do not invent). **Next: Bucket 4.** Remaining ROI: 4 → 3 → 6 → 5.
+**Progress 2026-08-17:** Buckets **1** and **2** landed (uncommitted). Bucket 1 **LIVE-VERIFIED** (`docs/AI_artifacts/8_verification/2026-08-16-bkt1-acp-livecert/verdict.md`). A5 skill note skipped (no ACP skill file; do not invent). **Bucket 4** LIGHT pipeline DONE (design/spec/FCV/plan pinned `21221ce`); **impl Away armed**, waves not started. Remaining ROI after 4: 3 → 6 → 5.
 
-**Bucket 4 RUN_STATE:** `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.state.md` (pipeline started 2026-08-17).
+**Bucket 4 RUN_STATE:** `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.state.md`.
 
 Pressure: four repos (piggyback verifiers, local codegraph fork, falkor-writ, agent_village), two new contracts agents/gates consume (writ `probe()` states; MCP missing/empty), and a FULL-vs-LIGHT split inside the codegraph fork (CLI vs MCP) so one pipeline does not swallow the other.
 
@@ -142,7 +142,7 @@ Pressure: four repos (piggyback verifiers, local codegraph fork, falkor-writ, ag
 | **1** village ACP path | QUICK | ITEM-2-village | 1 line + 1 test | nothing | **DONE** 2026-08-16 + live cert |
 | **2** grep-absent | QUICK | ITEM-3 | ~5 lines + 1 test | nothing | **DONE** 2026-08-16 tests |
 | **3** plan_verify stat + REUSE | LIGHT | ITEM-4+6 | ~25–30 lines + 3–5 tests | nothing | OPEN |
-| **4** codegraph CLI | LIGHT | ITEM-2-cg + ITEM-5 | ~14 lines + 2 tests | nothing | OPEN — **next** |
+| **4** codegraph CLI | LIGHT | ITEM-2-cg + ITEM-5 | ~14 lines + 2 tests | nothing | PIPELINE DONE; **impl Away** 2026-08-17 |
 | **5** codegraph MCP | FULL | ITEM-1-cg | ~15–25 lines + tests | none required; prefer after 4 so `${…}` is already loud | OPEN |
 | **6** writ probe + init wrapper | FULL | ITEM-1-writ | probe + 4 consumers + tests | none required; wrapper runs `index` even if 4 not merged | OPEN |
 

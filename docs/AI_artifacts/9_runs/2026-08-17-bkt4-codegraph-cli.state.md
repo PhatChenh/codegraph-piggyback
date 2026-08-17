@@ -183,5 +183,16 @@ DECIDED: no push
 DEFERRED: implement
 OPEN: none
 
-
+## impl-away-frontload — 2026-08-17 18:14
+POSITION: STATE.md was stale (said RT in flight). Pipeline already Stage-5. Impl Away armed. Docs sync this turn, then isolated WT + Wave A.
+ARTIFACTS: this ledger; STATE.md; CLAUDE.md Build Progress; scope progress; CHANGELOG 2026-08-17
+DECIDED:
+  Impl Away defaults: ACCEPTED 2026-08-17 with **I9 DELTA**.
+  I1 auto-cross waves. I2 commit on phase branch, **no push / no main merge**. I3 no ORCH spend cancel. I4 hard-stop list as card. I5 reuse labeled daemon `orch-bkt4-cg-cli` `:19817` if live else new same label (never `:8877`). I6 FRESH IMPL SID every step/fix. I7 solo whole-diff, no panel. I8 approve-pump on Cursor **av** seats if any. **I9 DELTA (owner kickoff):** harness Task subagent allowed **only** for grok 4.6 **tier-A review**. Impl, fix, whole-diff, judge, gather = `av` only.
+  Seats (owner): IMPL `cmd-pro` class impl; fallback `clx-deepseek-v4-pro` same-tier spawn-fail only. Tier-A REVIEW = Cursor grok 4.6 harness subagent (not `av`). WHOLE_DIFF `syn-2-kimi-k3`. JUDGE `claude-opus` persistent. ORCH = this Cursor grok 4.6 (strong-in-ORCH waste warn recorded; owner chose).
+  Seat distinctness attested by owner naming four different profiles/harness.
+  UI_SCOPE=no (CLI, no UX). Live spend bound **$0** paid APIs. Step 7 livecert = local vitest + **one** rsync `codegraph/dist/` → `~/.codegraph/versions/v1.0.1/lib/dist/` + local `codegraph` refuse/repair; never `npm i -g` / `codegraph upgrade`. Fix-round cap = skill default 2 then escalate. Behavior-verify = plan E2E + Step 7 local live; no remote provider. OQ-4 stays 500 (plan lock). TD-01 stays OPEN. Plan has no `gates: human:*`.
+  Tier-A checklist (Steps 2, 4, 5): AUTH/MONEY/MIGRATION = no. Step 4 changes operator-visible `init` behavior (already tagged A). Step 2 new probe (not barrel/MCP). Step 5 tests-only tagged A for repair-proof. No silent down-tier.
+DEFERRED: none knowable in advance. Runtime-only: verify-wave 20–23 diffs, livecert FAIL retry, spawn-fail after 3+fallback.
+OPEN: none — leftovers recorded as recommended and locked this kickoff
 

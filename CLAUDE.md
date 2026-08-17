@@ -109,12 +109,16 @@ glm orchestrator inline-reviewing tier-A + authoring the verbatim steps):
 binaries + OFL + 4 fixtures + `ssot-render` manifest entry + OTHER-FILE
 addendum note. **129 pytest pass / 3 pre-existing `TestGoldenLive` pilot-drift (0 NEW)**; golden
 model sha `56df3d86…` intact; render E2E = 339KB self-contained,
-byte-deterministic, zero network. **NEXT: live painter E2E (deferred —
-click/hover/pan/zoom not headlessly assertable) + ssot P6 PostToolUse re-extract
-hook.** plan-verifier + diff-verifier SHIPPED + MERGED to main (initial `82287f9`
-+ BUG-024 fix via `57c0961`).
-av-orchestrate gaps logged: BUG-023 (staged-cwd unreachable → sequential-only),
-BUG-024 (verify-wave category-21 phase-scoped → per-wave gate can't pass mid-phase).
+byte-deterministic, zero network. **ssot NEXT (deferred vs FEEDBACK-scope):**
+live painter E2E + ssot P6 PostToolUse re-extract hook — `ssot-diagram/STATE.md`.
+plan-verifier + diff-verifier SHIPPED + MERGED to main (`82287f9` + BUG-024
+`57c0961`). **FEEDBACK-scope 2026-08-16:** Buckets 1+2 done in source (village
+ACP `--path` live-certified; `grep-absent` 0-files fails). **Bucket 4 codegraph
+CLI:** LIGHT pipeline DONE (docs `21221ce`); **impl Away in flight** — plan
+`docs/AI_artifacts/6_plans/2026-08-17-bkt4-codegraph-cli.md`. Remaining ROI
+after 4: 3 → 6 → 5. Scope: `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`.
+av-orchestrate: BUG-023 staged-cwd FIXED (`1e48ad2`, do not re-open);
+BUG-024 per-wave `--step` shipped (`57c0961`).
 `_shared/` extraction SHIPPED (commit `82287f9`, alongside plan-verifier)
 — `_shared/db.py`/`sig.py`/`resolve.py`/`queries.py`/`budget.py`/`hookio.py`/
 `manifest.py` live at repo root; ADR-0001's "defer to Phase B" decision is
@@ -143,3 +147,6 @@ in `docs/roadmap/roadmap.md`.
   bugs (the escape one above + a self-recursive regression test + missing
   subprocess timeout + a Step-9 fixture sig bug) caught ONLY because the
   orchestrator ran the tests itself rather than trusting the (absent) report.
+- **`grep-absent` with a glob that matches zero files is a fail** (`no file
+  matches`), same as `grep-present` (Bucket 2, 2026-08-16). A vacuous glob is
+  not “the string is absent.”
