@@ -20,6 +20,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import { snapshotTree } from './fs-snapshot';
+import { MINI_GRAPH_FILES } from './mini-graph-fixture';
 
 const BIN = path.resolve(__dirname, '../dist/bin/codegraph.js');
 const TEMPLATE = '${workspaceFolder}';
@@ -84,15 +85,9 @@ describe('unexpanded template path refusal', () => {
 
   it('still resolves a bare path with no --path on a healthy project', () => {
     // Mini-graph fixture so `explore greet` has something to find.
-    fs.writeFileSync(
-      path.join(tempDir, 'a.ts'),
-      `export function greet(name: string) { return hello(name); }\n` +
-        `export function hello(n: string) { return 'hi ' + n; }\n`,
-    );
-    fs.writeFileSync(
-      path.join(tempDir, 'b.ts'),
-      `import { greet } from './a';\nexport function main() { return greet('world'); }\n`,
-    );
+    for (const [name, contents] of Object.entries(MINI_GRAPH_FILES)) {
+      fs.writeFileSync(path.join(tempDir, name), contents);
+    }
 
     expect(runCodegraph(['init'], tempDir).status).toBe(0);
 
