@@ -194,18 +194,29 @@ program.hook('preAction', (_thisCommand, actionCommand) => {
  * Walks up parent directories to find nearest initialized CodeGraph project
  * (must have .codegraph/codegraph.db, not just .codegraph/lessons.db)
  */
-function resolveProjectPath(pathArg?: string): string {
-  // An MCP host that fails to expand a config variable (Cursor passes
-  // `${workspaceFolder}` literally in agent/background windows) hands us a
-  // path that can never exist; resolving it relative to cwd walks up to
-  // whatever index happens to sit above cwd. Treat it as "no path given".
+/**
+ * Refuse a literal `${...}` path instead of treating it as "no path given".
+ *
+ * An MCP host that fails to expand a config variable (Cursor passes
+ * `${workspaceFolder}` literally in agent/background windows) hands us a path
+ * that can never exist; resolving it relative to cwd walks up to whatever
+ * index happens to sit above cwd — in the observed incident, an accidental
+ * multi-GB `$HOME` index. Falling back to cwd is the wrong answer: it silently
+ * indexes/opens the wrong project. Hard-refuse so the operator fixes the path.
+ */
+function assertExpandedPath(pathArg: string | undefined, label: string): void {
   if (pathArg && isUnexpandedTemplatePath(pathArg)) {
     console.error(
-      `[codegraph] Ignoring --path "${pathArg}" — it contains an unexpanded \${...} ` +
-        `variable (the MCP host failed to substitute it). Falling back to the current directory.`
+      `[codegraph] ${label} "${pathArg}" contains an unexpanded \${...} variable. ` +
+        `Pass a real folder — or set an absolute folder in your MCP config so the ` +
+        `host substitutes the variable instead of passing the literal template.`
     );
-    pathArg = undefined;
+    process.exit(1);
   }
+}
+
+function resolveProjectPath(pathArg?: string): string {
+  assertExpandedPath(pathArg, '--path');
 
   const absolutePath = path.resolve(pathArg || process.cwd());
 
@@ -465,6 +476,7 @@ program
   .option('-f, --force', 'Initialize even if the path looks like your home directory or a filesystem root')
   .option('-v, --verbose', 'Show detailed worker lifecycle and memory info')
   .action(async (pathArg: string | undefined, options: { index?: boolean; force?: boolean; verbose?: boolean }) => {
+    assertExpandedPath(pathArg, 'init path');
     const projectPath = path.resolve(pathArg || process.cwd());
     const clack = await importESM('@clack/prompts');
 
