@@ -1,0 +1,24 @@
+Reading `TASK.md` and gathering context to execute the task directly.
+```
+LINE1: MCP_OK
+LINE2: ## Exploration: buildVillageMcpConfig
+
+Found 188 symbols across 58 files.
+
+### Blast radius — what depends on these (update/verify before editing)
+
+- `buildVillageMcpConfig` (daemon/cursor-bundle.ts:1253) — 1 caller in `daemon/cursor-bundle.ts`; ⚠️ no covering tests found
+- `configDir` (daemon/paths.ts:53) — 22 callers in `daemon/containment-config.ts`, `daemon/index.ts`, `daemon/keyload.ts`, `daemon/paths.ts` +4 more; ⚠️ no covering tests found
+- `buildSpawnArgs` (daemon/transport/stdio-stream.ts:1498) — 1 caller in `daemon/transport/stdio-stream.ts`; ⚠️ no covering tests found
+- `mcpConfigPath` (daemon/transport/stdio-stream.ts:2099) — 2 callers in `daemon/transport/stdio-stream.ts`; ⚠️ no covering tests found
+- `villageVerify` (daemon/auth.ts:140) — 4 callers in `daemon/index.ts`; tests: `test/auth-principal-chain.test.ts`, `test/auth-stub.test.ts`
+
+### Source Code
+
+> The code below is the **verbatim, current on-disk source** of these files — re-read from disk on this call and line-numbered, byte-for-byte identical to what the Read tool returns. It is NOT a summary, outline, or stale cache. Treat each block as a Read you have already performed: do not Read a file shown here.
+
+#### daemon/cursor-bundle.ts — ContainmentConfig(references), GUARD_WORKTREE_RELATIVE(constant), BUNDLE_PARTIAL(constant), BUNDLE_FINAL(constant), buildPermissionConfig(function), buildVillageMcpConfig(function), +4 more
+
+```typescript
+743	export const VILLAGE_MARKER_RELATIVE = path.join(".cursor", ".av-bundle");
+```

@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "codegraph": {
+      "type": "stdio",
+      "command": "codegraph",
+      "args": [
+        "serve",
+        "--mcp",
+        "--path",
+        "/Users/phatchenh/all-projects/vibe-coding-setup/agent_village/.village/worktrees/cursor-3927783f11c74dee8c016d1cd9391b58"
+      ]
+    }
+  }
+}

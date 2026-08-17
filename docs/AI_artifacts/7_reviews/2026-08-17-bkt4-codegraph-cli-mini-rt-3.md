@@ -1,0 +1,26 @@
+# Mini-RT round 3 — patched design
+
+_Date:_ 2026-08-17 · _Target:_ `docs/AI_artifacts/3_design/2026-08-17-bkt4-codegraph-cli.md` (patched)
+_Prior:_ round 1 + round 2 reports · _Verdict:_ **not green** — findings in all three sections, but the four round-2 defects are closed.
+
+Round-2 closes that hold: sha256 (not size+mtime) is the "unchanged" basis (line 273); `unclassified` has two reproduced fixtures (`chmod 000`, directory-at-db-path, both errcode 14) so it cannot ship unexercised; errcode 1 is message-gated rather than mapped wholesale to the delete arm; the `unclassified` no-`errcode` arm is checked first (line 196). All four round-2 findings are addressed in the text.
+
+---
+
+## 1. Done-cell proxy audit
+
+**F1 — "node count > 0" is a side-effect proxy for "full-indexed".** Rows `empty` (line 281: "node count goes 0 → > 0") and `unreadable` (line 282: "node count > 0") assert a *count moved*, not that the repo's source was indexed. A single inserted node (or one `files` row) greens both rows without running an index over the fixture's source. This is better than round-1's "printed text" proxy (it is a real side effect), but the claim "full-indexes in place" is still not what the assertion tests — the fixture is a known temp repo, and the Done cell never ties the count to the repo's contents.
+
+**F2 — the sha256 helper's contract is unsatisfiable against its own `chmod 000` fixture.** The snapshot helper "records … for every regular file a sha256 of its contents" (line 273), and the `unclassified` row requires snapshotting a `chmod 000` db file (line 284). A file the process cannot read cannot be sha256'd. The design flags skip-as-bad ("one that skips unreadable entries would silently exclude the `chmod 000` fixture", Hold-1) but specifies no alternative — no sentinel value, no lstat-only fallback for unreadable entries. So the no-mutation rows that depend on this helper cannot assert "bytes unchanged" for the very file the fixture renders unreadable; the mechanism the rows promise is left with a hole exactly where the row's claim is strongest.
+
+## 2. Gaming sim
+
+**F3 — every mutation row routes through one unconstrained helper.** All five filesystem-invariant rows reduce to "a before/after snapshot over a helper". A helper that is self-consistent but wrong (hashes filenames not bytes, hashes `''` for every file, skips entries) greens every cell, because before==after on a wrong projection. Hold-1 delegates the helper's own unit test to the plan — meaning the *only* oracle for the helper's correctness is a test the same executor writes, in the same diff as the helper. The honest-but-lazy path is: write a weak helper, write a unit test that asserts what the weak helper does, green everything. This is the round-1 "snapshot helper itself is the next silent failure" premortem, and it is still a gaming surface, not a closed one.
+
+**F4 — `busy`/`unclassified` rows are un-gameable in the destructive direction (sound).** Their honest behaviour *is* "error + touch nothing + exit non-zero", so a lazy executor trivially satisfies them by doing the right thing. The real risk on these rows is the inverse — over-delete, which the sha256 snapshot catches — so these rows are the strongest of the set, not the weakest.
+
+## 3. Chain contradictions
+
+**F5 (matrix) — "decidable from the SQLite error code" is contradicted by the message-gated delete arm.** Implication G's header claims junk-vs-busy "is decidable from the SQLite error code — and the whole code space is now enumerated" (line 108), but errcode 1 is *not* code-decidable: the destructive arm requires a `no such table: nodes` message substring (lines 115, 122, 199). The matrix row (line 167) encodes a message condition inside what is otherwise a code-first enumeration, and the dispatch's "total over the caught value" now spans two payload kinds — a numeric `errcode` *and* a message string — while the framing keeps saying "over the error code". The delete gate now rests on a SQLite-owned, version- and localization-fragile string the repo does not control (Hold-3's own premortem concedes a rewording flips hollow dbs from `unreadable` to `unclassified` silently). The header, the table, and the safe-default rule are in three different type-frames for the same decision.
+
+**F6 (new gate) — errcode 14 is thrown at construction, but the probe mechanics never put the constructor inside the try.** The recorded probes state errcode 14 (`chmod 000` / directory-at-db-path) is thrown at `new DatabaseSync(...)` construction (lines 33–34, 118–119, 122), while junk's errcode 26 is thrown only at the first statement, "the constructor does not throw" (assumption 13). Option A step 2 describes the probe as "opens its own minimal connection … sets a busy timeout, runs one COUNT(*)" — the busy_timeout pragma itself requires an already-constructed connection, so the construction step is elided from the mechanics and the design never states that construction is inside the catch. An implementer following the assumption-13 scoping ("the constructor does not throw") puts only the `COUNT` in the try, and errcode 14 escapes to the fatal handler — the exact unhandled-rejection path the design rejects for `${…}` at line 246. The constructor-throw-first rule is recorded in the audit but not reflected in the step-2 construction flow it must guard.
