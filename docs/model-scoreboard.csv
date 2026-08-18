@@ -1,4 +1,10 @@
 date,model,role,risk_tier,outcome,note
+2026-08-18,claude-opus,design,C,needed-fixes,Bkt3 design-lite + 3 patches; first turn usage_limit then drop
+2026-08-18,clx-deepseek-v4-flash,gather,C,needed-fixes,Bkt3 mini-RT 1 stall then findings; RT2/3 findings
+2026-08-18,clx-deepseek-v4-flash,gather,C,pass-first-try,Bkt3 mini-RT-4 green
+2026-08-18,cursor-grok-4.6,red-team,C,findings-confirmed,Bkt3 design RT 0 Crit 2 Major (RuntimeError; --db pin)
+2026-08-18,cursor-grok-4.6,review,C,pass-first-try,Bkt3 spec then FCV 25/0/0 + plan_verify --strict 0
+2026-08-18,syn-kimi-k3,judge,C,findings-confirmed,Bkt3 thin+fat YES exit to spec
 2026-08-17,cmd-pro,implement,C,needed-fixes,Bkt4 Step 1 report testCmd literal; Step 4 timeout+usage_limit reseated
 2026-08-17,clx-deepseek-v4-pro,implement,A,needed-fixes,Bkt4 Steps 4–7 + whole-diff FIX 1; Step 5 prompt-too-long then FIX
 2026-08-17,cursor-grok-4.6,review,A,findings-confirmed,Bkt4 tier-A Steps 2/5 CHANGES_REQUESTED then APPROVE after judge FIX; Step 4 + FIX 1 APPROVE

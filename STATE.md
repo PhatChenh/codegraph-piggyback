@@ -1,20 +1,20 @@
-# STATE — codegraph-piggyback            _Last updated: 2026-08-17_
+# STATE — codegraph-piggyback            _Last updated: 2026-08-18_
 
 > Cap ~80 lines. History → `CHANGELOG.md`.
 
 ## Current position
 
-**Bucket 4 impl DONE on phase branch** `bkt4-codegraph-cli` (INT tip `e8acbf7`). Unexpanded `${…}` paths refused; `init` repairs empty/unreadable, refuses busy; whole-diff FIX 1: fresh-init failures say `Failed to initialize` (live CLI rsynced). **Not on main** (I2). Buckets 1+2 still uncommitted on the parent `main` checkout — do not mix.
+**Bucket 3 pipeline DONE** (design → RT → spec → FCV → plan). No product code. Plan ready to implement. Remaining ROI still **3 impl → 6 → 5**.
 
 ## Next action
 
-Owner merge `bkt4-codegraph-cli` → main when ready (separate from Buckets 1+2). Then FEEDBACK-scope **3 → 6 → 5**. Do not start Wave A again.
+Implement `docs/AI_artifacts/6_plans/2026-08-18-bkt3-plan-verify.md` (disk-stat path-only + REUSE normalize in `plan-verifier/plan_verify.py`).
 
 ## Working tree
 
-- Phase INT: `.village/worktrees/bkt4-codegraph-cli` branch `bkt4-codegraph-cli`.
-- Parent `main`: dirty leftover Buckets 1+2 (`diff-verifier/*`, `FEEDBACK.md`, live-cert) — not this branch.
-- village: `orch-bkt4-cg-cli` `:19817` left up (reused). Pin `VILLAGE_HOST=127.0.0.1` `VILLAGE_PORT=19817`. Never `:8877`.
+- Branch: `main`. Docs commit this run; **not pushed**.
+- Village: `orch-bkt3-plan-verify` **`:19831`**. Pin `VILLAGE_HOST=127.0.0.1` `VILLAGE_PORT=19831`. Never `:8877`. Do not stop `:19641`.
+- JUDGE_SESSION=`b6c33674-ec91-4a92-9bde-9c6ee55dbef6`. DESIGN_SID=`0ddead60-3754-484f-aaaa-25f301780649`.
 
 ## Hazards / do-not-touch
 
@@ -26,20 +26,21 @@ Owner merge `bkt4-codegraph-cli` → main when ready (separate from Buckets 1+2)
 
 ## Locked decisions
 
-- Away I1–I8 + **I9 DELTA**: grok 4.6 harness Task = tier-A review only; all other seats `av`.
-- Q2-a ACP `--path` absolute cwd; Desktop keeps `${workspaceFolder}` → scope §2.
-- Q3-a `grep-absent` 0 files = fail → scope §2.
-- Init: empty/unreadable repair; busy/unclassified refuse; smashed db unlink three sqlite files only.
+- Path-only regular file on disk → not MISSING; `new:` → COLLISION; evidence `on disk, not in index`. `::` stays index-bound (including `foo.py::`). Directories `is_file()` only.
+- REUSE: strip `(...)`, `…`, `...`; warn-only.
+- ADR tool-local: `plan-verifier/adrs/0001-on-disk-path-only-is-not-missing.md` (with impl).
+- `_on_disk` catches `OSError` **and** `RuntimeError`. Stat root = DB’s repo (`--db`), not the plan folder.
+- Away D1–D8 ACCEPTED 2026-08-18. This run I9: grok 4.6 Task = RT/spec/FCV/plan; other seats `av`.
 
 ## Key docs
 
-- Run report (INCOMPLETE vs main): `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.md`
-- RUN_STATE: `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.state.md`
-- Plan: `docs/AI_artifacts/6_plans/2026-08-17-bkt4-codegraph-cli.md`
+- Plan: `docs/AI_artifacts/6_plans/2026-08-18-bkt3-plan-verify.md`
+- Report: `docs/AI_artifacts/9_runs/2026-08-18-bkt3-plan-verify.md`
+- Grill: `docs/AI_artifacts/_handoff/2026-08-18-bkt3-plan-verify-grill.md`
 - Scope: `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`
 
 ## Resume steps
 
-1. Work from INT WT or `git checkout bkt4-codegraph-cli` — not dirty `main`.
-2. Pin `:19817`. Do not re-run Stages 1–5.
-3. Merge to main is a human gate. After merge: prune `.village/worktrees/bkt4-codegraph-cli*`.
+1. Pin `:19831` if still using the isolated daemon.
+2. Implement the plan above. `python3 -m pytest plan-verifier/ -q`.
+3. Next ROI bucket after 3 ships: **6**.

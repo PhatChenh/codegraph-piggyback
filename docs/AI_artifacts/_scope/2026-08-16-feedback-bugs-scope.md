@@ -11,8 +11,9 @@ A contract frozen by an earlier bucket is not reopenable by a later one — touc
 
 **6 IN items in 3 tiers, packed into 6 buckets. 2 items DONE in prior work (not in the queue).**
 
-**Progress 2026-08-18:** Buckets **1**, **2**, and **4** on `main` (`908667a`). Bucket 1 **LIVE-VERIFIED**. Bucket 4 CLI refuse `${…}` + `init` repairs unusable. Remaining ROI: 3 → 6 → 5.
+**Progress 2026-08-18:** Buckets **1**, **2**, and **4** on `main` (`908667a`). Bucket 1 **LIVE-VERIFIED**. Bucket 4 CLI refuse `${…}` + `init` repairs unusable. **Bucket 3 pipeline DONE** (plan pinned; impl not started). Remaining ROI: 3 impl → 6 → 5.
 
+**Bucket 3 RUN_STATE:** `docs/AI_artifacts/9_runs/2026-08-18-bkt3-plan-verify.state.md`.
 **Bucket 4 RUN_STATE:** `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.state.md`.
 
 Pressure: four repos (piggyback verifiers, local codegraph fork, falkor-writ, agent_village), two new contracts agents/gates consume (writ `probe()` states; MCP missing/empty), and a FULL-vs-LIGHT split inside the codegraph fork (CLI vs MCP) so one pipeline does not swallow the other.

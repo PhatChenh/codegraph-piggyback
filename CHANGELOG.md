@@ -2,6 +2,10 @@
 
 One line per landing. Detail lives in the linked artifact.
 
+## 2026-08-18
+
+- **Bucket 3 plan_verify pipeline DONE** — disk-stat path-only + REUSE normalize designed/specced/planned; impl next. → `docs/AI_artifacts/9_runs/2026-08-18-bkt3-plan-verify.md`
+
 ## 2026-08-17
 
 - **Bucket 4 codegraph CLI impl on phase branch** `e8acbf7` (not main) — refuse unexpanded `${…}`; init repair/refuse; FIX 1 fresh-init label. → `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.md`

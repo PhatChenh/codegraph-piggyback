@@ -1,3 +1,11 @@
+## 2026-08-18 — Cursor session said codegraph inactive while `.codegraph/` exists (codegraph-piggyback, run-id 2026-08-18-bkt3-plan-verify)
+**Seat:** ORCH first-hand (Cursor Grok 4.6)
+**Category:** confusing
+**Symptom:** MCP meta said “workspace not indexed (no `.codegraph/` directory)” this session. The directory is present (`ls .codegraph` ok; `plan_verify` found the db).
+**Why it bites:** R12 tells agents to use codegraph first; they skip it and grep. Workers were told to Read/Grep as fallback.
+**Suggested fix:** Cursor MCP `user-codegraph` should detect an existing `.codegraph/` in the workspace root, or the session start hook should not claim “no index.”
+**Run-report:** `docs/AI_artifacts/9_runs/2026-08-18-bkt3-plan-verify.md`
+
 ## 2026-08-17 — ACP report sentinel fenced + 32k briefs + dual `.village/` trees (bkt4-codegraph-cli, run-id 2026-08-17-bkt4-codegraph-cli)
 **Status:** ACCEPTED process
 **Seat:** ORCH first-hand (Cursor Grok 4.6) · impl `822f1d33` (clx-deepseek-v4-pro) · judge `df93a896` · daemon `orch-bkt4-cg-cli` :19817

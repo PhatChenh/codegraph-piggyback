@@ -117,8 +117,11 @@ ACP `--path` live-certified; `grep-absent` 0-files fails). **Bucket 4 codegraph
 CLI MERGED to main `908667a` (2026-08-18):** refuse unexpanded `${…}`; `init`
 repairs empty/unreadable, refuses busy; FIX 1 fresh-init error label. Plan
 `docs/AI_artifacts/6_plans/2026-08-17-bkt4-codegraph-cli.md`. Report
-`docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.md`. Remaining ROI
-after 4: 3 → 6 → 5. Scope: `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`.
+`docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.md`. **Bucket 3 pipeline
+DONE 2026-08-18** (design/RT/spec/FCV/plan pinned; impl not started). Plan
+`docs/AI_artifacts/6_plans/2026-08-18-bkt3-plan-verify.md`. Report
+`docs/AI_artifacts/9_runs/2026-08-18-bkt3-plan-verify.md`. Remaining ROI:
+3 impl → 6 → 5. Scope: `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`.
 av-orchestrate: BUG-023 staged-cwd FIXED (`1e48ad2`, do not re-open);
 BUG-024 per-wave `--step` shipped (`57c0961`).
 `_shared/` extraction SHIPPED (commit `82287f9`, alongside plan-verifier)
@@ -162,3 +165,8 @@ in `docs/roadmap/roadmap.md`.
   `codegraph/`, fails verify-wave check 4. Judge artifacts go in **this
   worktree’s** `.village/runs/<id>/channel/`, not the parent checkout’s
   `.village/` tree.
+- **Done-cell `--strict` exit 0 on a probe that includes `new:` (COLLISION) and
+  a directory (MISSING) is impossible** (Bucket 3 mini-RT F1). Write exit **1**
+  for the combined probe; put exit 0 on a passing-only plan.
+- **A5 swept tokens in `_NONCODE_EXT` (`.json`) never reach the sweep**
+  (Bucket 3 mini-RT-2). Use a code-extension pathish token (e.g. `.prisma`).
