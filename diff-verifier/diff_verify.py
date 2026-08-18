@@ -108,9 +108,14 @@ def run_qualifier(q: str, repo_root: Path, changed: list[str],
             return 'grep-absent wants: "<literal>" <glob>'
         literal, glob = args
         hits = []
+        matched_any = False
         for f in sorted(repo_root.glob(glob)):
-            if f.is_file() and literal in f.read_text(errors="replace"):
-                hits.append(str(f.relative_to(repo_root)))
+            if f.is_file():
+                matched_any = True
+                if literal in f.read_text(errors="replace"):
+                    hits.append(str(f.relative_to(repo_root)))
+        if not matched_any:
+            return f"no file matches {glob!r}"
         return (f"{literal!r} found in: {', '.join(hits[:5])}" if hits else None)
 
     if verb == "grep-present":

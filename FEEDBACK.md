@@ -1,3 +1,10 @@
+## 2026-08-16 — Bucket 1 ACP CodeGraph live cert PASS (codegraph-piggyback, run-id bkt1-acp-livecert)
+**Status:** LIVE-VERIFIED (source uncommitted in agent_village)
+**Seat:** ORCH first-hand · `cursor-composer` SID `3927783f-11c7-4dee-8c01-6d1cd9391b58` · private daemon `bkt1-acp-livecert` :19701 pid 61207
+**Category:** none
+**Symptom:** n/a — cert of 08-14 `${workspaceFolder}` class. Staged worktree `.cursor/mcp.json` `--path` = absolute session cwd (not placeholder, not `profile.worktree`). One MCP `codegraph_explore` auto-allowed, `av turn` exit 0, worker `MCP_OK` + 188-symbol explore body. No exit 6.
+**Run-report:** `docs/AI_artifacts/8_verification/2026-08-16-bkt1-acp-livecert/verdict.md`
+
 ## 2026-08-16 — `av preflight --brief` uses basename only; first `av turn --brief` refuses after preflight staged it (feedback-scope-scout, run-id 2026-08-16-feedback-scope-scout)
 **Status:** OPEN
 **Seat:** ORCH first-hand (Cursor Grok 4.6) · SID `76933935-f63c-4520-b008-fc11fc9b04c7` · profile `clx-deepseek-v4-pro` · daemon `orch-feedback-scope-scout` :19341

@@ -196,3 +196,11 @@ DECIDED:
 DEFERRED: none knowable in advance. Runtime-only: verify-wave 20–23 diffs, livecert FAIL retry, spawn-fail after 3+fallback.
 OPEN: none — leftovers recorded as recommended and locked this kickoff
 
+## impl-wave-a-dispatch — 2026-08-17 18:22
+POSITION: Docs committed `265240e`. Isolated INT WT `.village/worktrees/bkt4-codegraph-cli` branch `bkt4-codegraph-cli`. Wave A dispatched (Steps 1∥2∥6).
+ARTIFACTS: STEP_*_PROMPT.md in each task WT; TOOL_ISSUE_writ.md
+DECIDED: daemon reuse `orch-bkt4-cg-cli` `:19817`. IMPL SIDs step1 `568dbd76` step2 `ef466f57` step6 `7b98eb7e`. JUDGE `df93a896` (`claude-opus`). `AV_PLAN_VERIFY` pointed at `plan-verifier/plan_verify.py` for doctor.
+DEFERRED: verify-wave + grok 4.6 harness tier-A on Step 2 after green
+OPEN: Wave A turns in flight
+
+

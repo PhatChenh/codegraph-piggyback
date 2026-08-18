@@ -3,3 +3,4 @@
 .writ/
 __pycache__/
 *.pyc
+.worktrees/

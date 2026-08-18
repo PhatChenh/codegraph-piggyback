@@ -122,6 +122,10 @@ class TestQualifiers:
         fail = dv.run_qualifier('grep-present "x" nowhere/*.py', tmp_path, [])
         assert fail and "no file matches" in fail
 
+    def test_grep_absent_no_matching_files(self, tmp_path):
+        fail = dv.run_qualifier('grep-absent "x" nowhere/*.py', tmp_path, [])
+        assert fail and "no file matches" in fail
+
     def test_grep_present_bad_arity(self, tmp_path):
         assert "wants" in dv.run_qualifier("grep-present onlyone", tmp_path, [])
 
