@@ -3,7 +3,7 @@
 ## Active
 
 ### TD-01 · No post-`codegraph init` completion hook for consumers
-**Status:** OPEN — FEEDBACK-scope Buckets 1–2 landed 2026-08-16 (ACP path + grep-absent). Remaining: Bucket 4 (`codegraph init` repairs unusable) + Bucket 6 (writ wrapper runs `index`). Native plugin/event bus still later.
+**Status:** OPEN — FEEDBACK-scope Buckets 1–2 + 4 landed (ACP path, grep-absent, `codegraph init` repairs unusable). Remaining: Bucket 6 (writ wrapper runs `index`). Native plugin/event bus still later.
 **Phase:** When codegraph grows a consumer-facing lifecycle event (or an official wrapper) that other tools can subscribe to without wrapping the binary themselves
 **Risk if triggered early:** A half-baked wrapper in writ (or another consumer) that operators can bypass by running bare `codegraph init` trains a false “marker gone ⇒ indexed” invariant and splits the ecosystem into wrapper-users vs raw-CLI users
 **What:** `codegraph init` is a third-party-facing CLI with **no completion hook / event / plugin seat** that a downstream tool (writ’s greenfield-marker consume, etc.) can bind to. Writ’s C11–C16 inference-gates design therefore cannot implement the owner’s original lock (“delete `.writ-greenfield` on first valid `codegraph init`”) as written. Provisional consumer behaviour (falkor-writ plan OQ-P2 / design OQ-6, owner pick 3c 2026-08-06): delete the marker at the **first audit that observes a usable index**. That leaves a short window after init and before first audit where marker + live index coexist; no consumer reads “marker absent ⇒ indexed” today.

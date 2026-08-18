@@ -114,9 +114,8 @@ live painter E2E + ssot P6 PostToolUse re-extract hook — `ssot-diagram/STATE.m
 plan-verifier + diff-verifier SHIPPED + MERGED to main (`82287f9` + BUG-024
 `57c0961`). **FEEDBACK-scope 2026-08-16:** Buckets 1+2 done in source (village
 ACP `--path` live-certified; `grep-absent` 0-files fails). **Bucket 4 codegraph
-CLI impl DONE on phase branch** `bkt4-codegraph-cli` tip `e8acbf7` (not main, I2):
-refuse unexpanded `${…}`; `init` repairs empty/unreadable, refuses busy;
-FIX 1 fresh-init error label. Plan
+CLI MERGED to main `908667a` (2026-08-18):** refuse unexpanded `${…}`; `init`
+repairs empty/unreadable, refuses busy; FIX 1 fresh-init error label. Plan
 `docs/AI_artifacts/6_plans/2026-08-17-bkt4-codegraph-cli.md`. Report
 `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.md`. Remaining ROI
 after 4: 3 → 6 → 5. Scope: `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`.

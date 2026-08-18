@@ -210,3 +210,10 @@ DECIDED: Important 1 CONFIRM + folded minors; Step 6/7 cat21 dismissed as record
 DEFERRED: human merge to main; worktree prune; FEEDBACK buckets 3→6→5
 OPEN: none on the phase branch
 
+## landed-main — 2026-08-18 11:25
+POSITION: Bucket 4 on `main` at `908667a`. Village worktrees + `bkt4-codegraph-cli*` branches deleted. Daemon `orch-bkt4-cg-cli` pid 41378 SIGTERM; evidence KEPT. Next product: 3 → 6 → 5.
+ARTIFACTS: this ledger
+DECIDED: no push; left `.worktrees/orch-burden-b` and other live daemons alone
+DEFERRED: FEEDBACK buckets 3 → 6 → 5; TD-01 still OPEN until 6
+OPEN: none
+
