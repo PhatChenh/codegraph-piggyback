@@ -4,6 +4,7 @@ One line per landing. Detail lives in the linked artifact.
 
 ## 2026-08-17
 
+- **Bucket 4 codegraph CLI impl on phase branch** `e8acbf7` (not main) — refuse unexpanded `${…}`; init repair/refuse; FIX 1 fresh-init label. → `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.md`
 - **Bucket 4 codegraph CLI pipeline DONE** — design/RT/spec/FCV/plan pinned (`21221ce`). Impl Away armed (I1–I8 + I9 harness-subagent exception for grok 4.6 tier-A review only). Plan: `docs/AI_artifacts/6_plans/2026-08-17-bkt4-codegraph-cli.md`. RUN_STATE: `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.state.md`.
 
 ## 2026-08-16

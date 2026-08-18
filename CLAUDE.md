@@ -114,8 +114,11 @@ live painter E2E + ssot P6 PostToolUse re-extract hook — `ssot-diagram/STATE.m
 plan-verifier + diff-verifier SHIPPED + MERGED to main (`82287f9` + BUG-024
 `57c0961`). **FEEDBACK-scope 2026-08-16:** Buckets 1+2 done in source (village
 ACP `--path` live-certified; `grep-absent` 0-files fails). **Bucket 4 codegraph
-CLI:** LIGHT pipeline DONE (docs `21221ce`); **impl Away in flight** — plan
-`docs/AI_artifacts/6_plans/2026-08-17-bkt4-codegraph-cli.md`. Remaining ROI
+CLI impl DONE on phase branch** `bkt4-codegraph-cli` tip `e8acbf7` (not main, I2):
+refuse unexpanded `${…}`; `init` repairs empty/unreadable, refuses busy;
+FIX 1 fresh-init error label. Plan
+`docs/AI_artifacts/6_plans/2026-08-17-bkt4-codegraph-cli.md`. Report
+`docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.md`. Remaining ROI
 after 4: 3 → 6 → 5. Scope: `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`.
 av-orchestrate: BUG-023 staged-cwd FIXED (`1e48ad2`, do not re-open);
 BUG-024 per-wave `--step` shipped (`57c0961`).
@@ -150,3 +153,13 @@ in `docs/roadmap/roadmap.md`.
 - **`grep-absent` with a glob that matches zero files is a fail** (`no file
   matches`), same as `grep-present` (Bucket 2, 2026-08-16). A vacuous glob is
   not “the string is absent.”
+- **Plan error-path lines must name the exact user-visible string for every
+  branch** (Bucket 4 whole-diff, 2026-08-17): wrapping repair writes also
+  wrapped fresh `init`, so a new project printed `Cannot repair index (errcode
+  undefined)`. Write both labels in the plan, or the worker will follow the
+  wrap instruction literally.
+- **`=== END REPORT ===` must be an unfenced last line** of the ACP reply and
+  of WT-root `IMPLEMENTATION_REPORT.md`. A fenced sentinel, or a report under
+  `codegraph/`, fails verify-wave check 4. Judge artifacts go in **this
+  worktree’s** `.village/runs/<id>/channel/`, not the parent checkout’s
+  `.village/` tree.

@@ -26,7 +26,7 @@
 import { Command } from 'commander';
 import * as path from 'path';
 import * as fs from 'fs';
-import { getCodeGraphDir, isInitialized, unsafeIndexRootReason, findNearestCodeGraphRoot, isUnexpandedTemplatePath } from '../directory';
+import { getCodeGraphDir, isInitialized, unsafeIndexRootReason, findNearestCodeGraphRoot, isUnexpandedTemplatePath, probeIndexHealth } from '../directory';
 import { detectWorktreeIndexMismatch, worktreeMismatchWarning } from '../sync/worktree';
 import { createShimmerProgress } from '../ui/shimmer-progress';
 import { getGlyphs } from '../ui/glyphs';
@@ -194,18 +194,29 @@ program.hook('preAction', (_thisCommand, actionCommand) => {
  * Walks up parent directories to find nearest initialized CodeGraph project
  * (must have .codegraph/codegraph.db, not just .codegraph/lessons.db)
  */
-function resolveProjectPath(pathArg?: string): string {
-  // An MCP host that fails to expand a config variable (Cursor passes
-  // `${workspaceFolder}` literally in agent/background windows) hands us a
-  // path that can never exist; resolving it relative to cwd walks up to
-  // whatever index happens to sit above cwd. Treat it as "no path given".
+/**
+ * Refuse a literal `${...}` path instead of treating it as "no path given".
+ *
+ * An MCP host that fails to expand a config variable (Cursor passes
+ * `${workspaceFolder}` literally in agent/background windows) hands us a path
+ * that can never exist; resolving it relative to cwd walks up to whatever
+ * index happens to sit above cwd — in the observed incident, an accidental
+ * multi-GB `$HOME` index. Falling back to cwd is the wrong answer: it silently
+ * indexes/opens the wrong project. Hard-refuse so the operator fixes the path.
+ */
+function assertExpandedPath(pathArg: string | undefined, label: string): void {
   if (pathArg && isUnexpandedTemplatePath(pathArg)) {
     console.error(
-      `[codegraph] Ignoring --path "${pathArg}" — it contains an unexpanded \${...} ` +
-        `variable (the MCP host failed to substitute it). Falling back to the current directory.`
+      `[codegraph] ${label} "${pathArg}" contains an unexpanded \${...} variable. ` +
+        `Pass a real folder — or set an absolute folder in your MCP config so the ` +
+        `host substitutes the variable instead of passing the literal template.`
     );
-    pathArg = undefined;
+    process.exit(1);
   }
+}
+
+function resolveProjectPath(pathArg?: string): string {
+  assertExpandedPath(pathArg, '--path');
 
   const absolutePath = path.resolve(pathArg || process.cwd());
 
@@ -451,6 +462,98 @@ async function recordIndexTelemetry(
   await getTelemetry().flushNow();
 }
 
+/**
+ * Run the initial full index after a fresh `CodeGraph.init` (or an in-place
+ * empty repair via `CodeGraph.open` + `clear`). This is the single source of
+ * truth for init's index pass — verbose vs shimmer `indexAll`, result printing,
+ * telemetry, and the watch-fallback offer. The standalone `index` command keeps
+ * its own `clear()`+`indexAll` copy (HOW lock D); do not route it here.
+ */
+async function runInitialIndex(
+  clack: typeof import('@clack/prompts'),
+  cg: {
+    indexAll: Function;
+    destroy: Function;
+    getStats(): { filesByLanguage: Record<string, number> };
+    getBackend(): string;
+  },
+  projectPath: string,
+  options: { verbose?: boolean },
+): Promise<IndexResult> {
+  // Indexing runs by default now. The legacy -i/--index flag is still
+  // accepted (so existing muscle memory and scripts don't break) but is a
+  // no-op — initializing always builds the initial index.
+  let result: IndexResult;
+  if (options.verbose) {
+    result = await cg.indexAll({
+      onProgress: createVerboseProgress(),
+      verbose: true,
+    });
+  } else {
+    process.stdout.write(`${colors.dim}${getGlyphs().rail}${colors.reset}\n`);
+    const progress = createShimmerProgress();
+    result = await cg.indexAll({
+      onProgress: progress.onProgress,
+    });
+    await progress.stop();
+  }
+  printIndexResult(clack, result, projectPath);
+  await recordIndexTelemetry(cg, result);
+
+  try {
+    const { offerWatchFallback } = await import('../installer');
+    await offerWatchFallback(clack, projectPath);
+  } catch { /* non-fatal */ }
+
+  return result;
+}
+
+/**
+ * Remove exactly the three SQLite files that make up an unreadable index
+ * (main db, WAL, shared-memory). Honors CODEGRAPH_DIR via getCodeGraphDir.
+ * No readdir, no recursive rm — only the three known names are unlinked, so a
+ * repair never sweeps unrelated files out of `.codegraph/`.
+ */
+function unlinkUnreadableIndex(projectPath: string): void {
+  const dir = getCodeGraphDir(projectPath);
+  for (const name of ['codegraph.db', 'codegraph.db-wal', 'codegraph.db-shm']) {
+    try {
+      fs.unlinkSync(path.join(dir, name));
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === 'ENOENT') continue;
+      throw err;
+    }
+  }
+}
+
+/**
+ * Abort a repair write with the right message and exit code. A locked db
+ * (errcode 5) is busy — name the db path and `codegraph daemon`, never unlink.
+ * Anything else is unclassified — name the raw errcode + message, never unlink.
+ * A repair (unreadable unlinked / empty cleared) reports "Cannot repair index";
+ * a fresh init reports "Failed to initialize". Append `(errcode N)` only when
+ * the throw actually carries a numeric errcode — never a literal `undefined`.
+ */
+function abortRepairWrite(
+  clack: typeof import('@clack/prompts'),
+  projectPath: string,
+  err: unknown,
+  repairing: boolean,
+): void {
+  const errcode = (err as { errcode?: unknown }).errcode;
+  const message = err instanceof Error ? err.message : String(err);
+  if (errcode === 5) {
+    const dbPath = path.join(getCodeGraphDir(projectPath), 'codegraph.db');
+    clack.log.error(`Index database is locked: ${dbPath}. Stop the running index with "codegraph daemon" and retry.`);
+    clack.outro('');
+    process.exit(1);
+  }
+  const label = repairing ? 'Cannot repair index' : 'Failed to initialize';
+  const suffix = typeof errcode === 'number' ? ` (errcode ${errcode})` : '';
+  clack.log.error(`${label}${suffix}: ${message}`);
+  process.exit(1);
+}
+
 // =============================================================================
 // Commands
 // =============================================================================
@@ -465,6 +568,7 @@ program
   .option('-f, --force', 'Initialize even if the path looks like your home directory or a filesystem root')
   .option('-v, --verbose', 'Show detailed worker lifecycle and memory info')
   .action(async (pathArg: string | undefined, options: { index?: boolean; force?: boolean; verbose?: boolean }) => {
+    assertExpandedPath(pathArg, 'init path');
     const projectPath = path.resolve(pathArg || process.cwd());
     const clack = await importESM('@clack/prompts');
 
@@ -483,48 +587,77 @@ program
         return;
       }
 
+      // A repair (unreadable unlinked, or empty cleared) reports differently
+      // than a fresh init. Set only on those two fall-through paths — never
+      // from `isInitialized` re-checked after unlink, which makes unreadable
+      // repair look like a fresh init.
+      let repairing = false;
+
       if (isInitialized(projectPath)) {
-        clack.log.warn(`Already initialized in ${projectPath}`);
-        clack.log.info('Use "codegraph index" to re-index or "codegraph sync" to update');
-        try {
-          const { offerWatchFallback } = await import('../installer');
-          await offerWatchFallback(clack, projectPath);
-        } catch { /* non-fatal */ }
-        clack.outro('');
-        return;
+        const health = probeIndexHealth(projectPath);
+
+        // A healthy index is a no-op: warn, offer watch, exit 0. Touch nothing.
+        if (health.status === 'usable') {
+          clack.log.warn(`Already initialized in ${projectPath}`);
+          clack.log.info('Use "codegraph index" to re-index or "codegraph sync" to update');
+          try {
+            const { offerWatchFallback } = await import('../installer');
+            await offerWatchFallback(clack, projectPath);
+          } catch { /* non-fatal */ }
+          clack.outro('');
+          return;
+        }
+
+        // A locked database (another indexer holds the file) is busy — name the
+        // db path and the daemon manager, refuse, touch nothing.
+        if (health.status === 'busy') {
+          const dbPath = path.join(getCodeGraphDir(projectPath), 'codegraph.db');
+          clack.log.error(`Index database is locked: ${dbPath}. Stop the running index with "codegraph daemon" and retry.`);
+          clack.outro('');
+          process.exit(1);
+        }
+
+        // Unknown failure (errcode we don't classify) — refuse, name the raw
+        // errcode + message, touch nothing.
+        if (health.status === 'unclassified') {
+          clack.log.error(`Cannot repair index (errcode ${health.errcode}): ${health.message}`);
+          clack.outro('');
+          process.exit(1);
+        }
+
+        // Unreadable = junk / smashed / hollow db. Remove exactly the three
+        // SQLite files, then fall through to a fresh init below.
+        if (health.status === 'unreadable') {
+          unlinkUnreadableIndex(projectPath);
+          repairing = true;
+        }
+
+        // empty = 0-node full schema → falls through to the open+clear repair below.
+        if (health.status === 'empty') {
+          repairing = true;
+        }
       }
 
-      const { default: CodeGraph } = await loadCodeGraph();
-      const cg = await CodeGraph.init(projectPath, { index: false });
-      clack.log.success(`Initialized in ${projectPath}`);
-
-      // Indexing runs by default now. The legacy -i/--index flag is still
-      // accepted (so existing muscle memory and scripts don't break) but is a
-      // no-op — initializing always builds the initial index.
-      let result: IndexResult;
-      if (options.verbose) {
-        result = await cg.indexAll({
-          onProgress: createVerboseProgress(),
-          verbose: true,
-        });
-      } else {
-        process.stdout.write(`${colors.dim}${getGlyphs().rail}${colors.reset}\n`);
-        const progress = createShimmerProgress();
-        result = await cg.indexAll({
-          onProgress: progress.onProgress,
-        });
-        await progress.stop();
-      }
-      printIndexResult(clack, result, projectPath);
-      await recordIndexTelemetry(cg, result);
-
+      // Repair write-path: fresh init (not initialized, or unreadable just
+      // unlinked), or empty repair (open + clear). A lock here (errcode 5) is
+      // busy; anything else is unclassified — neither ever unlinks further.
       try {
-        const { offerWatchFallback } = await import('../installer');
-        await offerWatchFallback(clack, projectPath);
-      } catch { /* non-fatal */ }
-
-      clack.outro('Done');
-      cg.destroy();
+        const { default: CodeGraph } = await loadCodeGraph();
+        const initialized = isInitialized(projectPath);
+        let cg: Awaited<ReturnType<typeof CodeGraph.open>>;
+        if (initialized) {
+          cg = await CodeGraph.open(projectPath);
+          cg.clear();
+        } else {
+          cg = await CodeGraph.init(projectPath, { index: false });
+          clack.log.success(`Initialized in ${projectPath}`);
+        }
+        await runInitialIndex(clack, cg, projectPath, options);
+        clack.outro('Done');
+        cg.destroy();
+      } catch (err) {
+        abortRepairWrite(clack, projectPath, err, repairing);
+      }
     } catch (err) {
       clack.log.error(`Failed: ${err instanceof Error ? err.message : String(err)}`);
       process.exit(1);

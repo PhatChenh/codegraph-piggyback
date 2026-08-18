@@ -101,6 +101,71 @@ export function isInitialized(projectRoot: string): boolean {
 }
 
 /**
+ * Classify an existing CodeGraph index without mutating it.
+ *
+ * Opens `.codegraph/codegraph.db` read-only via Node's built-in `node:sqlite`
+ * and runs a single `SELECT COUNT(*)` on `nodes` to decide whether the index is
+ * usable, empty, unreadable, busy, or something we can't classify. The CLI
+ * dispatches on this to decide whether a "re-init" should repair, refuse, or
+ * leave the index alone — without ever writing to it here.
+ *
+ * Never enables WAL journaling (read-only connection; a WAL write would
+ * mutate the index) and never imports `../db` (this probe must stay dependency-
+ * light and independent of the engine's connection lifecycle).
+ */
+export function probeIndexHealth(projectRoot: string): {
+  status: 'usable' | 'empty' | 'unreadable' | 'busy' | 'unclassified';
+  errcode?: number;
+  message?: string;
+} {
+  const dbPath = path.join(getCodeGraphDir(projectRoot), 'codegraph.db');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { DatabaseSync } = require('node:sqlite') as {
+    DatabaseSync: new (
+      p: string,
+      o?: { readOnly?: boolean }
+    ) => { exec: Function; prepare: Function; close: Function };
+  };
+  let db: { exec: Function; prepare: Function; close: Function } | null = null;
+  try {
+    db = new DatabaseSync(dbPath, { readOnly: true });
+    db.exec('PRAGMA busy_timeout = 500');
+    const row = db.prepare('SELECT COUNT(*) AS n FROM nodes').get() as { n: number };
+    return { status: row.n === 0 ? 'empty' : 'usable' };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    const errcode = (err as { errcode?: unknown }).errcode;
+    if (typeof errcode !== 'number') {
+      return { status: 'unclassified', message };
+    }
+    if (errcode === 5) {
+      return { status: 'busy', errcode, message };
+    }
+    if (errcode === 26 || errcode === 11) {
+      return { status: 'unreadable', errcode, message };
+    }
+    if (errcode === 1) {
+      // Other errcode 1 → unclassified (A14): only a missing `nodes` table is
+      // a reliably-diagnosable "unreadable" schema shape.
+      if (message.includes('no such table: nodes')) {
+        return { status: 'unreadable', errcode, message };
+      }
+      return { status: 'unclassified', errcode, message };
+    }
+    // Everything else (incl. 14 and 266) → unclassified.
+    return { status: 'unclassified', errcode, message };
+  } finally {
+    if (db) {
+      try {
+        db.close();
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+}
+
+/**
  * Find the nearest parent directory containing .codegraph/
  *
  * Walks up from the given path to find a CodeGraph-initialized project,

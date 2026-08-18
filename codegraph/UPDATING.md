@@ -19,7 +19,8 @@ agent tool calls for ~7 minutes. Full incident + root cause:
 |---|---|
 | Walk-up refuses `$HOME`/fs-root index roots (`CODEGRAPH_ALLOW_UNSAFE_ROOT=1` opts out) | `src/directory.ts` |
 | Catch-up gate no longer blocks cross-project (`projectPath`) calls | `src/mcp/tools.ts` |
-| Literal `${...}` in `--path` ignored with warning | `src/bin/codegraph.ts` |
+| Literal `${...}` in `--path` / `init` path refused (non-zero exit, no cwd fallback) | `src/bin/codegraph.ts` |
+| `init` repairs an empty/unreadable index; refuses busy/unclassified without touching files | `src/bin/codegraph.ts`, `src/directory.ts` |
 | Stack-overflow fix in `getUnresolvedReferencesByFiles` (150k-row spread) | `src/db/queries.ts` |
 | Daemon kill-loop circuit breaker (3 watchdog kills / 15 min → refuse respawn) | `src/mcp/liveness-watchdog.ts`, `src/mcp/index.ts` |
 | Upgrade clobber guard (`.local-patches.json` marker blocks upgrade/reinstall) | `src/upgrade/index.ts`, `src/installer/index.ts` |
