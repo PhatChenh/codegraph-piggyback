@@ -408,6 +408,26 @@ class TestCli:
                            capture_output=True, text=True)
         assert r.returncode == 2
 
+    def test_strict_path_only_on_disk_exit0(self, repo):
+        (repo / "hooks.json").write_text("{}")
+        plan = write_plan(repo, "<!-- plan-verify\ntouch: hooks.json\n-->")
+        r = self.cli(plan, "--strict")
+        assert r.returncode == 0
+
+    def test_cli_db_flag_stats_fixture_root_not_plan_dir(self, repo,
+                                                         tmp_path_factory):
+        plan = tmp_path_factory.mktemp("away") / "plan.md"
+        plan.write_text("<!-- plan-verify\ntouch: hooks.json\n-->")
+        (repo / "hooks.json").write_text("{}")
+        r = subprocess.run([sys.executable, str(CLI), str(plan), "--db",
+                            str(repo / ".codegraph" / "codegraph.db"),
+                            "--json", "--strict"],
+                           capture_output=True, text=True)
+        assert r.returncode == 0
+        doc = json.loads(r.stdout)
+        assert doc["manifest"][0]["verdict"] == pv.OK
+        assert doc["manifest"][0]["evidence"] == "on disk, not in index"
+
 
 # ── spec-reuse cross-check (tier 3, 2026-07-19) ──────────────────────────────
 
