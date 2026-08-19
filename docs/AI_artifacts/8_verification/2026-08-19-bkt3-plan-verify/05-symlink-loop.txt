@@ -1,0 +1,9 @@
+cmd: python3 /Users/phatchenh/all-projects/vibe-coding-setup/codegraph-piggyback/.village/worktrees/bkt3-plan-verify/plan-verifier/plan_verify.py /var/folders/4x/c8fs198n11s4dbf48yg6mlm40000gn/T/tmprkmsnj78/fixture/plan-loop.md --db /var/folders/4x/c8fs198n11s4dbf48yg6mlm40000gn/T/tmprkmsnj78/fixture/.codegraph/codegraph.db --strict
+exit: 1
+--- stdout ---
+── PLAN-VERIFY: /var/folders/4x/c8fs198n11s4dbf48yg6mlm40000gn/T/tmprkmsnj78/fixture/plan-loop.md ── 1 claims (1 manifest, 0 swept)
+  touch  loop/a                                     MISSING                no node or file matches 'loop/a'
+── verdict: FAIL (1 MISSING) ──
+
+--- stderr ---
+

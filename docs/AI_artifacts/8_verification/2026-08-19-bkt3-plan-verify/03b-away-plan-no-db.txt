@@ -1,0 +1,7 @@
+cmd: python3 /Users/phatchenh/all-projects/vibe-coding-setup/codegraph-piggyback/.village/worktrees/bkt3-plan-verify/plan-verifier/plan_verify.py /var/folders/4x/c8fs198n11s4dbf48yg6mlm40000gn/T/tmprkmsnj78/away/plan.md
+exit: 2
+--- stdout ---
+
+--- stderr ---
+error: no .codegraph/codegraph.db found walking up from the plan
+

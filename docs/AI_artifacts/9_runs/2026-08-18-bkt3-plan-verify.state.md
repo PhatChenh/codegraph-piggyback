@@ -161,3 +161,17 @@ ARTIFACTS: docs/AI_artifacts/9_runs/2026-08-18-bkt3-plan-verify.md
 DECIDED: D2 docs commit no push; remaining ROI 3 impl → 6 → 5
 DEFERRED: none
 OPEN: implement the plan
+
+## impl-away-frontload — 2026-08-19 07:25
+POSITION: Owner approved plan (1a). Impl Away armed. Next: new opus judge + INT WT + Wave A.
+ARTIFACTS: `.village/runs/2026-08-19-bkt3-plan-verify/protocol-card.md`
+DECIDED: IMPL clx-deepseek-v4-flash; REVIEW grok 4.6 harness I9 DELTA; WHOLE_DIFF syn-3-kimi-k3; JUDGE new claude-opus (not b6c33674); daemon :19831; M1/M2 stay plan MUSTs
+DEFERRED: none
+OPEN: JUDGE_SESSION; Wave A
+
+## impl-close — 2026-08-19
+POSITION: Bucket 3 impl DONE on phase branch `bkt3-plan-verify` tip (see 2026-08-19 run-report). Whole-diff APPROVE. Behavior-verify all PASS. **Not on main** (I2).
+ARTIFACTS: `docs/AI_artifacts/9_runs/2026-08-19-bkt3-plan-verify.md`
+DECIDED: NIT parent-dir pollution folded; no production fix
+DEFERRED: human merge to main; worktree prune after merge
+OPEN: owner merge / leave on branch

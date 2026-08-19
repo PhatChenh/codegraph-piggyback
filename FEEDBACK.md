@@ -1,3 +1,12 @@
+## 2026-08-19 — flash wrote `## friction:` on disk report (run-id 2026-08-19-bkt3-plan-verify)
+**Status:** ACCEPTED process
+**Seat:** ORCH first-hand (Cursor Grok 4.6) · impl `8f137bd3`
+**Category:** burden
+**Symptom:** Step 4 verify-wave check 4 `disk-friction`. Product tests were green. Nudge fixed one heading line.
+**Why it bites:** extra turn after code was done.
+**Suggested fix:** keep the prompt example as a literal `friction:` line; filed also on agent_village FEEDBACK.
+**Run-report:** `docs/AI_artifacts/9_runs/2026-08-19-bkt3-plan-verify.md`
+
 ## 2026-08-18 — Cursor session said codegraph inactive while `.codegraph/` exists (codegraph-piggyback, run-id 2026-08-18-bkt3-plan-verify)
 **Seat:** ORCH first-hand (Cursor Grok 4.6)
 **Category:** confusing
