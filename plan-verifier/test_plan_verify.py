@@ -463,6 +463,25 @@ class TestSpecReuse:
         dropped, _ = pv.check_spec_reuse(SPEC_REUSE, plan)
         assert dropped == []
 
+    def test_reuse_paren_suffix_matches_ident(self):
+        spec = ("# Spec\n\n## Already built (reuse, do not rebuild)\n\n"
+                "| Function/Module | Location | What it does | How this spec uses it | Depth |\n"
+                "|---|---|---|---|---|\n"
+                "| `runFalQueue(...)` | `src/queue.ts` | staging | reuse | deep |\n\n"
+                "## Next section\n")
+        dropped, _ = pv.check_spec_reuse(spec, "Call runFalQueue for each batch.")
+        assert dropped == []
+
+    def test_reuse_ellipsis_forms_match_ident(self):
+        spec = ("# Spec\n\n## Already built (reuse, do not rebuild)\n\n"
+                "| Function/Module | Location | What it does | How this spec uses it | Depth |\n"
+                "|---|---|---|---|---|\n"
+                "| `claim_one(stage=…)` | `src/claims.ts` | staging | reuse | deep |\n"
+                "| `emitFrame...` | `src/frames.ts` | staging | reuse | deep |\n\n"
+                "## Next section\n")
+        dropped, _ = pv.check_spec_reuse(spec, "Use claim_one before emitFrame on every stage.")
+        assert dropped == []
+
     def test_missing_table_noted_not_failed(self):
         dropped, notes = pv.check_spec_reuse("# Spec\nno table here\n", "plan")
         assert dropped == [] and any("skipped" in n for n in notes)
