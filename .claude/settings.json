@@ -42,6 +42,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $HOME/.codegraph-piggyback/plan-verifier/plan_verify.py --hook",
+            "timeout": 5
+          }
+        ]
       }
     ]
   }

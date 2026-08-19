@@ -4,7 +4,7 @@ One line per landing. Detail lives in the linked artifact.
 
 ## 2026-08-19
 
-- **Bucket 3 plan_verify impl on phase branch** (not main) — path-only on-disk is not missing; `new:` still collides; spec names strip `(...)`/`…`/`...`. → `docs/AI_artifacts/9_runs/2026-08-19-bkt3-plan-verify.md`
+- **Bucket 3 plan_verify on main + LIVE** `d3e0e0a` — path-only on-disk is not missing; `new:` still collides; spec names strip decoration. → `docs/AI_artifacts/9_runs/2026-08-19-bkt3-plan-verify.md`
 
 ## 2026-08-18
 

@@ -1,6 +1,8 @@
-# INCOMPLETE — Bucket 3 plan_verify impl
+# Bucket 3 plan_verify impl
 
-**Status:** impl landed on phase branch `bkt3-plan-verify`. **Not merged to main** (Away I2). Next ROI after you merge: **6**.
+**Status:** impl landed on `main` `d3e0e0a` and LIVE `~/.codegraph-piggyback` (same SHA). Next ROI: **6**.
+
+See **Post-return** at the bottom for the merge. Original ledgers below are the Away close (branch-only).
 
 ## Plain summary
 
@@ -49,3 +51,12 @@ Repeatable: (1) `.av-verify.json` `step` = full plan heading; (2) commit product
 - Remaining ROI: **6 → 5**.
 - TD-01 OPEN until 4+6 (4 already merged; 6 not started).
 - Judge SID `1b9d0820` left (persistent). Daemon `orch-bkt3-plan-verify` `:19831` left running (reused, not started solely for this close).
+
+## Post-return — 2026-08-19 (owner: merge + LIVE + prune)
+
+- Merged `bkt3-plan-verify` → `main` `d3e0e0a`. pytest on main: `59 passed`.
+- LIVE: fast-forwarded `~/.codegraph-piggyback` `1f28010` → `d3e0e0a` (local fetch, no GitHub push). Bytes match this checkout. Live CLI `touch: hooks.json --strict` → exit 0, evidence `on disk, not in index`. Live pytest 59 passed.
+- Wired this repo’s Claude hook: `PostToolUse` `Write|Edit` → `$HOME/.codegraph-piggyback/plan-verifier/plan_verify.py --hook`. Restart the Claude session to load it.
+- Cursor has **no** piggyback plan-verifier (`.cursor/hooks.json` `afterFileEdit` empty). Claude-only until piggyback grows a Cursor writer.
+- Pruned `.village/worktrees/bkt3-plan-verify*` and deleted those branches. Left `.worktrees/orch-burden-b`. Not pushed (`main` ahead of origin).
+- GitHub origin still behind this machine. `piggyback update` on another clone will not see Bucket 3 until you push.

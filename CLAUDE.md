@@ -118,8 +118,7 @@ CLI MERGED to main `908667a` (2026-08-18):** refuse unexpanded `${…}`; `init`
 repairs empty/unreadable, refuses busy; FIX 1 fresh-init error label. Plan
 `docs/AI_artifacts/6_plans/2026-08-17-bkt4-codegraph-cli.md`. Report
 `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.md`. **Bucket 3 pipeline
-DONE 2026-08-18** (design/RT/spec/FCV/plan pinned). **Bucket 3 impl DONE 2026-08-19**
-on phase branch `bkt3-plan-verify` (not main; I2). Plan
+DONE 2026-08-18** (design/RT/spec/FCV/plan pinned). **Bucket 3 impl MERGED to main `d3e0e0a` (2026-08-19)** + LIVE `~/.codegraph-piggyback`. Plan
 `docs/AI_artifacts/6_plans/2026-08-18-bkt3-plan-verify.md`. Report
 `docs/AI_artifacts/9_runs/2026-08-19-bkt3-plan-verify.md`. Remaining ROI:
 6 → 5. Scope: `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`.
