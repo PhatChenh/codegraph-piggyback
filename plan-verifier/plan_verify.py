@@ -78,6 +78,7 @@ OK, MISSING, AMBIG, COLLISION, BLOCKED, BLAST = (
 
 BLAST_THRESHOLD = 6          # impact-analyzer HIGH tier; config, not contract (Block 3b)
 STRICT_FAILS = {MISSING, COLLISION, BLOCKED}   # manifest claims only (Block 3b)
+ON_DISK_EVIDENCE = "on disk, not in index"     # path-only claim, file on disk (bkt3)
 HOOK_BUDGET_LINES = 28
 
 # plan-file globs for hook mode (integer scheme + legacy fallbacks)
@@ -191,6 +192,29 @@ def check_spec_reuse(spec_text: str, plan_text: str) -> tuple[list[dict], list[s
 
 
 # ── verdict computation ──────────────────────────────────────────────────────
+
+def _path_only(claim: Claim) -> bool:
+    return bool(
+        claim.path
+        and not claim.symbol
+        and not claim.external
+        and "::" not in claim.raw
+        and not claim.raw.lstrip().startswith("external:")
+    )
+
+
+def _on_disk(repo_root: Path | None, rel: str | None) -> bool:
+    if repo_root is None or not rel:
+        return False
+    if Path(rel).is_absolute() or rel.startswith("~"):
+        return False
+    try:
+        root = repo_root.resolve()
+        cand = (root / Path(rel)).resolve()
+        return cand.is_relative_to(root) and cand.is_file()
+    except (OSError, RuntimeError):
+        return False
+
 
 def _mentions(plan_text: str, caller: dict) -> bool:
     """Deterministic 'does the plan acknowledge this caller': its symbol name or
