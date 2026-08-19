@@ -230,7 +230,8 @@ def _caller_evidence(callers: list[dict], unmentioned: list[dict]) -> str:
 
 
 def verdict_claim(con: sqlite3.Connection, claim: Claim, plan_text: str,
-                  dynamic_names: set[str]) -> None:
+                  dynamic_names: set[str],
+                  repo_root: Path | None = None) -> None:
     if claim.external:
         # `external: <abs-path>` declares a target outside the indexed repo —
         # no node/file to resolve, so verdict OK with honest evidence (21.4).
@@ -241,7 +242,10 @@ def verdict_claim(con: sqlite3.Connection, claim: Claim, plan_text: str,
 
     if claim.intent == "new":
         if res.state == _rs.UNRESOLVED:
-            claim.verdict, claim.evidence = OK, "no existing match"
+            if _path_only(claim) and _on_disk(repo_root, claim.path):
+                claim.verdict, claim.evidence = COLLISION, ON_DISK_EVIDENCE
+            else:
+                claim.verdict, claim.evidence = OK, "no existing match"
         else:
             claim.verdict = COLLISION
             claim.evidence = "exists: " + ", ".join(c.loc for c in res.candidates[:3])
@@ -253,8 +257,11 @@ def verdict_claim(con: sqlite3.Connection, claim: Claim, plan_text: str,
 
     # touch / remove / swept need the target to exist
     if res.state == _rs.UNRESOLVED:
-        claim.verdict = MISSING
-        claim.evidence = f"no node or file matches {token!r}"
+        if _path_only(claim) and _on_disk(repo_root, claim.path):
+            claim.verdict, claim.evidence = OK, ON_DISK_EVIDENCE
+        else:
+            claim.verdict = MISSING
+            claim.evidence = f"no node or file matches {token!r}"
         return
     if res.state == _rs.AMBIGUOUS:
         claim.verdict = AMBIG
@@ -292,6 +299,7 @@ def verify(plan_path: Path, db_path: Path | None,
     if db is None:
         return {"error": "no .codegraph/codegraph.db found walking up from the plan"}
     con = open_db(db)
+    root = repo_root_for(db)
 
     reuse_dropped: list[dict] = []
     reuse_notes: list[str] = []
@@ -307,7 +315,7 @@ def verify(plan_path: Path, db_path: Path | None,
 
     dynamic = unresolved_ref_names(con)
     for claim in [*manifest.claims, *swept]:
-        verdict_claim(con, claim, text, dynamic)
+        verdict_claim(con, claim, text, dynamic, root)
 
     n_manifest = len(manifest.claims)
     strict_fail = [c for c in manifest.claims if c.verdict in STRICT_FAILS]

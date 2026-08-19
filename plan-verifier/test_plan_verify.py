@@ -195,6 +195,106 @@ class TestVerdicts:
         assert sw["ghost_helper"] == pv.MISSING
         assert r["strict_fail"] == []          # swept never gates
 
+    # ── verdict_claim disk fallback (Step 2, bkt3) ─────────────────────────
+
+    def test_touch_path_only_on_disk_ok(self, repo):
+        (repo / "hooks.json").write_text("{}")
+        r = self.run(repo, "<!-- plan-verify\ntouch: hooks.json\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.OK
+        assert c.evidence == pv.ON_DISK_EVIDENCE
+
+    def test_touch_symbol_on_disk_still_missing(self, repo):
+        (repo / "prisma").mkdir()
+        (repo / "prisma" / "schema.prisma").write_text("")
+        r = self.run(repo,
+                     "<!-- plan-verify\ntouch: prisma/schema.prisma::Asset\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches 'Asset'"
+
+    def test_new_path_only_on_disk_collision(self, repo):
+        (repo / "hooks.json").write_text("{}")
+        r = self.run(repo, "<!-- plan-verify\nnew: hooks.json\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.COLLISION
+        assert c.evidence == pv.ON_DISK_EVIDENCE
+
+    def test_remove_path_only_on_disk_ok(self, repo):
+        (repo / "hooks.json").write_text("{}")
+        r = self.run(repo, "<!-- plan-verify\nremove: hooks.json\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.OK
+        assert c.evidence == pv.ON_DISK_EVIDENCE
+        assert c.verdict != pv.BLOCKED
+
+    def test_touch_directory_missing(self, repo):
+        (repo / "subdir").mkdir()
+        r = self.run(repo, "<!-- plan-verify\ntouch: subdir/\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches 'subdir/'"
+
+    def test_touch_absent_path_missing(self, repo):
+        r = self.run(repo, "<!-- plan-verify\ntouch: nope/ghost.json\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches 'nope/ghost.json'"
+
+    def test_touch_absolute_missing(self, repo):
+        r = self.run(repo, "<!-- plan-verify\ntouch: /etc/passwd\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches '/etc/passwd'"
+
+    def test_touch_parent_escape_missing(self, repo):
+        (repo.parent / "outside.json").write_text("{}")
+        r = self.run(repo, "<!-- plan-verify\ntouch: ../outside.json\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches '../outside.json'"
+
+    def test_swept_prisma_on_disk_ok_suppressed(self, repo):
+        (repo / "probes").mkdir()
+        (repo / "probes" / "schema.prisma").write_text("")
+        r = self.run(repo, "Prose mentions `probes/schema.prisma` only.")
+        assert r["swept_claims"][0].verdict == pv.OK
+        assert r["swept_claims"][0].evidence == pv.ON_DISK_EVIDENCE
+        assert "probes/schema.prisma" not in pv.render(r)
+        assert r["strict_fail"] == []
+
+    def test_touch_empty_symbol_suffix_missing(self, repo):
+        (repo / "foo.py").write_text("")
+        r = self.run(repo, "<!-- plan-verify\ntouch: foo.py::\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches 'foo.py'"
+
+    def test_touch_indexed_file_keeps_caller_evidence(self, repo):
+        (repo / "src").mkdir(parents=True)
+        (repo / "src" / "db.py").write_text("")
+        r = self.run(repo, "<!-- plan-verify\ntouch: src/db.py\n-->")
+        c = r["manifest_claims"][0]
+        assert "src/db.py" in c.evidence and "callers" in c.evidence
+        assert c.evidence != pv.ON_DISK_EVIDENCE
+
+    def test_touch_relative_external_on_disk_missing(self, repo):
+        (repo / "src").mkdir(parents=True)
+        (repo / "src" / "local.py").write_text("")
+        r = self.run(repo, "<!-- plan-verify\ntouch: external: src/local.py\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert any("absolute path" in p for p in r["meta_problems"])
+
+    def test_symlink_loop_missing_no_raise(self, repo):
+        (repo / "loop").mkdir()
+        (repo / "loop" / "a").symlink_to("b")
+        (repo / "loop" / "b").symlink_to("a")
+        r = self.run(repo, "<!-- plan-verify\ntouch: loop/a\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches 'loop/a'"
+
 
 # ── on-disk helpers (Step 1, bkt3) ──────────────────────────────────────────
 
