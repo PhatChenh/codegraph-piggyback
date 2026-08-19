@@ -1,4 +1,12 @@
-## 2026-08-19 — flash wrote `## friction:` on disk report (run-id 2026-08-19-bkt3-plan-verify)
+## 2026-08-19 — syn-3-kimi-k3 429 mid design-patch; opus judge session-limit (run-id 2026-08-19-bkt5-codegraph-mcp)
+**Seat:** ORCH first-hand
+**Category:** offline
+**Symptom:** Design patch `av turn` exit 5 `usage_limit` (Synthetic 429) after bytes landed. Opus judge `You've hit your session limit · resets 6:50pm`. Named kimi judge-fallback was the same Synthetic bill.
+**Why it bites:** reseat + lost ~20 min; protocol judge-fallback collided with design-provider cap.
+**Suggested fix:** judge fallback must be a *different* provider than the design seat’s live bill. `resetAt` missing on Synthetic envelope.
+**Run-report:** `docs/AI_artifacts/9_runs/2026-08-19-bkt5-codegraph-mcp.md`
+
+
 **Status:** ACCEPTED process
 **Seat:** ORCH first-hand (Cursor Grok 4.6) · impl `8f137bd3`
 **Category:** burden

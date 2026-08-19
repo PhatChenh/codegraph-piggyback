@@ -1,4 +1,15 @@
 date,model,role,risk_tier,outcome,note
+2026-08-19,cursor-grok-4.6-high,gather,A,pass-first-try,Bkt5 FCV 20/0/0 + 8-step plan plan_verify exit 0
+2026-08-19,cursor-grok-4.6-high,gather,A,pass-first-try,Bkt5 spec MUST-1/2/3
+2026-08-19,syn-3-kimi-k3,judge,A,findings-confirmed,Bkt5 D7 EXIT then spec/plan stamps
+2026-08-19,cursor-grok-4.6-high,red-team,A,findings-confirmed,Bkt5 design RT r2 0 Crit / 3 MAJOR
+2026-08-19,cursor-gpt-sol,judge,A,findings-confirmed,Bkt5 opus-cap fallback YES
+2026-08-19,syn-3-kimi-k3,design,A,needed-fixes,Bkt5 r1 patch landed then Synthetic 429
+2026-08-19,cursor-grok-4.6-high,red-team,A,findings-confirmed,Bkt5 design RT r1 0 Crit / 4 MAJOR
+2026-08-19,clx-deepseek-v4-flash,red-team,A,findings-confirmed,Bkt5 mini-RT 0 Crit / 3 MAJOR
+2026-08-19,syn-3-kimi-k3,design,A,pass-first-try,Bkt5 Option A design
+2026-08-19,claude-opus,judge,A,findings-confirmed,Bkt5 Stage-4 stamps until session-limit
+
 2026-08-19,clx-deepseek-v4-flash,implement,B,needed-fixes,Bkt3 Steps 1+4 report-pointer/disk-friction nudges; Steps 2+3 pass-first-try; Step 5 cat21 dismissed
 2026-08-19,cursor-grok-4.6,review,A,pass-first-try,Bkt3 tier-A Steps 2 and 3 APPROVE
 2026-08-19,syn-3-kimi-k3,review,B,pass-first-try,Bkt3 whole-diff APPROVE (1 NIT folded)
