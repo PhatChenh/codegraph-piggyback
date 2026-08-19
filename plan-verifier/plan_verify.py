@@ -169,6 +169,24 @@ def spec_reuse_rows(spec_text: str) -> list[tuple[str, str]]:
     return rows
 
 
+def _reuse_ident(name: str) -> str:
+    """Strip decoration off a spec row's function name so the reuse cross-check
+    matches the bare identifier in the plan.
+
+    Paren suffix first (``runFalQueue(...)`` -> ``runFalQueue``), then the
+    unicode ellipsis ``…``, then ASCII ``...``. Never ``rstrip(".")`` — a
+    trailing dot is a legitimate identifier character."""
+    original = name.strip()
+    s = original
+    if "(" in s:
+        s = s.split("(", 1)[0]
+    s = s.rstrip("…")
+    if s.endswith("..."):
+        s = s[:-3]
+    s = s.strip()
+    return s if s else original
+
+
 def check_spec_reuse(spec_text: str, plan_text: str) -> tuple[list[dict], list[str]]:
     """REUSE-DROPPED findings + notes. A row passes when its symbol name, its
     path, or its path basename appears anywhere in the plan text."""
@@ -178,14 +196,15 @@ def check_spec_reuse(spec_text: str, plan_text: str) -> tuple[list[dict], list[s
                     "in the spec — cross-check skipped"]
     dropped = []
     for name, path in rows:
-        if name and name in plan_text:
+        ident = _reuse_ident(name)
+        if ident and ident in plan_text:
             continue
         if path and (path in plan_text or Path(path).name in plan_text):
             continue
         dropped.append({
             "verdict": "REUSE-DROPPED",
-            "name": name, "path": path,
-            "evidence": f"spec reuse row `{name}` ({path or 'no path'}) depth=deep "
+            "name": ident, "path": path,
+            "evidence": f"spec reuse row `{ident}` ({path or 'no path'}) depth=deep "
                         "is never referenced by the plan — the step that needs it "
                         "may reinvent it (P9-w2b failure shape)"})
     return dropped, []
