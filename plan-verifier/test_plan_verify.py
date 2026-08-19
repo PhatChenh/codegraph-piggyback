@@ -196,6 +196,45 @@ class TestVerdicts:
         assert r["strict_fail"] == []          # swept never gates
 
 
+# ── on-disk helpers (Step 1, bkt3) ──────────────────────────────────────────
+
+class TestOnDiskHelpers:
+    def test_on_disk_regular_file_true(self, repo):
+        (repo / "hooks.json").write_text("{}")
+        assert pv._on_disk(repo, "hooks.json") is True
+
+    def test_on_disk_directory_false(self, repo):
+        (repo / "subdir").mkdir()
+        assert pv._on_disk(repo, "subdir/") is False
+
+    def test_on_disk_absolute_false(self, repo):
+        assert pv._on_disk(repo, "/etc/passwd") is False
+
+    def test_on_disk_parent_escape_false(self, repo):
+        outside = repo.parent / "outside.json"
+        outside.write_text("{}")
+        assert pv._on_disk(repo, "../outside.json") is False
+
+    def test_on_disk_none_root_false(self, repo):
+        assert pv._on_disk(None, "hooks.json") is False
+
+    def test_on_disk_symlink_loop_false_no_raise(self, repo):
+        (repo / "loop").mkdir()
+        (repo / "loop" / "a").symlink_to("b")
+        (repo / "loop" / "b").symlink_to("a")
+        assert pv._on_disk(repo, "loop/a") is False
+
+    def test_path_only_forms(self):
+        assert pv._path_only(pv.parse_entry("touch", "hooks.json")) is True
+        assert pv._path_only(pv.parse_entry("touch", "foo.py::")) is False
+        assert pv._path_only(pv.parse_entry("touch", "external: src/local.py")) is False
+        assert pv._path_only(
+            pv.parse_entry("touch", "prisma/schema.prisma::Asset")) is False
+
+    def test_makefile_not_path_only(self):
+        assert pv.parse_entry("touch", "Makefile").path is None
+
+
 # ── external claims (item 21.4, Step 8) ──────────────────────────────────────
 
 class TestExternal:
