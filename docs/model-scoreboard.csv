@@ -1,4 +1,8 @@
 date,model,role,risk_tier,outcome,note
+2026-08-19,clx-deepseek-v4-flash,implement,B,needed-fixes,Bkt3 Steps 1+4 report-pointer/disk-friction nudges; Steps 2+3 pass-first-try; Step 5 cat21 dismissed
+2026-08-19,cursor-grok-4.6,review,A,pass-first-try,Bkt3 tier-A Steps 2 and 3 APPROVE
+2026-08-19,syn-3-kimi-k3,review,B,pass-first-try,Bkt3 whole-diff APPROVE (1 NIT folded)
+2026-08-19,claude-opus,judge,B,findings-confirmed,Bkt3 Wave A seed YES; Step 5 cat21 md-not-indexed dismiss
 2026-08-18,claude-opus,design,C,needed-fixes,Bkt3 design-lite + 3 patches; first turn usage_limit then drop
 2026-08-18,clx-deepseek-v4-flash,gather,C,needed-fixes,Bkt3 mini-RT 1 stall then findings; RT2/3 findings
 2026-08-18,clx-deepseek-v4-flash,gather,C,pass-first-try,Bkt3 mini-RT-4 green

@@ -1,0 +1,27 @@
+cmd: python3 /Users/phatchenh/all-projects/vibe-coding-setup/codegraph-piggyback/.village/worktrees/bkt3-plan-verify/plan-verifier/plan_verify.py /var/folders/4x/c8fs198n11s4dbf48yg6mlm40000gn/T/tmprkmsnj78/away/plan.md --db /var/folders/4x/c8fs198n11s4dbf48yg6mlm40000gn/T/tmprkmsnj78/fixture/.codegraph/codegraph.db --json --strict
+exit: 0
+--- stdout ---
+{
+  "plan": "/var/folders/4x/c8fs198n11s4dbf48yg6mlm40000gn/T/tmprkmsnj78/away/plan.md",
+  "manifest": [
+    {
+      "intent": "touch",
+      "raw": "hooks.json",
+      "verdict": "OK",
+      "evidence": "on disk, not in index",
+      "notes": [],
+      "external": false
+    }
+  ],
+  "swept": [],
+  "tiers": [],
+  "gates": [],
+  "qualifiers": [],
+  "meta_problems": [],
+  "reuse_dropped": [],
+  "reuse_notes": [],
+  "strict_fail": false
+}
+
+--- stderr ---
+

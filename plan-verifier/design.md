@@ -108,11 +108,11 @@ WHERE n1.name = ? AND e.kind IN ('calls','references','imports');
 
 ### Verdict table (the contract)
 
-| Claim | Check against DB | Verdict when wrong |
+| Claim | Check against the index (path-only on-disk fallback) | Verdict when wrong |
 |---|---|---|
-| `touch: X` | X exists and resolves to exactly one node/file | `MISSING` (zero matches) / `AMBIGUOUS` (more than one match) |
-| `new: Y` | Y does **not** exist | `COLLISION` (a node/file with that name/path already exists) |
-| `remove: Z` | Z exists, then count incoming `calls`/`references`/`imports` edges | `MISSING` if absent; `BLOCKED` when Z has N callers the plan text never mentions |
+| `touch: X` | X exists and resolves to exactly one node/file; a **path-only** X that is a regular file under the repo root also passes | `MISSING` (zero matches) / `AMBIGUOUS` (more than one match); path-only X on disk → `OK` with evidence `on disk, not in index` |
+| `new: Y` | Y does **not** exist in the index, and a **path-only** Y does **not** exist on disk under the repo root | `COLLISION` (a node/file with that name/path already exists — indexed existence keeps `exists: …`; a path-only Y already on disk → `COLLISION` with evidence `on disk, not in index`) |
+| `remove: Z` | Z exists in the index, or is a **path-only** regular file under the repo root, then count incoming `calls`/`references`/`imports` edges | `MISSING` if absent (path-only Z on disk → `OK` with evidence `on disk, not in index`); `BLOCKED` when Z has N callers the plan text never mentions |
 | any touched X | caller count vs plan text — does the plan's prose mention the callers (by file or symbol name)? | `UNACKNOWLEDGED-BLAST` when X has significant callers (reuse impact-analyzer's thresholds: HIGH ≥ 6, CRITICAL > 15) and none of them appear anywhere in the plan |
 
 Claims that pass are reported `OK` with their evidence, so the table is a complete

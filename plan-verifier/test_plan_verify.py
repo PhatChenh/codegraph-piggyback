@@ -195,6 +195,145 @@ class TestVerdicts:
         assert sw["ghost_helper"] == pv.MISSING
         assert r["strict_fail"] == []          # swept never gates
 
+    # ── verdict_claim disk fallback (Step 2, bkt3) ─────────────────────────
+
+    def test_touch_path_only_on_disk_ok(self, repo):
+        (repo / "hooks.json").write_text("{}")
+        r = self.run(repo, "<!-- plan-verify\ntouch: hooks.json\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.OK
+        assert c.evidence == pv.ON_DISK_EVIDENCE
+
+    def test_touch_symbol_on_disk_still_missing(self, repo):
+        (repo / "prisma").mkdir()
+        (repo / "prisma" / "schema.prisma").write_text("")
+        r = self.run(repo,
+                     "<!-- plan-verify\ntouch: prisma/schema.prisma::Asset\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches 'Asset'"
+
+    def test_new_path_only_on_disk_collision(self, repo):
+        (repo / "hooks.json").write_text("{}")
+        r = self.run(repo, "<!-- plan-verify\nnew: hooks.json\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.COLLISION
+        assert c.evidence == pv.ON_DISK_EVIDENCE
+
+    def test_remove_path_only_on_disk_ok(self, repo):
+        (repo / "hooks.json").write_text("{}")
+        r = self.run(repo, "<!-- plan-verify\nremove: hooks.json\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.OK
+        assert c.evidence == pv.ON_DISK_EVIDENCE
+        assert c.verdict != pv.BLOCKED
+
+    def test_touch_directory_missing(self, repo):
+        (repo / "subdir").mkdir()
+        r = self.run(repo, "<!-- plan-verify\ntouch: subdir/\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches 'subdir/'"
+
+    def test_touch_absent_path_missing(self, repo):
+        r = self.run(repo, "<!-- plan-verify\ntouch: nope/ghost.json\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches 'nope/ghost.json'"
+
+    def test_touch_absolute_missing(self, repo):
+        r = self.run(repo, "<!-- plan-verify\ntouch: /etc/passwd\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches '/etc/passwd'"
+
+    def test_touch_parent_escape_missing(self, repo):
+        (repo.parent / "outside.json").write_text("{}")
+        r = self.run(repo, "<!-- plan-verify\ntouch: ../outside.json\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches '../outside.json'"
+
+    def test_swept_prisma_on_disk_ok_suppressed(self, repo):
+        (repo / "probes").mkdir()
+        (repo / "probes" / "schema.prisma").write_text("")
+        r = self.run(repo, "Prose mentions `probes/schema.prisma` only.")
+        assert r["swept_claims"][0].verdict == pv.OK
+        assert r["swept_claims"][0].evidence == pv.ON_DISK_EVIDENCE
+        assert "probes/schema.prisma" not in pv.render(r)
+        assert r["strict_fail"] == []
+
+    def test_touch_empty_symbol_suffix_missing(self, repo):
+        (repo / "foo.py").write_text("")
+        r = self.run(repo, "<!-- plan-verify\ntouch: foo.py::\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches 'foo.py'"
+
+    def test_touch_indexed_file_keeps_caller_evidence(self, repo):
+        (repo / "src").mkdir(parents=True)
+        (repo / "src" / "db.py").write_text("")
+        r = self.run(repo, "<!-- plan-verify\ntouch: src/db.py\n-->")
+        c = r["manifest_claims"][0]
+        assert "src/db.py" in c.evidence and "callers" in c.evidence
+        assert c.evidence != pv.ON_DISK_EVIDENCE
+
+    def test_touch_relative_external_on_disk_missing(self, repo):
+        (repo / "src").mkdir(parents=True)
+        (repo / "src" / "local.py").write_text("")
+        r = self.run(repo, "<!-- plan-verify\ntouch: external: src/local.py\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert any("absolute path" in p for p in r["meta_problems"])
+
+    def test_symlink_loop_missing_no_raise(self, repo):
+        (repo / "loop").mkdir()
+        (repo / "loop" / "a").symlink_to("b")
+        (repo / "loop" / "b").symlink_to("a")
+        r = self.run(repo, "<!-- plan-verify\ntouch: loop/a\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.evidence == "no node or file matches 'loop/a'"
+
+
+# ── on-disk helpers (Step 1, bkt3) ──────────────────────────────────────────
+
+class TestOnDiskHelpers:
+    def test_on_disk_regular_file_true(self, repo):
+        (repo / "hooks.json").write_text("{}")
+        assert pv._on_disk(repo, "hooks.json") is True
+
+    def test_on_disk_directory_false(self, repo):
+        (repo / "subdir").mkdir()
+        assert pv._on_disk(repo, "subdir/") is False
+
+    def test_on_disk_absolute_false(self, repo):
+        assert pv._on_disk(repo, "/etc/passwd") is False
+
+    def test_on_disk_parent_escape_false(self, repo):
+        outside = repo.parent / "outside.json"
+        outside.write_text("{}")
+        assert pv._on_disk(repo, "../outside.json") is False
+
+    def test_on_disk_none_root_false(self, repo):
+        assert pv._on_disk(None, "hooks.json") is False
+
+    def test_on_disk_symlink_loop_false_no_raise(self, repo):
+        (repo / "loop").mkdir()
+        (repo / "loop" / "a").symlink_to("b")
+        (repo / "loop" / "b").symlink_to("a")
+        assert pv._on_disk(repo, "loop/a") is False
+
+    def test_path_only_forms(self):
+        assert pv._path_only(pv.parse_entry("touch", "hooks.json")) is True
+        assert pv._path_only(pv.parse_entry("touch", "foo.py::")) is False
+        assert pv._path_only(pv.parse_entry("touch", "external: src/local.py")) is False
+        assert pv._path_only(
+            pv.parse_entry("touch", "prisma/schema.prisma::Asset")) is False
+
+    def test_makefile_not_path_only(self):
+        assert pv.parse_entry("touch", "Makefile").path is None
+
 
 # ── external claims (item 21.4, Step 8) ──────────────────────────────────────
 
@@ -269,6 +408,26 @@ class TestCli:
                            capture_output=True, text=True)
         assert r.returncode == 2
 
+    def test_strict_path_only_on_disk_exit0(self, repo):
+        (repo / "hooks.json").write_text("{}")
+        plan = write_plan(repo, "<!-- plan-verify\ntouch: hooks.json\n-->")
+        r = self.cli(plan, "--strict")
+        assert r.returncode == 0
+
+    def test_cli_db_flag_stats_fixture_root_not_plan_dir(self, repo,
+                                                         tmp_path_factory):
+        plan = tmp_path_factory.mktemp("away") / "plan.md"
+        plan.write_text("<!-- plan-verify\ntouch: hooks.json\n-->")
+        (repo / "hooks.json").write_text("{}")
+        r = subprocess.run([sys.executable, str(CLI), str(plan), "--db",
+                            str(repo / ".codegraph" / "codegraph.db"),
+                            "--json", "--strict"],
+                           capture_output=True, text=True)
+        assert r.returncode == 0
+        doc = json.loads(r.stdout)
+        assert doc["manifest"][0]["verdict"] == pv.OK
+        assert doc["manifest"][0]["evidence"] == "on disk, not in index"
+
 
 # ── spec-reuse cross-check (tier 3, 2026-07-19) ──────────────────────────────
 
@@ -302,6 +461,25 @@ class TestSpecReuse:
     def test_basename_mention_satisfies(self):
         plan = "Stage the bundle into acp.ts stateDir; validate via acp-schema.mjs."
         dropped, _ = pv.check_spec_reuse(SPEC_REUSE, plan)
+        assert dropped == []
+
+    def test_reuse_paren_suffix_matches_ident(self):
+        spec = ("# Spec\n\n## Already built (reuse, do not rebuild)\n\n"
+                "| Function/Module | Location | What it does | How this spec uses it | Depth |\n"
+                "|---|---|---|---|---|\n"
+                "| `runFalQueue(...)` | `src/queue.ts` | staging | reuse | deep |\n\n"
+                "## Next section\n")
+        dropped, _ = pv.check_spec_reuse(spec, "Call runFalQueue for each batch.")
+        assert dropped == []
+
+    def test_reuse_ellipsis_forms_match_ident(self):
+        spec = ("# Spec\n\n## Already built (reuse, do not rebuild)\n\n"
+                "| Function/Module | Location | What it does | How this spec uses it | Depth |\n"
+                "|---|---|---|---|---|\n"
+                "| `claim_one(stage=…)` | `src/claims.ts` | staging | reuse | deep |\n"
+                "| `emitFrame...` | `src/frames.ts` | staging | reuse | deep |\n\n"
+                "## Next section\n")
+        dropped, _ = pv.check_spec_reuse(spec, "Use claim_one before emitFrame on every stage.")
         assert dropped == []
 
     def test_missing_table_noted_not_failed(self):

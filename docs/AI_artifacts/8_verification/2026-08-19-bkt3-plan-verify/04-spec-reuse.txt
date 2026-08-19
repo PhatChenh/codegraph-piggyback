@@ -1,0 +1,10 @@
+cmd: python3 /Users/phatchenh/all-projects/vibe-coding-setup/codegraph-piggyback/.village/worktrees/bkt3-plan-verify/plan-verifier/plan_verify.py /var/folders/4x/c8fs198n11s4dbf48yg6mlm40000gn/T/tmprkmsnj78/fixture/plan-reuse.md --db /var/folders/4x/c8fs198n11s4dbf48yg6mlm40000gn/T/tmprkmsnj78/fixture/.codegraph/codegraph.db --spec /var/folders/4x/c8fs198n11s4dbf48yg6mlm40000gn/T/tmprkmsnj78/fixture/spec.md --strict
+exit: 0
+--- stdout ---
+── PLAN-VERIFY: /var/folders/4x/c8fs198n11s4dbf48yg6mlm40000gn/T/tmprkmsnj78/fixture/plan-reuse.md ── 1 claims (1 manifest, 0 swept)
+  touch  hooks.json                                 OK                     on disk, not in index
+  reuse  AcpTransport                               REUSE-DROPPED          spec reuse row `AcpTransport` (daemon/transport/acp.ts) depth=deep is never referenced by the plan — the step that needs it may reinvent it (P9-w2b failure shape)
+── verdict: PASS (no manifest MISSING/COLLISION/BLOCKED) ──
+
+--- stderr ---
+
