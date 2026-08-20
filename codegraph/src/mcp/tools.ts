@@ -6,6 +6,7 @@
 
 import type CodeGraph from '../index';
 import { findNearestCodeGraphRoot } from '../directory';
+import { resolveMcpIndexState } from './index-state';
 // Lazy-load the heavy CodeGraph chain off the MCP startup path — see the same
 // helper in engine.ts. ToolHandler must load to answer tools/list (static
 // schemas), but it must NOT drag in sqlite/query layers before the daemon binds;
@@ -867,16 +868,28 @@ export class ToolHandler {
     // worktree kept being served the parent checkout's index until restart
     // (#926). The DB connection itself is still cached (by resolved root,
     // below), so re-resolving costs only the stat walk, never a reopen.
-    const resolvedRoot = findNearestCodeGraphRoot(projectPath);
+    const resolved = resolveMcpIndexState(projectPath);
 
-    if (!resolvedRoot) {
+    if (resolved.state === 'index_missing') {
+      if (resolved.root === null) {
+        // No .codegraph/ anywhere above the path — keep today's absence copy.
+        throw new NotIndexedError(
+          `The project at ${projectPath} isn't indexed with codegraph (no .codegraph/ directory found ` +
+          'walking up from it), so codegraph cannot query it. Use your built-in tools (Read/Grep/Glob) ' +
+          "for that codebase instead, and don't call codegraph for it again this session. " +
+          "Indexing is the user's decision — they can run 'codegraph init' in that project to enable it."
+        );
+      }
+      // A root exists but its index is unreadable/unclassified — junk copy.
       throw new NotIndexedError(
-        `The project at ${projectPath} isn't indexed with codegraph (no .codegraph/ directory found ` +
+        `The project at ${projectPath} isn't indexed with codegraph (no usable index ` +
         'walking up from it), so codegraph cannot query it. Use your built-in tools (Read/Grep/Glob) ' +
         "for that codebase instead, and don't call codegraph for it again this session. " +
         "Indexing is the user's decision — they can run 'codegraph init' in that project to enable it."
       );
     }
+
+    const resolvedRoot = resolved.root as string;
 
     // If the path resolves to the default project, reuse the already-open
     // default instance rather than opening a SECOND connection to the same DB.
@@ -2273,7 +2286,7 @@ export class ToolHandler {
         if (cg.getStats().nodeCount === 0) {
           emptyWarn =
             '⚠ codegraph index is empty here (0 nodes indexed) — ' +
-            'run `codegraph init -i` in this directory before exploring.';
+            'run `codegraph init` in this directory before exploring.';
         } else {
           const mismatch = this.worktreeMismatchFor(args.projectPath as string | undefined);
           if (mismatch) {
