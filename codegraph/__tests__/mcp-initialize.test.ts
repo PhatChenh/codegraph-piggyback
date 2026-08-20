@@ -99,6 +99,17 @@ function waitFor<T>(
   });
 }
 
+/**
+ * stderr evidence that can only be emitted AFTER the engine has called
+ * `CodeGraph.open()`/`openSync()` AND that open returned — `startWatching()`
+ * and `catchUpSync()` run only once the awaited open is done. The child is a
+ * separate process, so the test cannot vi.spyOn the child's `CodeGraph.open`
+ * / `Parser.init` instances; counting these lines is the cross-process proxy
+ * for "open happened". The pin is the COUNT of them before the initialize
+ * reply, not `open` itself and not a wall-clock timeout.
+ */
+const INIT_EVIDENCE = /\[CodeGraph MCP\] (File watcher |Caught up |Auto-synced |Failed to open project)/;
+
 describe('MCP initialize handshake (issue #172)', () => {
   let tempDir: string;
   let child: ChildProcessWithoutNullStreams | null = null;
@@ -152,6 +163,44 @@ describe('MCP initialize handshake (issue #172)', () => {
     expect(response.seq).toBeLessThan(watcherLog.seq);
     const json = JSON.parse(response.text);
     expect(json.id).toBe(0);
+    expect(json.result.serverInfo.name).toBe('codegraph');
+  }, 20000);
+
+  it('counts ZERO init-evidence stderr lines before the initialize reply — usable-index open deferred (BT-3)', async () => {
+    // Seed a real, USABLE index (a source file, extracted) so the mapper
+    // reports `usable` and the engine's full open path runs: ensureInitialized
+    // → CodeGraph.open() → startWatching(). The contract (issue #172, BT-3):
+    // the initialize reply must precede ANY of the child's open-side effects.
+    fs.writeFileSync(path.join(tempDir, 'sample.js'), 'export function hello() { return 42; }\n');
+    const cg = await CodeGraph.init(tempDir, { index: true });
+    cg.close();
+
+    child = spawnServer(tempDir);
+    const events = tagStreams(child);
+    sendInitialize(child, tempDir);
+
+    const response = await waitFor(events, (e) => e.stream === 'stdout', 10000);
+
+    // COUNT pin: no post-open stderr evidence may precede the reply. If a
+    // future change re-awaits the open before sendResult, these lines land
+    // with a lower seq and this count goes > 0. Not a ≤500ms wall — the
+    // ordering is what's pinned.
+    const preReplyInit = events.filter(
+      (e) => e.stream === 'stderr' && INIT_EVIDENCE.test(e.text) && e.seq < response.seq,
+    );
+    expect(preReplyInit).toHaveLength(0);
+
+    // Non-vacuous: the seeded index must actually get opened AFTER the reply —
+    // otherwise the zero-count assertion would pass on a server that never
+    // opened anything.
+    const opened = await waitFor(
+      events,
+      (e) => e.stream === 'stderr' && INIT_EVIDENCE.test(e.text),
+      10000,
+    );
+    expect(response.seq).toBeLessThan(opened.seq);
+
+    const json = JSON.parse(response.text);
     expect(json.result.serverInfo.name).toBe('codegraph');
   }, 20000);
 
