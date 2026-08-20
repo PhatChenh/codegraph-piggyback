@@ -4,13 +4,13 @@
 
 ## Current position
 
-**Bucket 5 impl on `main`.** Handshake tells missing vs empty vs usable on both MCP doors. Whole-diff APPROVE 0 findings. E2E vitest 7 files / 52 pass. Live Cursor binary **not** rsynced.
+**Bucket 5 impl on `main` + LIVE.** Handshake tells missing vs empty vs usable on both MCP doors. Whole-diff APPROVE 0 findings. E2E vitest 7 files / 52 pass. Live bundle rsynced `2026-08-20` → `~/.codegraph/versions/v1.0.1/lib/dist/` (`index-state.js` present). Restart Cursor/Claude MCP to pick it up.
 
 **Bucket 6 paper on `main`.** Writ impl lives in `falkor-writ/.worktrees/bkt6-writ-probe` (daemon `:19841`). Not started as product code here.
 
 ## Next action
 
-Optional: rsync `codegraph/dist/` when you want Cursor MCP to see Bucket 5. Remaining ROI: Bucket 6 writ probe impl. Do not push unless asked.
+Optional: restart Cursor/Claude so the MCP process reloads. Remaining ROI: Bucket 6 writ probe impl. Do not push unless asked.
 
 ## Working tree
 
@@ -28,7 +28,7 @@ Optional: rsync `codegraph/dist/` when you want Cursor MCP to see Bucket 5. Rema
 ## Locked decisions
 
 - HOW locks A–E + MCP tri-state: plan `docs/AI_artifacts/6_plans/2026-08-19-bkt5-codegraph-mcp.md`. ADR `codegraph/docs/adr/0002-mcp-index-tri-state.md`.
-- OQ-2 A (re-probe). OQ-3 OPEN. Live rsync still SKIP until you say.
+- OQ-2 A (re-probe). OQ-3 OPEN. Live rsync DONE 2026-08-20.
 - Path-only on-disk (Bucket 3): `plan-verifier/adrs/0001-on-disk-path-only-is-not-missing.md`.
 
 ## Key docs
@@ -40,6 +40,6 @@ Optional: rsync `codegraph/dist/` when you want Cursor MCP to see Bucket 5. Rema
 
 ## Resume steps
 
-1. Bucket 5 live: rsync `codegraph/dist/` → `~/.codegraph/...` when you want Cursor to see it.
+1. Restart Cursor/Claude MCP so the new handshake loads. First-contact: missing / empty / busy initialize.
 2. Bucket 6: open **falkor-writ** worktree. Pin `VILLAGE_PORT=19841`.
 3. Do not push unless asked.

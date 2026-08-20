@@ -9,7 +9,7 @@ _Live:_ R4-a vitest spawn (Cursor MCP rsync SKIP)
 | C9 no `init -i` | `rg -n "init -i" tools.ts worktree.ts` | no matches (exit 1) | PASS | this file |
 | C2 probe owner | `rg -n probeIndexHealth codegraph/src/mcp` | only `index-state.ts` | PASS | this file |
 | C11 ADR/UPDATING/CHANGELOG | files exist after wave E merge | ADR 0002 + greps | PASS | commit `9c8afce` |
-| Cursor MCP host handshake | rsync SKIP while away | not run | LIVE-UNVERIFIED | protocol card |
+| Cursor MCP host handshake | rsync DONE 2026-08-20 | on-disk mapper live; host process not restarted this session | LIVE-ON-DISK; host reload owed | `~/.codegraph/versions/v1.0.1/lib/dist/mcp/index-state.js` |
 
 Merge to main: **not proposed this run** (I2). Phase branch holds the work.
 

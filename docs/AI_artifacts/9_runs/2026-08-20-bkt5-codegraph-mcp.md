@@ -56,3 +56,11 @@ Visible after stop: judge `5257dc39` 1,226,983 tok / $11.04; whole-diff `8dbb58f
 ## Retro (short)
 
 Repeatable: (1) no `;` inside plan-verify grep needles; (2) `grep-absent` needs a file glob not a directory; (3) `new: *.md::symbol` will NOT-DELIVERED; (4) claims gate blocks plan Facts edits after code lands — scratch copy for verify; (5) clear leftover `IMPLEMENTATION_REPORT.md` between waves. One-off: step 5 report omitted `cd codegraph &&`.
+
+## Post-return — 2026-08-20 15:26
+
+- Merged to `main` `9ee9045` (parents `c3c7254` + `4f4b0e5`).
+- Live rsync DONE: `codegraph/dist/` → `~/.codegraph/versions/v1.0.1/lib/dist/`. `codegraph --version` still `999.0.0`. `codegraph upgrade` still blocked. Live `dist/mcp/index-state.js` present.
+- pytest: 250 passed / 3 failed (`TestGoldenLive` pilot-drift, pre-existing, 0 new).
+- vitest: 105/107 files, 1553 tests passed. `extraction.test.ts` + `resolution.test.ts` workers OOM on Node 24.15.0 (V8 wasm turboshaft) — not an assertion fail, not Bucket 5.
+- Still owed: GitHub push; restart Cursor/Claude MCP so the running process reloads; first-contact handshake in the editor.
