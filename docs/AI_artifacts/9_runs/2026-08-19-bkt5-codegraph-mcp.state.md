@@ -190,6 +190,20 @@ DECIDED: Judge YES Stage 5 INCOMPLETE. D1 ends at plan.
 DEFERRED: impl 8-step plan
 OPEN: owner “implement”
 
+## impl-complete — 2026-08-20 11:50
+POSITION: Bucket 5 impl on phase branch `bkt5-codegraph-mcp` `9c8afce`. §10 run-report written. Not on main. Live rsync still SKIP.
+ARTIFACTS: docs/AI_artifacts/9_runs/2026-08-20-bkt5-codegraph-mcp.md
+DECIDED: Whole-diff APPROVE 0 findings. Merge to main waits (Bucket 6 owns main). Judge SID left idle.
+DEFERRED: live rsync; push; main merge
+OPEN: human merge/rsync after Bucket 6 clears
+
+## impl-kickoff — 2026-08-20 10:10
+POSITION: Owner go. Isolated WT `.worktrees/bkt5-codegraph-mcp` branch `bkt5-codegraph-mcp`. Next: judge seed then wave A (steps 1+6).
+ARTIFACTS: .village/runs/2026-08-20-bkt5-codegraph-mcp/protocol-card.md ; .village/runs/2026-08-20-bkt5-codegraph-mcp/state.md
+DECIDED: Impl Away I1–I9 ACCEPTED 2026-08-20 + I9 harness grok tier-A only. Live rsync SKIP. IMPL=clx-deepseek-v4-flash fresh SID. WHOLE_DIFF+JUDGE=syn-3-kimi-k3. Reuse :19851.
+DEFERRED: live rsync; push; main merge
+OPEN: JUDGE_SESSION create
+
 
 
 

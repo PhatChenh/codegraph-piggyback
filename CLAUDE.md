@@ -120,8 +120,8 @@ repairs empty/unreadable, refuses busy; FIX 1 fresh-init error label. Plan
 `docs/AI_artifacts/9_runs/2026-08-17-bkt4-codegraph-cli.md`. **Bucket 3 pipeline
 DONE 2026-08-18** (design/RT/spec/FCV/plan pinned). **Bucket 3 impl MERGED to main `d3e0e0a` (2026-08-19)** + LIVE `~/.codegraph-piggyback`. Plan
 `docs/AI_artifacts/6_plans/2026-08-18-bkt3-plan-verify.md`. Report
-`docs/AI_artifacts/9_runs/2026-08-19-bkt3-plan-verify.md`. **Bucket 5 MCP missing vs empty pipeline DONE 2026-08-19 (paper only)** — design/RT/spec/FCV/plan pinned; impl waiting. Plan `docs/AI_artifacts/6_plans/2026-08-19-bkt5-codegraph-mcp.md`. Report `docs/AI_artifacts/9_runs/2026-08-19-bkt5-codegraph-mcp.md`. Remaining ROI:
-6 → 5. Scope: `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`.
+`docs/AI_artifacts/9_runs/2026-08-19-bkt3-plan-verify.md`. **Bucket 5 MCP missing vs empty pipeline DONE 2026-08-19 (paper)** — design/RT/spec/FCV/plan pinned. **Bucket 5 impl DONE 2026-08-20 on phase branch `bkt5-codegraph-mcp` `9c8afce` (not main)** — handshake maps missing vs empty vs usable on both MCP doors; whole-diff APPROVE 0 findings; vitest 7 files / 52 pass; live Cursor rsync SKIP. Plan `docs/AI_artifacts/6_plans/2026-08-19-bkt5-codegraph-mcp.md`. Report `docs/AI_artifacts/9_runs/2026-08-20-bkt5-codegraph-mcp.md`. Remaining ROI:
+6. Scope: `docs/AI_artifacts/_scope/2026-08-16-feedback-bugs-scope.md`.
 av-orchestrate: BUG-023 staged-cwd FIXED (`1e48ad2`, do not re-open);
 BUG-024 per-wave `--step` shipped (`57c0961`).
 `_shared/` extraction SHIPPED (commit `82287f9`, alongside plan-verifier)
@@ -170,3 +170,16 @@ in `docs/roadmap/roadmap.md`.
   for the combined probe; put exit 0 on a passing-only plan.
 - **A5 swept tokens in `_NONCODE_EXT` (`.json`) never reach the sweep**
   (Bucket 3 mini-RT-2). Use a code-extension pathish token (e.g. `.prisma`).
+- **A `;` inside a quoted `grep-present` needle splits plan-verify
+  qualifiers** (Bucket 5 Step 3, 2026-08-20). The parser treats `;` as a
+  qualifier separator, so `return;` becomes needle `return`. Drop the
+  semicolon, or the check matches the wrong thing.
+- **`grep-absent` on a directory path matches zero files** (Bucket 5 Step 5,
+  2026-08-20) — same fail as a vacuous glob (`no file matches`). Use a file
+  glob (`codegraph/src/mcp/**/*.ts`), not the directory.
+- **`new: path.md::symbol` is NOT-DELIVERED** because markdown is not
+  indexed (Bucket 5 Step 8 ADR, same class Bucket 3 Step 5 / Bucket 4
+  Step 6). Judge-dismiss; do not fake a TS symbol.
+- **Leftover `IMPLEMENTATION_REPORT.md` in a task worktree is from a prior
+  wave** (Bucket 5 Step 7). Clear or overwrite it; do not treat it as this
+  step's output.

@@ -1,3 +1,24 @@
+## 2026-08-20 — plan-verify `;` split + dir glob + md `new:` (codegraph-piggyback run, run-id 2026-08-20-bkt5-codegraph-mcp)
+**Status:** OPEN
+**Seat:** ORCH first-hand (Cursor Grok 4.6)
+**Category:** bug + confusing
+**Symptom:** (1) Plan qualifier `grep-present "…;"` split on `;` so the needle became `return` (Step 3). (2) `grep-absent` with path `codegraph/src/mcp` (a directory) matched 0 files → QUALIFIER-FAIL (Step 5). (3) `new: codegraph/docs/adr/0002-….md::0002` → NOT-DELIVERED; indexer has 0 nodes for `.md` (Step 8). Canonical plan could not be patched: claims-gate DENY after code landed.
+**Why it bites:** verify-wave red after green tests; scratch plan copies; extra judge cat21 dismiss. Same md class as Bucket 3 Step 5 / Bucket 4 Step 6.
+**Suggested fix:** (diff-verifier) do not split `;` inside quoted needles; treat a directory path as an error with “use a file glob”; skip or warn `new:` on non-indexed extensions. (ORCH) keep scratch copies; never edit Facts after impl.
+**Run-report:** `docs/AI_artifacts/9_runs/2026-08-20-bkt5-codegraph-mcp.md`
+
+## 2026-08-20 — worker friction Steps 5/7/8 (codegraph-piggyback run, run-id 2026-08-20-bkt5-codegraph-mcp)
+**Status:** OPEN
+**Seat:** worker-observed (via av turn) · flash SIDs `f284cf28` / `a787afd6` / `579ddc5b`
+**Category:** doc-gap + noise + confusing
+**Symptom:** pasted from worker reports:
+- Step 5: plan MUST-2 recipe expects explicit-arm success to reach `openSync`, but lazy `require('../index')` cannot resolve under vitest with no `dist/` build; adjacent `mcp-unindexed` spawn tests fail for the same missing `dist/`.
+- Step 7: WT-root `IMPLEMENTATION_REPORT.md` already held a stale ssot-diagram Step 10 report (2026-07-10).
+- Step 8: prompt named ADR `0001-mcp-daemon-and-direct-fallback.md`; on-disk file is `0001-init-repairs-unusable-index.md`.
+**Why it bites:** extra debug runs; one extra read of a leftover report; one extra find for the real ADR.
+**Suggested fix:** note vitest-without-dist in the plan; clear leftover reports between waves; cite ADR by number or the real filename.
+**Run-report:** `docs/AI_artifacts/9_runs/2026-08-20-bkt5-codegraph-mcp.md`
+
 ## 2026-08-19 — syn-3-kimi-k3 429 mid design-patch; opus judge session-limit (run-id 2026-08-19-bkt5-codegraph-mcp)
 **Seat:** ORCH first-hand
 **Category:** offline
