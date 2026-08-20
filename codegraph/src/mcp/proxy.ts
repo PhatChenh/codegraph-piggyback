@@ -26,8 +26,9 @@ import { supervisionLostReason } from './ppid-watchdog';
 import { treatStdinFailureAsShutdown } from './stdin-teardown';
 import { CodeGraphPackageVersion } from './version';
 import { SERVER_INFO, PROTOCOL_VERSION } from './session';
-import { SERVER_INSTRUCTIONS } from './server-instructions';
+import { instructionsForMcpIndex } from './server-instructions';
 import { getStaticTools } from './tools';
+import { resolveMcpIndexState } from './index-state';
 import { getTelemetry, ClientInfo } from '../telemetry';
 import type { MCPEngine } from './engine';
 
@@ -295,10 +296,15 @@ export async function runLocalHandshakeProxy(deps: LocalHandshakeDeps): Promise<
             version: typeof initParams.clientInfo.version === 'string' ? initParams.clientInfo.version : undefined,
           };
         }
-        writeClient({ jsonrpc: '2.0', id: msg.id, result: { protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {} }, serverInfo: SERVER_INFO, instructions: SERVER_INSTRUCTIONS } });
+        // Re-probe the index on every handshake — cheap COUNT before the reply,
+        // heavy engine init stays background (#172). Same mapping as the session
+        // door; an unindexed workspace gets the "inactive" copy.
+        const resolved = resolveMcpIndexState(deps.root);
+        writeClient({ jsonrpc: '2.0', id: msg.id, result: { protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {} }, serverInfo: SERVER_INFO, instructions: instructionsForMcpIndex(resolved) } });
         routeToDaemon(line); // prime the daemon so it resolves the project (its reply is suppressed below)
       } else if (msg.method === 'tools/list') {
-        writeClient({ jsonrpc: '2.0', id: msg.id, result: { tools: getStaticTools() } });
+        const resolved = resolveMcpIndexState(deps.root);
+        writeClient({ jsonrpc: '2.0', id: msg.id, result: { tools: resolved.state === 'index_missing' ? [] : getStaticTools() } });
       } else if (msg.method === 'resources/list') {
         // No resources exposed — answer the probe locally so it never reaches
         // the daemon as an unhandled method and logs `-32601`. (#621)
