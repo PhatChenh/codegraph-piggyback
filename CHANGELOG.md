@@ -2,6 +2,10 @@
 
 One line per landing. Detail lives in the linked artifact.
 
+## 2026-08-20
+
+- **Bucket 6 writ probe pipeline DONE (paper)** — design/RT/spec/FCV/plan pinned; C1 ABSORB runtime wrap; code not shipped. → `docs/AI_artifacts/9_runs/2026-08-19-bkt6-writ-probe.md`
+
 ## 2026-08-19
 
 - **Bucket 5 MCP missing vs empty pipeline DONE (paper)** — design/RT/spec/FCV/plan pinned; code not shipped. → `docs/AI_artifacts/9_runs/2026-08-19-bkt5-codegraph-mcp.md`
