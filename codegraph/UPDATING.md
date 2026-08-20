@@ -24,6 +24,7 @@ agent tool calls for ~7 minutes. Full incident + root cause:
 | Stack-overflow fix in `getUnresolvedReferencesByFiles` (150k-row spread) | `src/db/queries.ts` |
 | Daemon kill-loop circuit breaker (3 watchdog kills / 15 min → refuse respawn) | `src/mcp/liveness-watchdog.ts`, `src/mcp/index.ts` |
 | Upgrade clobber guard (`.local-patches.json` marker blocks upgrade/reinstall) | `src/upgrade/index.ts`, `src/installer/index.ts` |
+| MCP mapper imports `probeIndexHealth`, maps CLI 5-arm → MCP 3-arm (missing/empty/usable; busy→empty-style) | `src/mcp/index-state.ts`, `src/mcp/session.ts`, `src/mcp/proxy.ts` |
 
 Tests for all of the above live in `__tests__/` (unsafe-index-root,
 mcp-catchup-gate, db-perf, liveness-watchdog, upgrade).
