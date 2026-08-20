@@ -81,7 +81,7 @@ calls; a grep/read exploration is dozens.
  */
 export const SERVER_INSTRUCTIONS_UNINDEXED = `# Codegraph — inactive (workspace not indexed)
 
-This workspace has no codegraph index (no \`.codegraph/\` directory), so no
+This workspace has no usable index, so no
 codegraph tools are available this session. Work with your built-in tools as
 usual.
 
@@ -89,3 +89,44 @@ Indexing is the user's decision — do not run it yourself. If the user asks
 about codegraph, they can enable it by running \`codegraph init\` in the
 project root and starting a new session.
 `;
+
+/**
+ * Instructions variant sent when a codegraph index EXISTS but holds 0 symbols.
+ *
+ * Unlike the missing state, tools stay listed here — the empty→usable
+ * transition is re-probed on the next `tools/list`, so the agent is not told
+ * to start a new session. Indexing stays the user's call.
+ */
+export const SERVER_INSTRUCTIONS_INDEX_EMPTY = `# Codegraph — index is empty
+
+This project's codegraph index exists but has 0 symbols. Tools stay listed; calls will return empty until the user runs \`codegraph init\` in the project root. Do not run init yourself.
+`;
+
+/**
+ * Instructions variant sent when a codegraph index exists but is busy (locked).
+ */
+export const SERVER_INSTRUCTIONS_INDEX_BUSY = `# Codegraph — index is busy
+
+The codegraph index is busy (locked). Retry later. Do not run \`codegraph init\` yourself.
+`;
+
+/**
+ * Map an MCP index tri-state to the `initialize` instructions payload.
+ *
+ * `busy` wins BEFORE the state switch so the busy copy can never collapse
+ * into the empty copy.
+ */
+export function instructionsForMcpIndex(r: {
+  state: 'index_missing' | 'index_empty' | 'usable';
+  busy: boolean;
+}): string {
+  if (r.busy) return SERVER_INSTRUCTIONS_INDEX_BUSY;
+  switch (r.state) {
+    case 'usable':
+      return SERVER_INSTRUCTIONS;
+    case 'index_empty':
+      return SERVER_INSTRUCTIONS_INDEX_EMPTY;
+    case 'index_missing':
+      return SERVER_INSTRUCTIONS_UNINDEXED;
+  }
+}
