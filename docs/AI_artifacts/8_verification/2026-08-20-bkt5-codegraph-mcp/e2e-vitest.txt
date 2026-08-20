@@ -1,0 +1,27 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 /Users/phatchenh/all-projects/vibe-coding-setup/codegraph-piggyback/.worktrees/bkt5-codegraph-mcp/codegraph
+
+ ✓ __tests__/mcp-server-instructions.test.ts (9 tests) 3ms
+ ✓ __tests__/mcp-index-state.test.ts (9 tests) 18ms
+ ✓ __tests__/mcp-session-index-state.test.ts (8 tests) 8ms
+[CodeGraph MCP] Shared daemon unavailable; serving this session in-process (degraded).
+[CodeGraph MCP] Shared daemon unavailable; serving this session in-process (degraded).
+[CodeGraph MCP] Shared daemon unavailable; serving this session in-process (degraded).
+[CodeGraph MCP] Shared daemon unavailable; serving this session in-process (degraded).
+[CodeGraph MCP] Shared daemon unavailable; serving this session in-process (degraded).
+[CodeGraph MCP] Shared daemon unavailable; serving this session in-process (degraded).
+ ✓ __tests__/mcp-proxy-handshake.test.ts (7 tests) 17ms
+ ✓ __tests__/mcp-getcodegraph-index-state.test.ts (3 tests) 64ms
+ ✓ __tests__/mcp-initialize.test.ts (4 tests) 865ms
+ ✓ __tests__/worktree-detection.test.ts (12 tests) 3508ms
+   ✓ worktree mismatch surfaces on hot read tools (issue #155) > prefixes a compact notice on codegraph_search run from a nested worktree 574ms
+   ✓ worktree mismatch surfaces on hot read tools (issue #155) > does NOT prefix when the default project is the main checkout itself 467ms
+   ✓ worktree mismatch surfaces on hot read tools (issue #155) > still shows the verbose warning on codegraph_status 311ms
+   ✓ worktree mismatch verdict re-resolves when the index root changes (issue #926) > drops the stale "borrowed the main index" warning once the index root flips to the worktree 389ms
+
+ Test Files  7 passed (7)
+      Tests  52 passed (52)
+   Start at  11:09:00
+   Duration  4.64s (transform 925ms, setup 0ms, collect 3.48s, tests 4.48s, environment 1ms, prepare 535ms)
+

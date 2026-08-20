@@ -15,10 +15,10 @@
 import * as path from 'path';
 import { JsonRpcRequest, JsonRpcNotification, JsonRpcTransport, ErrorCodes } from './transport';
 import { MCPEngine } from './engine';
-import { tools } from './tools';
-import { SERVER_INSTRUCTIONS, SERVER_INSTRUCTIONS_UNINDEXED } from './server-instructions';
+import { tools, getStaticTools } from './tools';
+import { instructionsForMcpIndex } from './server-instructions';
 import { CodeGraphPackageVersion } from './version';
-import { findNearestCodeGraphRoot } from '../directory';
+import { resolveMcpIndexState } from './index-state';
 import { getTelemetry, ClientInfo } from '../telemetry';
 
 /**
@@ -190,23 +190,23 @@ export class MCPSession {
     }
 
     // Pick the instructions variant by the workspace's index state — a cheap
-    // synchronous walk-up (existsSync loop only, no DB open, so the #172
-    // respond-fast contract holds). An unindexed workspace gets the short
-    // "inactive this session" note instead of the full playbook: the playbook
-    // tells the agent to lean on tools that would all fail, and early failures
-    // teach the agent to abandon codegraph entirely. `tools/list` is gated the
-    // same way (empty list when unindexed). When no explicit path is known yet
-    // (roots/list dance pending), cwd is the best predictor of where the
-    // default project will resolve — and on a mismatch the worst case is the
-    // optimistic full playbook backstopped by the empty tool list.
-    const indexed = findNearestCodeGraphRoot(explicitPath ?? process.cwd()) !== null;
+    // synchronous walk-up + read-only COUNT via the mapper (no engine open, so
+    // the #172 respond-fast contract holds). An unindexed workspace gets the
+    // short "inactive this session" note instead of the full playbook: the
+    // playbook tells the agent to lean on tools that would all fail, and early
+    // failures teach the agent to abandon codegraph entirely. `tools/list` is
+    // gated the same way (empty list when index_missing). When no explicit
+    // path is known yet (roots/list dance pending), cwd is the best predictor
+    // of where the default project will resolve — and on a mismatch the worst
+    // case is the optimistic full playbook backstopped by the empty tool list.
+    const resolved = resolveMcpIndexState(explicitPath ?? process.cwd());
 
     // Respond to the handshake BEFORE doing any heavy init — see issue #172.
     this.transport.sendResult(request.id, {
       protocolVersion: PROTOCOL_VERSION,
       capabilities: { tools: {} },
       serverInfo: SERVER_INFO,
-      instructions: indexed ? SERVER_INSTRUCTIONS : SERVER_INSTRUCTIONS_UNINDEXED,
+      instructions: instructionsForMcpIndex(resolved),
     });
 
     if (explicitPath) {
@@ -218,16 +218,16 @@ export class MCPSession {
   }
 
   private async handleToolsList(request: JsonRpcRequest): Promise<void> {
-    await this.retryInitIfNeeded();
-    // An unindexed workspace serves an EMPTY tool list: absence is the one
-    // signal an agent can't misread. Listing 8 tools that all fail wastes the
-    // agent's calls and teaches it codegraph is broken (observed: one or two
-    // early isError responses and the agent stops calling codegraph for the
-    // whole session). A `codegraph init` run after the server started is
-    // picked up on the next tools/list — retryInitIfNeeded re-walks — though
-    // most hosts only request the list once per connection.
+    // COUNT-before-reply via the mapper — the list is decided WITHOUT the
+    // engine's open state, so it never blocks on `ensureInitialized` (a slow
+    // or busy index must not delay the host's first tools/list; MUST-1).
+    // Absence is the one signal an agent can't misread: `index_missing` gets
+    // an EMPTY list, empty/usable get the static tools. A `codegraph init`
+    // run after the server started is picked up on the next tools/list
+    // (re-probe), though most hosts only request the list once per connection.
+    const resolved = resolveMcpIndexState(this.explicitProjectPath ?? process.cwd());
     this.transport.sendResult(request.id, {
-      tools: this.engine.hasDefaultCodeGraph() ? this.engine.getToolHandler().getTools() : [],
+      tools: resolved.state === 'index_missing' ? [] : getStaticTools(),
     });
   }
 

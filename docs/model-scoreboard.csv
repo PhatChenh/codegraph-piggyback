@@ -1,4 +1,15 @@
 date,model,role,risk_tier,outcome,note
+2026-08-20,cursor-grok-4.6-high,gather,A,pass-first-try,Bkt6 FCV 20/0/0 + 10-step plan plan_verify exit 0
+2026-08-20,cursor-grok-4.6-high,gather,A,pass-first-try,Bkt6 spec C1 ABSORB runtime wrap
+2026-08-20,syn-2-kimi-k3,judge,A,findings-confirmed,Bkt6 r9 C1 ABSORB not PATCH
+2026-08-20,syn-3-kimi-k3,review,A,pass-first-try,Bkt5 solo whole-diff APPROVE 0 findings
+2026-08-20,syn-3-kimi-k3,judge,A,findings-confirmed,Bkt5 impl thin stamps + cat21 dismiss
+2026-08-20,clx-deepseek-v4-flash,implement,C,needed-fixes,Bkt5 wave E step 8 ADR; cat21 md-not-indexed dismissed by judge
+2026-08-20,clx-deepseek-v4-flash,implement,B,pass-first-try,Bkt5 wave D step 7 BT-3 spawn pin
+2026-08-20,cursor-grok-4.6-high,review,A,pass-first-try,Bkt5 wave C tier-A steps 3+4+5 APPROVE 0 findings
+2026-08-20,clx-deepseek-v4-flash,implement,A,needed-fixes,Bkt5 wave C steps 3+4 pass-first-try; step5 same-SID report testCmd nudge
+2026-08-20,clx-deepseek-v4-flash,implement,B,pass-first-try,Bkt5 wave B step 2 mapper
+2026-08-20,clx-deepseek-v4-flash,implement,B,pass-first-try,Bkt5 wave A steps 1+6
 2026-08-19,cursor-grok-4.6-high,gather,A,pass-first-try,Bkt5 FCV 20/0/0 + 8-step plan plan_verify exit 0
 2026-08-19,cursor-grok-4.6-high,gather,A,pass-first-try,Bkt5 spec MUST-1/2/3
 2026-08-19,syn-3-kimi-k3,judge,A,findings-confirmed,Bkt5 D7 EXIT then spec/plan stamps

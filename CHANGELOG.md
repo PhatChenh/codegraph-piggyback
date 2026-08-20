@@ -4,6 +4,7 @@ One line per landing. Detail lives in the linked artifact.
 
 ## 2026-08-20
 
+- **Bucket 5 MCP handshake MERGED to main** — first contact now says missing vs empty vs ready; live editor copy not updated. → `docs/AI_artifacts/9_runs/2026-08-20-bkt5-codegraph-mcp.md`
 - **Bucket 6 writ probe pipeline DONE (paper)** — design/RT/spec/FCV/plan pinned; C1 ABSORB runtime wrap; code not shipped. → `docs/AI_artifacts/9_runs/2026-08-19-bkt6-writ-probe.md`
 
 ## 2026-08-19
