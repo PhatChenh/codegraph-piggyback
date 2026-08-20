@@ -1,4 +1,9 @@
 date,model,role,risk_tier,outcome,note
+2026-08-20,syn-3-kimi-k3,review,A,pass-first-try,Bkt6 impl whole-diff APPROVE (sqlite pin + blast-gate 8 recorded)
+2026-08-20,syn-3-kimi-k3,judge,A,findings-confirmed,Bkt6 impl thin stamps; Step 9 finding 1 ACCEPT
+2026-08-20,cursor-grok-4.6-high,review,A,findings-confirmed,Bkt6 Step 9 CHANGES_REQUESTED then FIX1 APPROVE; Steps 1–3/6–7 APPROVE 0
+2026-08-20,clx-deepseek-v4-flash,implement,A,needed-fixes,Bkt6 Steps 1–8 mostly pass-first-try; Step 5 continuation; Step 9 FIX1 src.find
+
 2026-08-20,cursor-grok-4.6-high,gather,A,pass-first-try,Bkt6 FCV 20/0/0 + 10-step plan plan_verify exit 0
 2026-08-20,cursor-grok-4.6-high,gather,A,pass-first-try,Bkt6 spec C1 ABSORB runtime wrap
 2026-08-20,syn-2-kimi-k3,judge,A,findings-confirmed,Bkt6 r9 C1 ABSORB not PATCH

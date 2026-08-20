@@ -1,3 +1,13 @@
+## 2026-08-20 — flash cwd leak + md `new:` + sqlite pin + blast-gate allow JSON (run-id 2026-08-20-bkt6-writ-probe)
+**Status:** OPEN
+**Seat:** ORCH first-hand (Cursor Grok 4.6) · daemon `:19841` `orch-bkt6-writ-probe`
+**Category:** burden + confusing
+**Symptom:** (1) `av session create` from one shell loop inherited step4 `$PWD` → four SIDs in the wrong WT; three `av stop` + recreate. (2) Step 8 `new:` on `.md` → verify-wave 21 NOT-DELIVERED; scratch `touch:` unblocked. (3) Plan pytest green on system python3 SQLite 3.51; project `.venv` 3.50.4 does not fire WAL immutable retry. (4) `test_blast_gate_hook.py` 8 tests fail on `main` (`{"permission":"allow"}` vs empty stdout); Step 5 testCmd scoped to the new test.
+**Why it bites:** extra sessions; one glue patch; CI/venv will show 2 WAL pins red; full-file Step 5 verify cannot go green.
+**Burden:** pin `VILLAGE_PORT=19841`; one Shell cwd per `session create`; PYTHONPATH to parent `.venv` site-packages + `vendor/falkordb.so`; never reuse flash SID; judge `reportExempt` `sid#1`; scratch plan WT-relative; do not `git add -A` piggyback.
+**Suggested fix:** (av) warn when create cwd ≠ dest WT path. (diff-verifier) `new:` on `.md` → touch/file. (falkor-writ) reconcile allow JSON vs silent-pass tests; pin sqlite minor in the WAL tests or skip when ro-open succeeds.
+**Run-report:** `docs/AI_artifacts/9_runs/2026-08-20-bkt6-writ-probe.md`
+
 ## 2026-08-20 — plan-verify `;` split + dir glob + md `new:` (codegraph-piggyback run, run-id 2026-08-20-bkt5-codegraph-mcp)
 **Status:** OPEN
 **Seat:** ORCH first-hand (Cursor Grok 4.6)
