@@ -1,3 +1,12 @@
+## 2026-09-14 — greenfield plan `touch:` of in-plan files FAILs `--strict` (calendar-management P0 away, run-id p0-foundation-mcp-door)
+**Status:** OPEN
+**Seat:** ORCH first-hand
+**Category:** confusing
+**Symptom:** `plan_verify.py … --strict` verdict FAIL (3 MISSING) on `touch: lib/auth.ts::additionalFields`, `touch: app/api/mcp/route.ts::POST`, `touch: lib/auth.ts::trustedProxies` because those files do not exist yet. Same plan’s `new:` rows for files this phase creates were OK. Recoding the three `touch:` lines to `new:` made verdict PASS; swept MISSING ghosts remained and did not fail.
+**Why it bites:** CORE says exit 1 → re-dispatch planner. Greenfield plans that correctly say later steps *touch* files created in earlier steps look broken. ORCH recoded to `new:` to close Stage 4.
+**Suggested fix:** `touch:` of a path that also has a `new:` earlier in the same plan should not FAIL `--strict` (treat as in-plan sequential), or document that greenfield later-step edits must be `new:`.
+**Run-report:** `/Users/phatchenh/all-projects/calendar-management/docs/AI_artifacts/9_runs/2026-09-14-p0-foundation-mcp-door.md`
+
 ## 2026-09-13 — Cursor MCP `user-codegraph` discovery error while on-disk index is populated (minions B2 session-box-floor, run-id 2026-09-12-session-box-floor)
 **Status:** OPEN
 **Seat:** ORCH first-hand (Cursor Grok) · FCV+plan harness grok SID `9262a3d9-10a0-4d07-bdd3-30eaad7add9f`
