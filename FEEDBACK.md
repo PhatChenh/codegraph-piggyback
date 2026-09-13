@@ -1,3 +1,12 @@
+## 2026-09-13 — Cursor MCP `user-codegraph` discovery error while on-disk index is populated (minions B2 session-box-floor, run-id 2026-09-12-session-box-floor)
+**Status:** OPEN
+**Seat:** ORCH first-hand (Cursor Grok) · FCV+plan harness grok SID `9262a3d9-10a0-4d07-bdd3-30eaad7add9f`
+**Category:** bug
+**Symptom:** `GetDynamicTools` on namespace `user-codegraph` returned `namespaceStatus: error` / `This MCP server failed during live tool discovery. Its tools are unavailable until the connection is fixed.` FCV/plan cites used Read + shell `codegraph`. On-disk index in the product repo is populated: 780 nodes / 20 files (`docs/AI_artifacts/5_factual-code-verification/session-box-floor.md`).
+**Why it bites:** every Stage-4 gatherer that trusted MCP had to fall back; looks like an empty index when the sqlite file is fine.
+**Suggested fix:** (Cursor MCP wrapper / codegraph server) fail discovery with the sqlite path + node count, or recover the connection; do not report “tools unavailable” as if the index were missing.
+**Run-report:** `/Users/phatchenh/all-projects/minions/docs/AI_artifacts/9_runs/2026-09-12-session-box-floor.md`
+
 ## 2026-08-20 — flash cwd leak + md `new:` + sqlite pin + blast-gate allow JSON (run-id 2026-08-20-bkt6-writ-probe)
 **Status:** OPEN
 **Seat:** ORCH first-hand (Cursor Grok 4.6) · daemon `:19841` `orch-bkt6-writ-probe`
