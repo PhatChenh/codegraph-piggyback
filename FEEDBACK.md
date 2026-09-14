@@ -1,3 +1,12 @@
+## 2026-09-15 — empty `.codegraph/` still swept as ghosts on `--strict` (minions B3 certification-battery, run-id 2026-09-13-certification-battery)
+**Status:** OPEN
+**Seat:** ORCH first-hand · FCV+plan harness grok SID `7a0fe618-995e-4318-84e9-899d1d13bbf3`
+**Category:** confusing
+**Symptom:** this product workspace has no usable CodeGraph index (MCP `user-codegraph` inactive; no `.codegraph/` sqlite). FCV/plan cited `src/` via Read. `plan_verify.py … --strict` still swept dozens of tokens as MISSING (`certify`, `run_arm`, cargo test command strings). Manifest `new:` rows were OK; the FAIL this close was a later-step `touch: src/certify.rs::Case` of a Step-8 `new:` (same class as the 2026-09-14 calendar-management entry).
+**Why it bites:** empty index looks like a broken plan. ORCH dropped the Case `touch:`; swept MISSING did not fail `--strict`.
+**Suggested fix:** if `.codegraph/` is absent, print one INDEX-ABSENT note and skip token sweep; keep `--strict` on manifest only. Sequential `touch:` of an earlier in-plan `new:` still should not FAIL.
+**Run-report:** `/Users/phatchenh/all-projects/minions/docs/AI_artifacts/9_runs/2026-09-15-certification-battery.md`
+
 ## 2026-09-14 — greenfield plan `touch:` of in-plan files FAILs `--strict` (calendar-management P0 away, run-id p0-foundation-mcp-door)
 **Status:** OPEN
 **Seat:** ORCH first-hand
