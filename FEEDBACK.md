@@ -1,3 +1,19 @@
+## 2026-10-03 — Worker receives another checkout's CodeGraph context (minions run, run-id 2026-10-02-b4f-popup-impl)
+**Seat:** worker-observed (via av turn); ORCH confirmed current checkout differs from index
+**Category:** confusing
+**Symptom:** Worker Step11Z1 reported startup context from main checkout rather than its exam worktree. Exact worker friction block follows unchanged.
+**Why it bites:** It adds irrelevant context and can make current-branch code look absent. Conductor used exact symbol queries first then authoritative worktree reads; did not reindex or alter shared tooling.
+**Suggested fix:** Bind indexed source root and Git revision to worker cwd, or label a mismatched injection and omit its verbatim source until current checkout is requested.
+**Run-report:** /Users/phatchenh/all-projects/minions/.village/worktrees/b4f-w7-s11/docs/AI_artifacts/9_runs/2026-10-02-b4f-popup-impl.md
+
+```text
+friction:
+  - category: noise
+    symptom: the first UserPromptSubmit hook appended a CodeGraph context block gathered from a DIFFERENT worktree (/Users/phatchenh/all-projects/minions, not this worktree) and a 12.3KB persisted-output notice, before any file was read
+    cost: one detour — the block had to be recognised as another branch's context and ignored, and the prompt's "narrow reads only" instruction had to be re-applied by hand
+    fix: point the CodeGraph hook at the session worktree, or suppress codegraph context when cwd is a worktree with no local index
+```
+
 ## 2026-09-15 — empty `.codegraph/` still swept as ghosts on `--strict` (minions B3 certification-battery, run-id 2026-09-13-certification-battery)
 **Status:** OPEN
 **Seat:** ORCH first-hand · FCV+plan harness grok SID `7a0fe618-995e-4318-84e9-899d1d13bbf3`
