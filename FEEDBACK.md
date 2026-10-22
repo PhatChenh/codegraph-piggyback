@@ -1,3 +1,12 @@
+
+
+## 2026-10-22 — plan_verify parses shell commands in plan prose as symbol names, producing 221 false MISSING rows (mkt_engine run, run-id resize-p2-2026-10-22)
+**Seat:** ORCH first-hand
+**Category:** confusing
+**Symptom:** `plan_verify.py <plan> --spec <spec> --strict` reported `287 claims (66 manifest, 221 swept)` and then listed 221 `MISSING — no node or file matches ...` rows. The "missing" identifiers were not symbols at all: they were shell commands and shell fragments lifted from the plan's prose, e.g. `sed -n '400,415p' lib/ai/image/size.ts`, `grep -n "pickResizeMode\|resolveSourceImage" ...`, `python3 .../artifact_claims.py check <plan> --strict`, and even a literal `0.005`. The plan's `<!-- plan-verify -->` manifests were clean and the verdict was `PASS`.
+**Why it bites:** 221 alarming rows is the entire screen. A conductor who trusts the row count over the verdict re-dispatches a correct plan — and one who learns to ignore the output has disabled the gate. Neither is acceptable, and there is no line in the output saying "these 221 are prose, not claims".
+**Suggested fix:** (a) only sweep text inside a `<!-- plan-verify -->` block or fenced code, never free prose; (b) skip candidates that look like commands (leading `cd `/`sed `/`grep `/`python3 `/`cat `, embedded flags, shell metacharacters); (c) print swept-vs-manifest as two clearly labelled sections with their own verdicts, so a PASS verdict cannot sit under 221 MISSING lines.
+
 ## 2026-10-03 — Worker receives another checkout's CodeGraph context (minions run, run-id 2026-10-02-b4f-popup-impl)
 **Seat:** worker-observed (via av turn); ORCH confirmed current checkout differs from index
 **Category:** confusing
