@@ -56,11 +56,54 @@ PLAN_MALFORMED_MARKER = "PLAN-MALFORMED:"
 
 TEST_GLOBS = ("test_*", "*_test.*", "*.test.*")
 
+# Code the codegraph index parses. A path claim outside this set is a document
+# (or data) deliverable: the index holds no rows for it, so asking it whether
+# the file exists can only ever answer UNRESOLVED. Those claims are verified on
+# disk instead. Measured 2026-10-23: the index held 169 files and zero .md rows,
+# so every markdown `new:` claim failed NOT-DELIVERED with the file present.
+CODE_EXTENSIONS = frozenset({
+    ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs",
+    ".py", ".go", ".rs", ".java", ".rb", ".php", ".cs", ".kt", ".swift",
+    ".c", ".h", ".cc", ".cpp", ".hpp", ".m", ".mm", ".scala", ".sh",
+})
+
 
 def is_test_path(p: str) -> bool:
     parts = Path(p).parts
     name = Path(p).name
     return "tests" in parts or any(fnmatch.fnmatch(name, g) for g in TEST_GLOBS)
+
+
+def is_document_claim(claim) -> bool:
+    """True for a path-bearing claim the code index cannot resolve.
+
+    Only path claims qualify. A bare-symbol claim (`touch: av`) keeps the
+    symbol lookup — it is code by definition. An extensionless path is treated
+    as a document only when its extension is not indexable code.
+    """
+    path = claim.path
+    if not path:
+        return False
+    return Path(path).suffix.lower() not in CODE_EXTENSIONS
+
+
+def document_verdict(repo_root: Path, claim) -> tuple[str, str] | None:
+    """On-disk verdict for a document claim: (reason, detail) or None if fine.
+
+    `new`/`touch` require the file to exist; `remove` requires it to be gone.
+    Same existence contract the index lookup enforces for code — content
+    quality is the contract check's job, not this tool's.
+    """
+    path = claim.path
+    if path is None:
+        return None
+    target = Path(path) if Path(path).is_absolute() else (repo_root / path)
+    exists = target.exists()
+    if claim.intent == "remove" and exists:
+        return ("still-present", path)
+    if claim.intent in ("new", "touch") and not exists:
+        return ("missing", path)
+    return None
 
 
 # ── diff acquisition ─────────────────────────────────────────────────────────
@@ -213,7 +256,10 @@ def verify(plan_path: Path, changed: list[str], repo_root: Path,
         if fail:
             findings.append({"verdict": QUALIFIER_FAIL, "evidence": f"{q} → {fail}"})
 
-    # 3 — new delivered / remove gone (DB re-query)
+    # 3 — new delivered / remove gone
+    #     Code claims: DB re-query (the index is the authority for code).
+    #     Document claims: on-disk existence (the index holds no rows for them,
+    #     so a DB lookup could only ever answer UNRESOLVED — see CODE_EXTENSIONS).
     if skip_db:
         notes.append("DB checks SKIPPED (--skip-db): NOT-DELIVERED / NOT-REMOVED not verified")
     else:
@@ -222,7 +268,21 @@ def verify(plan_path: Path, changed: list[str], repo_root: Path,
             notes.append("no codegraph DB found — NOT-DELIVERED / NOT-REMOVED not verified")
         else:
             con = open_db(db)
+            document_claims = 0
             for c in manifest.claims:
+                if is_document_claim(c):
+                    document_claims += 1
+                    bad = document_verdict(repo_root, c)
+                    if bad is None:
+                        continue
+                    reason, path = bad
+                    if reason == "still-present":
+                        findings.append({"verdict": NOT_REMOVED,
+                                         "evidence": f"{c.raw} still present at {path}"})
+                    else:
+                        findings.append({"verdict": NOT_DELIVERED,
+                                         "evidence": f"{c.raw} absent from {path}"})
+                    continue
                 token = c.symbol or c.path or c.raw
                 res = _rs.resolve(con, token,
                                   file_hint=c.path if c.symbol else None)
@@ -232,6 +292,10 @@ def verify(plan_path: Path, changed: list[str], repo_root: Path,
                     locs = ", ".join(x.loc for x in res.candidates[:3])
                     findings.append({"verdict": NOT_REMOVED,
                                      "evidence": f"{c.raw} still at {locs}"})
+            if document_claims:
+                notes.append(
+                    f"{document_claims} document claim(s) verified on disk "
+                    "(the code index holds no rows for non-code paths)")
 
     # 4 — declared test files present in diff
     declared_tests = [p for p in declared if is_test_path(p)]

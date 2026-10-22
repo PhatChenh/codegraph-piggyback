@@ -590,3 +590,78 @@ class TestManifestEmptyFinding:
         assert r.returncode == 0, r.stdout + r.stderr
         assert "MANIFEST-EMPTY" not in r.stdout
         assert "PASS" in r.stdout
+
+
+DOC_PLAN = """# Step 4 plan
+
+<!-- plan-verify
+new: docs/evidence/proof.md
+tier: A
+-->
+"""
+
+
+@pytest.fixture()
+def doc_repo(tmp_path: Path) -> Path:
+    (tmp_path / "docs/evidence").mkdir(parents=True)
+    (tmp_path / "docs/evidence/proof.md").write_text("# proof\n")
+    make_db(tmp_path, delivered=True, removed=True)
+    (tmp_path / "plan.md").write_text(DOC_PLAN)
+    return tmp_path
+
+
+class TestDocumentClaims:
+    """A document deliverable cannot be resolved by the code index.
+
+    Measured 2026-10-23: the index held 169 files and zero .md rows, so a
+    markdown `new:` claim failed NOT-DELIVERED with the file present on disk.
+    Document claims are verified on disk; code claims keep the index lookup.
+    """
+
+    def test_document_present_passes(self, doc_repo):
+        r = run(doc_repo, ["docs/evidence/proof.md"], "--strict")
+        assert r.returncode == 0, r.stdout + r.stderr
+        assert "verified on disk" in r.stdout
+
+    def test_document_absent_still_fails(self, doc_repo):
+        """The fix must not become a bypass: absence still fails."""
+        (doc_repo / "docs/evidence/proof.md").unlink()
+        r = run(doc_repo, ["docs/evidence/proof.md"], "--strict")
+        assert r.returncode == 1
+        assert "NOT-DELIVERED" in r.stdout
+        assert "absent from" in r.stdout
+
+    def test_document_remove_still_present_fails(self, tmp_path):
+        (tmp_path / "docs").mkdir()
+        (tmp_path / "docs/old.md").write_text("x\n")
+        make_db(tmp_path, delivered=True, removed=True)
+        (tmp_path / "plan.md").write_text(
+            "<!-- plan-verify\nremove: docs/old.md\ntier: A\n-->")
+        r = run(tmp_path, ["docs/old.md"], "--strict")
+        assert r.returncode == 1 and "NOT-REMOVED" in r.stdout
+
+    def test_code_claim_still_uses_index(self, repo):
+        """A .py claim is still resolved by the index, not the filesystem."""
+        make_db(repo, delivered=False, removed=True)
+        r = run(repo, GOOD_DIFF, "--strict")
+        assert r.returncode == 1 and "NOT-DELIVERED" in r.stdout
+        assert "verified on disk" not in r.stdout
+
+    def test_code_path_file_on_disk_but_absent_from_index_fails(self, repo):
+        """Existence on disk is not enough for code: the index is the authority."""
+        (repo / "src/ghost.py").write_text("def ghost(): pass\n")
+        make_db(repo, delivered=True, removed=True)
+        (repo / "plan.md").write_text(
+            "<!-- plan-verify\nnew: src/ghost.py\ntier: A\n-->")
+        r = run(repo, ["src/ghost.py"], "--strict")
+        assert r.returncode == 1 and "NOT-DELIVERED" in r.stdout
+
+    def test_is_document_claim_classification(self):
+        class C:
+            def __init__(self, path, intent="new"):
+                self.path, self.intent = path, intent
+        assert dv.is_document_claim(C("docs/a.md"))
+        assert dv.is_document_claim(C("notes.txt"))
+        assert not dv.is_document_claim(C("src/a.ts"))
+        assert not dv.is_document_claim(C("src/a.py"))
+        assert not dv.is_document_claim(C(None))

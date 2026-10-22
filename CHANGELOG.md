@@ -2,6 +2,10 @@
 
 One line per landing. Detail lives in the linked artifact.
 
+## 2026-10-23
+
+- **diff-verify: document claims verified on disk, not via the code index** — a `new:`/`touch:`/`remove:` claim whose path is not indexable code (no code extension) is now checked on the filesystem. Measured cause: the codegraph index held 169 files and zero `.md` rows, so every markdown `new:` claim failed `NOT-DELIVERED` while the file sat committed on disk, blocking `av verify-wave` for any document-only step. Code claims keep the index lookup (a `.py` present on disk but absent from the index still fails). Six tests added; two mutations proven red (treat every claim as a document → 9 fail; never fail a document claim → 2 fail).
+
 ## 2026-08-20
 
 - **Bucket 5 MCP handshake MERGED to main + LIVE** — first contact now says missing vs empty vs ready. → `docs/AI_artifacts/9_runs/2026-08-20-bkt5-codegraph-mcp.md`
