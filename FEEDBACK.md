@@ -1,5 +1,24 @@
 
 
+## 2026-10-26 — same prose-sweep noise, second confirmed run, plus quote-delimiter false positives (BOTC run `b1c-service-health-20261026`)
+**Seat:** worker-observed (via av turn), plan seat `hive-dsflash`; ORCH confirmed first-hand
+**Category:** confusing | bug
+**Symptom:** the 2026-10-22 entry above repeats: **86 swept claims, 55 MISSING, 6 AMBIGUOUS, zero real
+code claims** — backticked shell commands (`bash scripts/test-db.sh readiness-gate`,
+`docker build -f scripts/health/Dockerfile …`), token literals (`healthy`, `stopped`, `secrets`), globs
+(`docs/adr/**`), and test names the plan itself creates. Manifest rows were clean and the verdict was PASS.
+**New in this run:** `quote: "…"` in a Facts row breaks when the quoted source text itself contains a
+double quote — the checker's `.+?` stops at the inner quote, so **five Facts rows were flagged
+`C3-MISMATCH` on citations that were correct.** The working form is a backticked ``quote: `…` ``.
+**Why it bites:** the C3 case is worse than noise. Noise wastes a turn; a false `C3-MISMATCH` accuses the
+author of fabricating a quote — the exact defect C3 exists to catch — so the natural response is to
+"correct" a correct citation and corrupt the artifact to satisfy the linter.
+**Suggested fix:** the (a)/(b)/(c) fix already suggested on 2026-10-22 still applies; add (d) balance the
+quote delimiters (or accept backticks as first-class) instead of matching `.+?`, and (e) name the working
+form in the Cite-discipline docs of `plan-from-specs` / `writing-detailed-specs` so each planner does not
+rediscover it.
+
+
 ## 2026-10-22 — plan_verify parses shell commands in plan prose as symbol names, producing 221 false MISSING rows (mkt_engine run, run-id resize-p2-2026-10-22)
 **Seat:** ORCH first-hand
 **Category:** confusing
