@@ -21,8 +21,9 @@ Two hook events, one script (dispatch on hook_event_name):
 Gated calls:
   - Grep / Glob               (always exploration) -- except clearly non-.py greps
   - Read on a *.py file       (Python source) -- only when the file's own git
-                              repo root has a .codegraph/ dir (CG1-1). A file
-                              outside any index, or in no git repo, is never gated
+                              repo root has .codegraph/codegraph.db (CG1-1; a bare
+                              .codegraph/ dir is not an index). A file outside any
+                              index, or in no git repo, is never gated
 Never gated:
   - Read on non-.py (md/toml/json/txt/...)   -> per the CLAUDE.md decision tree
   - anything, if a codegraph tool ran within WINDOW seconds
@@ -170,10 +171,13 @@ def _repo_root(path):
 
 
 def _in_indexed_repo(file_path, cwd):
-    """True if file_path's own git repo root contains a .codegraph/ dir.
+    """True if file_path's own git repo root holds an index, i.e.
+    .codegraph/codegraph.db exists. A bare .codegraph/ dir (e.g. a worktree
+    that tracks only .codegraph/.gitignore) is not an index.
     A relative file_path resolves against the hook's cwd."""
     root = _repo_root(os.path.abspath(os.path.join(cwd, file_path)))
-    return root is not None and os.path.isdir(os.path.join(root, ".codegraph"))
+    return root is not None and os.path.isfile(
+        os.path.join(root, ".codegraph", "codegraph.db"))
 
 
 def _pre_tool_use(data, cwd, cg_dir):

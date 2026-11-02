@@ -58,6 +58,7 @@ def main():
         td = Path(td)
         repo = td / "repo"
         (repo / ".codegraph").mkdir(parents=True)
+        (repo / ".codegraph" / "codegraph.db").write_text("")  # index file = indexed
         (repo / ".git").mkdir()  # CG1-1: a .py is gated via its file's git root
         py = repo / "mod.py"
         py.write_text("x = 1\n")
@@ -153,6 +154,7 @@ def main():
             td3 = Path(td3)
             idx = td3 / "indexed"  # hook cwd: indexed repo, cold (no graph use)
             (idx / ".codegraph").mkdir(parents=True)
+            (idx / ".codegraph" / "codegraph.db").write_text("")  # index file = indexed
             (idx / ".git").mkdir()
             idx_py = idx / "idx.py"
             idx_py.write_text("p = 1\n")
@@ -189,6 +191,7 @@ def main():
             # (e) guard: .py in ANOTHER repo that HAS a .codegraph/ -> still denied
             other = td3 / "other_indexed"
             (other / ".codegraph").mkdir(parents=True)
+            (other / ".codegraph" / "codegraph.db").write_text("")  # index file = indexed
             (other / ".git").mkdir()
             other_py = other / "mod.py"
             other_py.write_text("t = 5\n")
@@ -202,6 +205,18 @@ def main():
                   pre("Read", idx, file_path="../worktree/scripts/probe.py").stdout == "")
             check("CG1-1(f) relative path to indexed cwd file still denied",
                   denied(pre("Read", idx, file_path="idx.py")))
+
+            # (g) CG1-1 follow-up: a worktree (.git FILE) whose .codegraph/ holds ONLY
+            #     the tracked .gitignore (no codegraph.db) is not an index -> allowed.
+            #     Hook cwd is the worktree itself, as in the live defect.
+            wt2 = td3 / "tracked_worktree"
+            (wt2 / ".codegraph").mkdir(parents=True)
+            (wt2 / ".codegraph" / ".gitignore").write_text("*\n!.gitignore\n")
+            (wt2 / ".git").write_text("gitdir: /elsewhere/.git/worktrees/tracked_worktree\n")
+            wt2_py = wt2 / "mod.py"
+            wt2_py.write_text("u = 6\n")
+            check("CG1-1(g) .codegraph/ without codegraph.db: Read .py allowed",
+                  pre("Read", wt2, file_path=str(wt2_py)).stdout == "")
 
     print(f"\n{PASS} passed, {FAIL} failed")
     sys.exit(1 if FAIL else 0)
