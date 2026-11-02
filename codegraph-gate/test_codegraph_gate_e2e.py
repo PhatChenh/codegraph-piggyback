@@ -108,6 +108,7 @@ def main():
         # fall back to new-only sanity
         with tempfile.TemporaryDirectory() as td:
             repo = Path(td) / "repo"; (repo / ".codegraph").mkdir(parents=True); (repo / ".git").mkdir()
+            (repo / ".codegraph" / "codegraph.db").write_text("")
             r = replay("NEW-only", NEW, repo)
             check("NEW-only: shown_read_allowed", r["shown_read_allowed"])
             check("NEW-only: verify_edit_allowed", r["verify_edit_allowed"])
@@ -117,7 +118,9 @@ def main():
     with tempfile.TemporaryDirectory() as td:
         td = Path(td)
         repo_old = td / "old_repo"; (repo_old / ".codegraph").mkdir(parents=True); (repo_old / ".git").mkdir()
+        (repo_old / ".codegraph" / "codegraph.db").write_text("")
         repo_new = td / "new_repo"; (repo_new / ".codegraph").mkdir(parents=True); (repo_new / ".git").mkdir()
+        (repo_new / ".codegraph" / "codegraph.db").write_text("")
         old = replay("OLD", OLD, repo_old)
         new = replay("NEW", NEW, repo_new)
 
