@@ -58,6 +58,7 @@ def main():
         td = Path(td)
         repo = td / "repo"
         (repo / ".codegraph").mkdir(parents=True)
+        (repo / ".git").mkdir()  # CG1-1: a .py is gated via its file's git root
         py = repo / "mod.py"
         py.write_text("x = 1\n")
 
@@ -145,6 +146,62 @@ def main():
                               env=env, cwd=str(repo), capture_output=True, text=True)
         check("garbage stdin exits 0", garb.returncode == 0)
         check("garbage stdin no stdout", garb.stdout == "")
+
+        # 10. CG1-1: a Read of a .py is gated only when the FILE's own git repo
+        #     root has a .codegraph/ dir. An indexed hook cwd alone does not gate it.
+        with tempfile.TemporaryDirectory() as td3:
+            td3 = Path(td3)
+            idx = td3 / "indexed"  # hook cwd: indexed repo, cold (no graph use)
+            (idx / ".codegraph").mkdir(parents=True)
+            (idx / ".git").mkdir()
+            idx_py = idx / "idx.py"
+            idx_py.write_text("p = 1\n")
+
+            # (a) sibling git worktree: .git is a FILE, no .codegraph/ -> allowed
+            wt = td3 / "worktree"
+            (wt / "scripts").mkdir(parents=True)
+            (wt / ".git").write_text("gitdir: /elsewhere/.git/worktrees/worktree\n")
+            wt_py = wt / "scripts" / "probe.py"
+            wt_py.write_text("q = 2\n")
+            check("CG1-1(a) Read .py in un-indexed worktree (.git file) allowed",
+                  pre("Read", idx, file_path=str(wt_py)).stdout == "")
+
+            # (b) a different plain repo with no index -> allowed
+            plain = td3 / "plain"
+            (plain / ".git").mkdir(parents=True)
+            plain_py = plain / "mod.py"
+            plain_py.write_text("r = 3\n")
+            check("CG1-1(b) Read .py in other un-indexed repo allowed",
+                  pre("Read", idx, file_path=str(plain_py)).stdout == "")
+
+            # (c) a file inside no git repo at all -> allowed
+            loose = td3 / "loose"
+            loose.mkdir()
+            loose_py = loose / "mod.py"
+            loose_py.write_text("s = 4\n")
+            check("CG1-1(c) Read .py in no git repo allowed",
+                  pre("Read", idx, file_path=str(loose_py)).stdout == "")
+
+            # (d) guard: .py inside the indexed cwd repo, cold -> still denied
+            check("CG1-1(d) guard: .py in indexed cwd repo, cold, still denied",
+                  denied(pre("Read", idx, file_path=str(idx_py))))
+
+            # (e) guard: .py in ANOTHER repo that HAS a .codegraph/ -> still denied
+            other = td3 / "other_indexed"
+            (other / ".codegraph").mkdir(parents=True)
+            (other / ".git").mkdir()
+            other_py = other / "mod.py"
+            other_py.write_text("t = 5\n")
+            check("CG1-1(e) guard: .py in another indexed repo, cold, still denied",
+                  denied(pre("Read", idx, file_path=str(other_py))))
+
+            # (f) relative file_path resolves against the hook cwd (idx):
+            #     ../worktree/scripts/probe.py is the un-indexed worktree file -> allowed;
+            #     idx.py (indexed, cold) -> denied
+            check("CG1-1(f) relative path to un-indexed worktree file allowed",
+                  pre("Read", idx, file_path="../worktree/scripts/probe.py").stdout == "")
+            check("CG1-1(f) relative path to indexed cwd file still denied",
+                  denied(pre("Read", idx, file_path="idx.py")))
 
     print(f"\n{PASS} passed, {FAIL} failed")
     sys.exit(1 if FAIL else 0)

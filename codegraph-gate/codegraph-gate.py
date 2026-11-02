@@ -20,7 +20,9 @@ Two hook events, one script (dispatch on hook_event_name):
 
 Gated calls:
   - Grep / Glob               (always exploration) -- except clearly non-.py greps
-  - Read on a *.py file       (Python source)
+  - Read on a *.py file       (Python source) -- only when the file's own git
+                              repo root has a .codegraph/ dir (CG1-1). A file
+                              outside any index, or in no git repo, is never gated
 Never gated:
   - Read on non-.py (md/toml/json/txt/...)   -> per the CLAUDE.md decision tree
   - anything, if a codegraph tool ran within WINDOW seconds
@@ -153,6 +155,27 @@ def _post_tool_use(data, cwd, cg_dir):
     return 0
 
 
+def _repo_root(path):
+    """Nearest ancestor directory of path (path's own dir included) holding a
+    .git entry -- a directory, or a file as in a git worktree. None if the
+    path is in no git repo."""
+    d = os.path.dirname(path)
+    while True:
+        if os.path.exists(os.path.join(d, ".git")):
+            return d
+        parent = os.path.dirname(d)
+        if parent == d:
+            return None
+        d = parent
+
+
+def _in_indexed_repo(file_path, cwd):
+    """True if file_path's own git repo root contains a .codegraph/ dir.
+    A relative file_path resolves against the hook's cwd."""
+    root = _repo_root(os.path.abspath(os.path.join(cwd, file_path)))
+    return root is not None and os.path.isdir(os.path.join(root, ".codegraph"))
+
+
 def _pre_tool_use(data, cwd, cg_dir):
     tool = data.get("tool_name", "")
     ti = data.get("tool_input", {}) or {}
@@ -163,7 +186,8 @@ def _pre_tool_use(data, cwd, cg_dir):
     elif tool == "Glob":
         gated = True
     elif tool == "Read":
-        gated = (ti.get("file_path", "") or "").endswith(".py")
+        fp = ti.get("file_path", "") or ""
+        gated = fp.endswith(".py") and _in_indexed_repo(fp, cwd)
 
     if not gated:
         return 0
