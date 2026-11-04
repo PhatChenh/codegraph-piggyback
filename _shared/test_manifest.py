@@ -239,3 +239,27 @@ class TestExternalEntries:
         assert c.external is True
         assert c.path == "/abs/x.py"
         assert c.symbol == "sym"
+
+class TestParentHeadingStep:
+    """agent_village S8 (2026-11-04): a task covering two steps names the heading over them."""
+
+    PLAN = (
+        "## Steps\n\n"
+        "### Step 1 — test\n\n<!-- plan-verify\nnew: tests/test_a.py::test_x\n-->\n\n"
+        "### Step 2 — fix\n\n<!-- plan-verify\ntouch: a.py::f\n-->\n\n"
+        "## Out of Scope\n\n<!-- plan-verify\ntouch: b.py::g\n-->\n"
+    )
+
+    def test_a_parent_heading_selects_every_block_under_it_and_none_after(self):
+        for step in ("## Steps", "Steps"):
+            m, matched = mf.parse_manifest_for_step(self.PLAN, step)
+            assert matched
+            assert sorted(c.raw for c in m.claims) == ["a.py::f", "tests/test_a.py::test_x"]
+
+    def test_an_exact_step_heading_still_selects_only_its_own_block(self):
+        m, matched = mf.parse_manifest_for_step(self.PLAN, "Step 2 — fix")
+        assert matched
+        assert [c.raw for c in m.claims] == ["a.py::f"]
+
+    def test_an_unknown_heading_still_matches_nothing(self):
+        assert mf.parse_manifest_for_step(self.PLAN, "## Nope")[1] is False

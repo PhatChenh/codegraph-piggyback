@@ -193,18 +193,26 @@ def parse_manifest_for_step(text: str, step_id: str) -> tuple[Manifest, bool]:
     `step_id` may be given as (a) the exact heading text, (b) the `block-N`
     fallback id, or (c) a bare 1-based ordinal (`"1"`, `"2"`, …) — the last form
     matches the `.av-verify.json` contract's "text or numeric index". The
-    numeric form matches by block ordinal regardless of heading text.
+    numeric form matches by block ordinal regardless of heading text. When none
+    of those match, (d) a parent heading (`"## Steps"` or `"Steps"`) selects
+    every block nested under it.
     """
     m = Manifest()
     matched = False
     want_ordinal: int | None = None
     if step_id.isdigit():
         want_ordinal = int(step_id)
-    for idx, mo in enumerate(_BLOCK_RE.finditer(text), start=1):
-        heading = _nearest_heading(text, mo.start())
-        this_step = heading or f"block-{idx}"
-        if not (this_step == step_id or (want_ordinal is not None and idx == want_ordinal)):
-            continue
+    blocks = list(enumerate(_BLOCK_RE.finditer(text), start=1))
+    selected = [mo for idx, mo in blocks
+                if (_nearest_heading(text, mo.start()) or f"block-{idx}") == step_id
+                or (want_ordinal is not None and idx == want_ordinal)]
+    if not selected:
+        # (d) a parent heading (agent_village S8, 2026-11-04): a task that covers several steps names the heading over
+        # them, e.g. "## Steps" over "### Step 1" and "### Step 2". Its manifest is every block nested under that
+        # heading. Leading `#` marks are ignored. Tried only when (a)-(c) match nothing, so they keep their meaning.
+        parent = step_id.lstrip("#").strip()
+        selected = [mo for _idx, mo in blocks if parent and parent in _heading_chain(text, mo.start())]
+    for mo in selected:
         matched = True
         claims, tier, tier_problems, gates, qualifiers, unknown_keys = _parse_block_body(mo.group(1))
         m.claims.extend(claims)
@@ -274,6 +282,18 @@ def _parse_block_body(block_text: str) -> tuple[list[Claim], str | None,
             for q in filter(None, (e.strip() for e in val.split(";"))):
                 qualifiers.append(q)
     return claims, last_tier, tier_problems, gates, qualifiers, unknown_keys
+
+
+def _heading_chain(text: str, block_start: int) -> list[str]:
+    """The texts of every heading that encloses `block_start`, outermost first: a heading stays open until a later
+    heading of the same or a higher level (fewer or equal `#`) closes it."""
+    stack: list[tuple[int, str]] = []
+    for hm in _HEADING_RE.finditer(text[:block_start]):
+        level = len(hm.group(1))
+        while stack and stack[-1][0] >= level:
+            stack.pop()
+        stack.append((level, hm.group(2).strip()))
+    return [heading for _level, heading in stack]
 
 
 def _nearest_heading(text: str, block_start: int) -> str:
