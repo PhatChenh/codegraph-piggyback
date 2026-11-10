@@ -83,8 +83,10 @@ def _resolve_file(con: sqlite3.Connection, token: str) -> Resolution:
 def _resolve_symbol(con: sqlite3.Connection, token: str,
                     file_hint: str | None) -> Resolution:
     sql = ("SELECT id, kind, name, qualified_name, file_path, start_line, end_line "
-           "FROM nodes WHERE (name = ? OR qualified_name = ?)")
-    params: list = [token, token]
+           "FROM nodes WHERE (name = ? OR qualified_name = ? OR qualified_name = ?)")
+    # the index writes a class member as `Class::member` in every language; a
+    # token writes it `Class.member` (agent_village BUG-149)
+    params: list = [token, token, token.replace(".", "::")]
     if file_hint:
         # scope to the hinted file; accept exact path or suffix match so hints
         # written repo-relative and hints written basename-only both work

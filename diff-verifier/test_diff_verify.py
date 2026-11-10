@@ -148,6 +148,29 @@ class TestDbChecks:
         r = run(repo, GOOD_DIFF, "--strict", "--skip-db")
         assert "SKIPPED" in r.stdout and r.returncode == 0
 
+    CLASS_METHOD_PLAN = PLAN.replace(
+        "new:   src/db.py::get_pool",
+        "new:   src/db.py::get_pool, tests/test_db.py::DbTest.test_pool")
+
+    def test_new_class_method_written_with_a_dot_is_delivered(self, repo):
+        # agent_village BUG-149 (live smoke 2026-11-10): the index stores a class
+        # member as `Class::member` in every language; a plan writes `Class.member`.
+        make_db(repo, delivered=True, removed=True)
+        con = sqlite3.connect(repo / ".codegraph" / "codegraph.db")
+        con.execute("INSERT INTO nodes VALUES ('n9','method','test_pool',"
+                    "'DbTest::test_pool','tests/test_db.py',5,6)")
+        con.commit()
+        con.close()
+        (repo / "plan.md").write_text(self.CLASS_METHOD_PLAN)
+        r = run(repo, GOOD_DIFF, "--strict")
+        assert r.returncode == 0, r.stdout
+
+    def test_new_class_method_absent_is_still_not_delivered(self, repo):
+        make_db(repo, delivered=True, removed=True)
+        (repo / "plan.md").write_text(self.CLASS_METHOD_PLAN)
+        r = run(repo, GOOD_DIFF, "--strict")
+        assert r.returncode == 1 and "DbTest.test_pool" in r.stdout
+
 
 class TestTests:
     def test_tests_missing(self, repo):
