@@ -688,3 +688,49 @@ class TestDocumentClaims:
         assert not dv.is_document_claim(C("src/a.ts"))
         assert not dv.is_document_claim(C("src/a.py"))
         assert not dv.is_document_claim(C(None))
+
+
+class TestPathClaimWithoutIndexRow:
+    """agent_village av-improve B3: `.sh` is in CODE_EXTENSIONS but the index
+    holds no shell rows, so `new: test/records/x.sh` was NOT-DELIVERED with the
+    file present (calendar run p3-doc-trust-build-a3, verify 64..72)."""
+
+    def _setup(self, repo, claim):
+        make_db(repo, delivered=True, removed=True)
+        (repo / "plan.md").write_text(
+            f"<!-- plan-verify\nnew: {claim}\ntier: A\n-->")
+
+    def test_new_sh_present_without_index_row_passes(self, repo):
+        (repo / "test/records").mkdir(parents=True)
+        (repo / "test/records/doc-merge-mutations.sh").write_text("echo ok\n")
+        self._setup(repo, "test/records/doc-merge-mutations.sh")
+        r = run(repo, ["test/records/doc-merge-mutations.sh"], "--strict")
+        assert r.returncode == 0, r.stdout + r.stderr
+
+    def test_new_sh_missing_is_not_delivered(self, repo):
+        self._setup(repo, "test/records/doc-merge-mutations.sh")
+        r = run(repo, ["test/records/doc-merge-mutations.sh"], "--strict")
+        assert r.returncode == 1 and "NOT-DELIVERED" in r.stdout
+
+    def test_new_path_symbol_missing_is_still_not_delivered(self, repo):
+        (repo / "test/records").mkdir(parents=True)
+        (repo / "test/records/doc-merge-mutations.sh").write_text("echo ok\n")
+        self._setup(repo, "test/records/doc-merge-mutations.sh::run_case")
+        r = run(repo, ["test/records/doc-merge-mutations.sh"], "--strict")
+        assert r.returncode == 1 and "NOT-DELIVERED" in r.stdout
+
+    def test_one_indexed_sh_file_sends_other_sh_claims_to_the_index(self, repo):
+        """Known limit (B3 option b): the on-disk check applies only when the
+        index holds NO file of that extension. One stray indexed `.sh` row
+        means the index can hold shell, so every other `.sh` claim goes back
+        to the index lookup — a present-on-disk but unindexed `.sh` file is
+        NOT-DELIVERED again, like the `.py` ghost case."""
+        (repo / "test/records").mkdir(parents=True)
+        (repo / "test/records/doc-merge-mutations.sh").write_text("echo ok\n")
+        self._setup(repo, "test/records/doc-merge-mutations.sh")
+        con = sqlite3.connect(repo / ".codegraph" / "codegraph.db")
+        con.execute("INSERT INTO files VALUES ('scripts/other.sh','h2')")
+        con.commit()
+        con.close()
+        r = run(repo, ["test/records/doc-merge-mutations.sh"], "--strict")
+        assert r.returncode == 1 and "NOT-DELIVERED" in r.stdout

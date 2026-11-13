@@ -87,6 +87,24 @@ def is_document_claim(claim) -> bool:
     return Path(path).suffix.lower() not in CODE_EXTENSIONS
 
 
+def index_cannot_hold(con, claim) -> bool:
+    """True for a path-only claim whose extension has no row in the index.
+
+    `.sh` is in CODE_EXTENSIONS but an index may hold zero shell files, so a
+    lookup could only answer UNRESOLVED (agent_village av-improve B3). Such a
+    claim is checked on disk. Limit: one indexed file of that extension sends
+    every other claim of it back to the index lookup.
+    """
+    if not claim.path or claim.symbol:
+        return False
+    suffix = Path(claim.path).suffix.lower()
+    if not suffix:
+        return False
+    row = con.execute("SELECT 1 FROM files WHERE lower(path) LIKE ? LIMIT 1",
+                      ("%" + suffix,)).fetchone()
+    return row is None
+
+
 def document_verdict(repo_root: Path, claim) -> tuple[str, str] | None:
     """On-disk verdict for a document claim: (reason, detail) or None if fine.
 
@@ -270,7 +288,7 @@ def verify(plan_path: Path, changed: list[str], repo_root: Path,
             con = open_db(db)
             document_claims = 0
             for c in manifest.claims:
-                if is_document_claim(c):
+                if is_document_claim(c) or index_cannot_hold(con, c):
                     document_claims += 1
                     bad = document_verdict(repo_root, c)
                     if bad is None:
