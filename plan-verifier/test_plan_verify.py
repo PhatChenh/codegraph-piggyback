@@ -520,6 +520,32 @@ class TestHook:
         assert r.returncode == 0
         out = json.loads(r.stdout)
         assert "MISSING" in out["hookSpecificOutput"]["additionalContext"]
+        assert "MISSING" in out["additional_context"]
+        assert "<plan-verify>" in out["additional_context"]
+
+    def test_acp_relative_path_plus_cwd_injects(self, repo):
+        write_plan(repo, "<!-- plan-verify\ntouch: src/auth.py::ghost\n-->")
+        r = self.hook({"tool_name": "Write",
+                       "tool_input": {"file_path": "docs/plans/p1-plan.md"},
+                       "cwd": str(repo)})
+        assert r.returncode == 0
+        out = json.loads(r.stdout)
+        assert "MISSING" in out["additional_context"]
+
+    def test_acp_arguments_key_and_strreplace_injects(self, repo):
+        plan = write_plan(repo, "<!-- plan-verify\ntouch: src/auth.py::ghost\n-->")
+        r = self.hook({"tool": "StrReplace",
+                       "arguments": {"file_path": str(plan)},
+                       "cwd": str(repo)})
+        assert r.returncode == 0
+        out = json.loads(r.stdout)
+        assert "MISSING" in out["additional_context"]
+
+    def test_relative_path_without_cwd_silent(self, repo):
+        write_plan(repo, "<!-- plan-verify\ntouch: src/auth.py::ghost\n-->")
+        r = self.hook({"tool_name": "Write",
+                       "tool_input": {"file_path": "docs/plans/p1-plan.md"}})
+        assert r.returncode == 0 and r.stdout.strip() == ""
 
     def test_silent_when_all_ok(self, repo):
         plan = write_plan(

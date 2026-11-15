@@ -169,7 +169,9 @@ Two modes, same core:
    `docs/plans/**`. When an agent writes or edits a plan, the verdict table is injected
    immediately so the planning agent fixes ghosts in the same session, before a human
    gate is ever reached. Hook mode never blocks (advisory only) — the strict gate lives
-   in the pipeline step.
+   in the pipeline step. Cursor ACP/Desktop: same `--hook` via village
+   `av-plan-verify.sh` on `postToolUse` matcher `Write` (user-scope; ACP reads
+   hooks once at spawn). Gate remains orch `av plan-check` / `--strict`.
 
 Ships as a `manifest.json` entry (script + hook events + scope) so
 `piggyback install/init/update` distributes it, like every other tool on this rail.

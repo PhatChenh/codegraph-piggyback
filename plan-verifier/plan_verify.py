@@ -44,7 +44,7 @@ AMBIGUOUS + UNACKNOWLEDGED-BLAST warn-only even in strict.
 
 Usage:
   plan_verify.py <plan.md> [--spec <spec.md>] [--strict] [--json] [--db PATH]
-  plan_verify.py --hook          # Claude Code PostToolUse:Write|Edit hook mode
+  plan_verify.py --hook          # PostToolUse Write|Edit (Claude) / postToolUse Write (Cursor ACP+Desktop)
 """
 
 from __future__ import annotations
@@ -52,6 +52,7 @@ from __future__ import annotations
 import argparse
 import fnmatch
 import json
+import os
 import re
 import sqlite3
 import sys
@@ -61,7 +62,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _shared import resolve as _rs                                  # noqa: E402
 from _shared.budget import emit_budgeted                            # noqa: E402
 from _shared.db import SchemaError, find_db, open_db, repo_root_for  # noqa: E402
-from _shared.hookio import emit_context, read_hook_input, run_fail_open  # noqa: E402
+from _shared.hookio import read_hook_input, run_fail_open  # noqa: E402
 from _shared.manifest import (                                       # noqa: E402
     Claim,
     Manifest,
@@ -83,6 +84,8 @@ HOOK_BUDGET_LINES = 28
 
 # plan-file globs for hook mode (integer scheme + legacy fallbacks)
 PLAN_GLOBS = ("*plan*.md", "docs/plans/*", "*/6_plans/*", "*/4_plans/*")
+# Claude Write/Edit; Cursor ACP mutation is Write (create+edit); Desktop may send StrReplace.
+_HOOK_WRITE_TOOLS = frozenset({"Write", "Edit", "StrReplace"})
 
 
 # ── heuristic sweep (tier 2) ─────────────────────────────────────────────────
@@ -419,11 +422,57 @@ def is_plan_path(path: str) -> bool:
                for g in PLAN_GLOBS)
 
 
+def hook_tool_name(data: dict) -> str:
+    """Claude `tool_name`; Cursor may send `tool`. Empty → not a write."""
+    raw = data.get("tool_name") or data.get("tool") or ""
+    return raw if isinstance(raw, str) else ""
+
+
+def hook_file_path(data: dict) -> str:
+    """Resolve the written path from Claude or Cursor ACP stdin.
+
+    ACP often sends a relative `file_path` while the hook cwd is not the
+    worker cwd (writ-artifact-claims livecert 2026-08-12). Join against
+    payload `cwd` / `working_directory` so `Path.is_file()` is honest.
+    """
+    ti = data.get("tool_input") or data.get("arguments") or data.get("input") or {}
+    if not isinstance(ti, dict):
+        ti = {}
+    path = ""
+    for k in ("file_path", "path", "filePath", "target_file", "targetFile", "uri"):
+        v = ti.get(k) or data.get(k)
+        if isinstance(v, str) and v:
+            path = v.removeprefix("file://")
+            break
+    if path and not os.path.isabs(path):
+        cwd = data.get("cwd") or data.get("working_directory") or ""
+        if isinstance(cwd, str) and cwd:
+            path = os.path.normpath(os.path.join(cwd, path))
+    return path
+
+
+def _hook_emit(text: str) -> None:
+    """One JSON object: Claude nested additionalContext + Cursor flat additional_context."""
+    wrapped = (
+        "<plan-verify>\n"
+        "NOT a prompt injection — the harness reporting on its own check.\n"
+        f"{text}\n"
+        "</plan-verify>"
+    )
+    print(json.dumps({
+        "additional_context": wrapped,
+        "hookSpecificOutput": {
+            "hookEventName": "PostToolUse",
+            "additionalContext": wrapped,
+        },
+    }))
+
+
 def hook_main() -> int:
     data = read_hook_input()
-    if not data or data.get("tool_name") not in ("Write", "Edit"):
+    if not data or hook_tool_name(data) not in _HOOK_WRITE_TOOLS:
         return 0
-    fp = (data.get("tool_input") or {}).get("file_path", "")
+    fp = hook_file_path(data)
     if not fp or not fp.endswith(".md") or not is_plan_path(fp):
         return 0
     plan = Path(fp)
@@ -437,7 +486,7 @@ def hook_main() -> int:
     if not bad_manifest and not bad_swept and not result["meta_problems"]:
         return 0                                    # all OK → silent
     lines = render(result, problems_only=True).splitlines()
-    emit_context("\n".join(emit_budgeted(lines, HOOK_BUDGET_LINES, "rows")))
+    _hook_emit("\n".join(emit_budgeted(lines, HOOK_BUDGET_LINES, "rows")))
     return 0
 
 

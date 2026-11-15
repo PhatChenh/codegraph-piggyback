@@ -167,9 +167,13 @@ def main() -> None:
     if not file_path.endswith(".md"):
         sys.exit(0)
 
-    # tool_result is the file content string (cat -n format from Read tool)
-    tool_result = data.get("tool_result", "")
-    content = tool_result if isinstance(tool_result, str) else json.dumps(tool_result)
+    # The hook payload field is tool_response: Claude Code sends the Read result
+    # as {"type": "text", "file": {"content": ...}}, dsh sends plain text.
+    tool_response = data.get("tool_response", data.get("tool_result", ""))
+    if isinstance(tool_response, dict) and isinstance(tool_response.get("file"), dict):
+        content = tool_response["file"].get("content", "")
+    else:
+        content = tool_response if isinstance(tool_response, str) else json.dumps(tool_response)
 
     db = find_codegraph_db(data.get("cwd", file_path))
     if not db:
