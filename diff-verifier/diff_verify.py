@@ -5,6 +5,7 @@ Reads the SAME `<!-- plan-verify -->` manifest as plan_verify (parser:
 _shared/manifest.py) and verdicts an implementation diff against it:
 
   OUT-OF-SCOPE-TOUCH   changed file not in the declared file list / --allow
+                       (or, with --scope-file, not in that exact path list)
   QUALIFIER-FAIL       a qualifiers: entry ran dirty (named)
   NOT-DELIVERED        declared new: symbol still absent from the DB
   NOT-REMOVED          declared remove: symbol still present in the DB
@@ -17,7 +18,15 @@ wrong-but-green logic, quality, security).
 Usage:
   diff_verify.py <plan.md> --diff <base>..<head> [--strict] [--json]
   diff_verify.py <plan.md> --files f1 f2 ...     [--strict] [--skip-db]
+  diff_verify.py <plan.md> --files f1 f2 ... --scope-file <paths.json>
   diff_verify.py <plan.md> --per-step [--json]   # 2026-07-07 P8 listing mode
+
+`--scope-file <path>` (added 2026-11-15) replaces the scope decision with an
+EXACT list: a JSON array of repo-relative path strings (no patterns). A changed
+file is in scope iff it is in that list; the plan block's declared paths and
+`--allow` play no part. Used when a step's contract file list is the one
+authority for scope and the plan block carries only a `tier:` line. Cannot be
+combined with `--allow` or `--per-step` (both exit 2).
 
 `--per-step` (added 2026-07-07 for agent_village P8 `av verify-wave --preflight`,
 ADR-0011 pinned seam) emits one record per `<!-- plan-verify -->` block —
@@ -133,6 +142,44 @@ def diff_files(repo_root: Path, diff_range: str) -> list[str]:
     return [ln.strip() for ln in out.stdout.splitlines() if ln.strip()]
 
 
+# ── scope file (2026-11-15) — an EXACT list, no patterns ────────────────────
+
+def _strip_dot_slash(p: str) -> str:
+    """`./a.py` → `a.py`; anything else is returned unchanged. Only ONE leading
+    `./` is removed — a path never legitimately starts with two."""
+    return p[2:] if p.startswith("./") else p
+
+
+def load_scope_file(path: Path) -> list[str]:
+    """Read a `--scope-file`: a JSON array of repo-relative path strings.
+
+    Exact paths only — no globs, no patterns. Raises `ValueError` with an
+    `error:`-ready message on any malformed input (missing file, bad JSON,
+    not a list, an item that is not a non-empty string), so `main()` can
+    print it and exit 2.
+    """
+    try:
+        raw = path.read_text(errors="replace")
+    except OSError as e:
+        raise ValueError(f"cannot read --scope-file {path}: {e}") from e
+    try:
+        doc = json.loads(raw)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"--scope-file {path} is not valid JSON: {e}") from e
+    if not isinstance(doc, list):
+        raise ValueError(
+            f"--scope-file {path} must hold a JSON list of path strings, "
+            f"got {type(doc).__name__}")
+    out: list[str] = []
+    for i, item in enumerate(doc):
+        if not isinstance(item, str) or not item.strip():
+            raise ValueError(
+                f"--scope-file {path} item {i} is not a non-empty string: "
+                f"{item!r}")
+        out.append(_strip_dot_slash(item))
+    return out
+
+
 # ── qualifier execution (restricted verbs only — design.md) ─────────────────
 
 def run_qualifier(q: str, repo_root: Path, changed: list[str],
@@ -224,7 +271,8 @@ def _manifest_empty_unknown_keys(meta_problems: list[str]) -> list[str]:
 
 def verify(plan_path: Path, changed: list[str], repo_root: Path,
            allow: list[str], skip_db: bool, db_path: Path | None,
-           step: str | None = None) -> dict:
+           step: str | None = None,
+           scope: list[str] | None = None) -> dict:
     text = plan_path.read_text(errors="replace")
     # BUG-024: `--step` scopes the whole verdict to ONE plan-verify block, so a
     # multi-wave plan can pass mid-phase (before later steps' symbols exist).
@@ -245,12 +293,25 @@ def verify(plan_path: Path, changed: list[str], repo_root: Path,
         notes.append(f"scoped to step {step!r} (BUG-024 per-wave verdict)")
 
     # 1 — scope: every changed file ∈ declared paths ∪ allow globs
+    #     2026-11-15: with `scope` (--scope-file) the decision is an EXACT path
+    #     list instead — block paths and --allow play no part.
     declared = manifest.declared_paths()
-    allowed = [f for f in changed if any(fnmatch.fnmatch(f, g) for g in allow)]
-    for f in changed:
-        if f in declared or f in allowed:
-            continue
-        findings.append({"verdict": OUT_OF_SCOPE, "evidence": f})
+    if scope is not None:
+        scope_set = set(scope)
+        allowed: list[str] = []
+        for f in changed:
+            if _strip_dot_slash(f) in scope_set:
+                continue
+            findings.append({"verdict": OUT_OF_SCOPE, "evidence": f})
+        notes.append(
+            f"scope decided by --scope-file ({len(scope)} exact paths); "
+            "block paths and --allow not used for scope")
+    else:
+        allowed = [f for f in changed if any(fnmatch.fnmatch(f, g) for g in allow)]
+        for f in changed:
+            if f in declared or f in allowed:
+                continue
+            findings.append({"verdict": OUT_OF_SCOPE, "evidence": f})
 
     # 1b — MANIFEST-EMPTY: unknown-key manifest with NO declared paths —
     # OUT-OF-SCOPE will silently check every changed file (the §0.3 trap that
@@ -482,7 +543,14 @@ def main() -> None:
                          "without demanding later steps' symbols (BUG-024)")
     ap.add_argument("--allow", action="append", default=[],
                     help="glob of additionally-allowed changed files (repeatable); "
-                         "run docs / STATE.md updates typically ride here")
+                         "run docs / STATE.md updates typically ride here. "
+                         "Literal paths containing [, * or ? must be escaped "
+                         "with glob.escape")
+    ap.add_argument("--scope-file",
+                    help="JSON file holding an EXACT list of repo-relative "
+                         "paths a task may change (no patterns); replaces the "
+                         "block-paths/--allow scope decision (2026-11-15). "
+                         "Cannot be combined with --allow or --per-step")
     ap.add_argument("--repo-root", help="repo root (default: walk up from plan)")
     ap.add_argument("--db", help="path to codegraph.db (default: walk up)")
     ap.add_argument("--skip-db", action="store_true",
@@ -494,6 +562,19 @@ def main() -> None:
     plan = Path(args.plan)
     if not plan.is_file():
         print(f"error: no such plan file: {plan}", file=sys.stderr)
+        sys.exit(2)
+
+    # `--scope-file` is a second, EXACT scope mode (2026-11-15). It replaces
+    # the block-paths/--allow decision, so mixing it with --allow would leave
+    # two authorities for one question — refused. It is meaningless in the
+    # --per-step listing mode (that mode consumes no diff), so also refused.
+    if args.scope_file and args.allow:
+        print("error: --scope-file and --allow cannot be combined",
+              file=sys.stderr)
+        sys.exit(2)
+    if args.scope_file and args.per_step:
+        print("error: --scope-file cannot be combined with --per-step",
+              file=sys.stderr)
         sys.exit(2)
 
     # `--per-step` short-circuits the diff-verification path. Listing only.
@@ -532,12 +613,20 @@ def main() -> None:
         repo_root = (db_guess.parent.parent if db_guess
                      else plan.resolve().parent)
 
+    scope: list[str] | None = None
+    if args.scope_file:
+        try:
+            scope = load_scope_file(Path(args.scope_file))
+        except ValueError as e:
+            print(f"error: {e}", file=sys.stderr)
+            sys.exit(2)
+
     try:
         changed = (diff_files(repo_root, args.diff) if args.diff
                    else list(args.files))
         result = verify(plan, changed, repo_root, args.allow,
                         args.skip_db, Path(args.db) if args.db else None,
-                        step=args.step)
+                        step=args.step, scope=scope)
     except (FileNotFoundError, SchemaError, subprocess.CalledProcessError) as e:
         print(f"error: {e}", file=sys.stderr)
         sys.exit(2)

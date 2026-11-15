@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import glob
 import json
 import sqlite3
 import subprocess
@@ -688,6 +689,199 @@ class TestDocumentClaims:
         assert not dv.is_document_claim(C("src/a.ts"))
         assert not dv.is_document_claim(C("src/a.py"))
         assert not dv.is_document_claim(C(None))
+
+
+# ── scope file (2026-11-15) — an EXACT list of files a task may change ──────
+
+# A block carrying only a tier: no declared paths, no claims, no qualifiers.
+TIER_ONLY_PLAN = """# Step 1
+
+<!-- plan-verify
+tier: B
+-->
+"""
+
+QUALIFIER_PLAN = """# Step 1
+
+<!-- plan-verify
+tier: B
+qualifiers: diff-only-within src/
+-->
+"""
+
+DECLARED_PLAN = """# Step 1
+
+<!-- plan-verify
+touch: src/db.py::get_conn
+tier: B
+-->
+"""
+
+
+def write_scope(repo: Path, paths) -> Path:
+    """Write a --scope-file holding `paths` and return its path."""
+    p = repo / "scope.json"
+    p.write_text(json.dumps(paths))
+    return p
+
+
+@pytest.fixture()
+def scope_repo(tmp_path: Path) -> Path:
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src/db.py").write_text("def get_conn(): pass\n")
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests/test_db.py").write_text("def test_x(): pass\n")
+    (tmp_path / "plan.md").write_text(TIER_ONLY_PLAN)
+    return tmp_path
+
+
+class TestScopeFile:
+    """--scope-file: the exact list is the ONLY scope authority."""
+
+    def test_listed_file_passes(self, scope_repo):
+        sf = write_scope(scope_repo, ["src/db.py"])
+        r = run(scope_repo, ["src/db.py"], "--strict", "--skip-db",
+                "--scope-file", str(sf))
+        assert r.returncode == 0, r.stdout + r.stderr
+        assert "PASS" in r.stdout
+
+    def test_unlisted_file_is_out_of_scope(self, scope_repo):
+        sf = write_scope(scope_repo, ["src/db.py"])
+        r = run(scope_repo, ["src/db.py", "src/sneaky.py"], "--strict",
+                "--skip-db", "--scope-file", str(sf), "--json")
+        assert r.returncode == 1, r.stdout + r.stderr
+        doc = json.loads(r.stdout)
+        evidence = [f["evidence"] for f in doc["findings"]
+                    if f["verdict"] == dv.OUT_OF_SCOPE]
+        assert evidence == ["src/sneaky.py"], evidence
+
+    def test_scope_note_names_the_mode(self, scope_repo):
+        sf = write_scope(scope_repo, ["src/db.py"])
+        r = run(scope_repo, ["src/db.py"], "--json", "--skip-db",
+                "--scope-file", str(sf))
+        doc = json.loads(r.stdout)
+        assert any("scope decided by --scope-file (1 exact paths)" in n
+                   for n in doc["notes"]), doc["notes"]
+
+    def test_listed_test_file_not_changed_emits_nothing(self, scope_repo):
+        """A tier-only block declares nothing: a listed-but-unchanged test file
+        yields no TESTS-MISSING and no claim verdict at all."""
+        sf = write_scope(scope_repo, ["src/db.py", "tests/test_db.py"])
+        r = run(scope_repo, ["src/db.py"], "--strict", "--skip-db",
+                "--scope-file", str(sf), "--json")
+        assert r.returncode == 0, r.stdout + r.stderr
+        doc = json.loads(r.stdout)
+        assert doc["findings"] == [], doc["findings"]
+        # The n/a NOTE is the existing "nothing declared" message — not a verdict.
+        assert any("TESTS-MISSING n/a" in n for n in doc["notes"])
+
+    def test_block_declared_path_does_not_widen_scope(self, scope_repo):
+        """The block's own `touch:` path plays no part in scope-file mode."""
+        (scope_repo / "plan.md").write_text(DECLARED_PLAN)
+        sf = write_scope(scope_repo, ["src/other.py"])
+        r = run(scope_repo, ["src/db.py"], "--strict", "--skip-db",
+                "--scope-file", str(sf))
+        assert r.returncode == 1, r.stdout + r.stderr
+        assert "OUT-OF-SCOPE-TOUCH" in r.stdout and "src/db.py" in r.stdout
+
+    def test_qualifier_still_fails_in_scope_mode(self, scope_repo):
+        (scope_repo / "plan.md").write_text(QUALIFIER_PLAN)
+        sf = write_scope(scope_repo, ["infra/deploy.sh"])
+        r = run(scope_repo, ["infra/deploy.sh"], "--strict", "--skip-db",
+                "--scope-file", str(sf))
+        assert r.returncode == 1, r.stdout + r.stderr
+        assert "QUALIFIER-FAIL" in r.stdout
+        assert "OUT-OF-SCOPE" not in r.stdout
+
+    def test_dot_slash_prefix_matches(self, scope_repo):
+        sf = write_scope(scope_repo, ["./src/db.py"])
+        r = run(scope_repo, ["src/db.py"], "--strict", "--skip-db",
+                "--scope-file", str(sf))
+        assert r.returncode == 0, r.stdout + r.stderr
+
+    def test_declared_test_file_missing_still_tests_missing(self, scope_repo):
+        """A declared test file that did NOT change still yields TESTS-MISSING
+        (claims/declared-tests code is unchanged in this mode)."""
+        (scope_repo / "plan.md").write_text(
+            "<!-- plan-verify\ntouch: tests/test_db.py\ntier: B\n-->")
+        sf = write_scope(scope_repo, ["src/db.py"])
+        r = run(scope_repo, ["src/db.py"], "--strict", "--skip-db",
+                "--scope-file", str(sf))
+        assert r.returncode == 1, r.stdout + r.stderr
+        assert "TESTS-MISSING" in r.stdout
+
+    @pytest.mark.parametrize("payload", [
+        "{not json",
+        '"just a string"',
+        '{"paths": ["src/db.py"]}',
+        '["src/db.py", 7]',
+        '["src/db.py", ""]',
+        '["src/db.py", null]',
+    ])
+    def test_malformed_scope_file_exits_2(self, scope_repo, payload):
+        bad = scope_repo / "bad.json"
+        bad.write_text(payload)
+        r = run(scope_repo, ["src/db.py"], "--skip-db",
+                "--scope-file", str(bad))
+        assert r.returncode == 2, r.stdout + r.stderr
+        assert r.stderr.startswith("error: "), r.stderr
+
+    def test_missing_scope_file_exits_2(self, scope_repo):
+        r = run(scope_repo, ["src/db.py"], "--skip-db",
+                "--scope-file", str(scope_repo / "nope.json"))
+        assert r.returncode == 2, r.stdout + r.stderr
+        assert r.stderr.startswith("error: "), r.stderr
+
+    def test_scope_file_with_allow_exits_2(self, scope_repo):
+        sf = write_scope(scope_repo, ["src/db.py"])
+        r = run(scope_repo, ["src/db.py"], "--skip-db",
+                "--scope-file", str(sf), "--allow", "src/*")
+        assert r.returncode == 2, r.stdout + r.stderr
+        assert "--scope-file and --allow cannot be combined" in r.stderr
+
+    def test_scope_file_with_per_step_exits_2(self, scope_repo):
+        sf = write_scope(scope_repo, ["src/db.py"])
+        r = run(scope_repo, ["src/db.py"], "--skip-db",
+                "--scope-file", str(sf), "--per-step")
+        assert r.returncode == 2, r.stdout + r.stderr
+        assert "error: " in r.stderr
+
+    def test_scope_none_is_identical_to_omitted(self, scope_repo):
+        """`scope=None` must be byte-for-byte today's behaviour."""
+        sf = write_scope(scope_repo, ["src/db.py"])
+        plan = scope_repo / "plan.md"
+        db = scope_repo / ".codegraph" / "codegraph.db"
+        make_db(scope_repo, delivered=True, removed=True)
+        kwargs = dict(repo_root=scope_repo, allow=[], skip_db=False,
+                      db_path=db)
+        omitted = dv.verify(plan, ["src/db.py"], **kwargs)
+        explicit = dv.verify(plan, ["src/db.py"], scope=None, **kwargs)
+        assert omitted == explicit
+        assert not any("--scope-file" in n for n in omitted["notes"])
+        assert sf.exists()   # the file exists but is not consulted
+
+
+class TestAllowBracketPaths:
+    """`--allow` uses fnmatch, so a bracketed path must be escaped to match
+    itself (glob.escape produces `[[]`)."""
+
+    def test_escaped_bracket_pattern_admits_the_literal_path(self, repo):
+        make_db(repo, delivered=True, removed=True)
+        (repo / "app/[id]").mkdir(parents=True)
+        (repo / "app/[id]/page.tsx").write_text("export default 1\n")
+        r = run(repo, [*GOOD_DIFF, "app/[id]/page.tsx"], "--strict",
+                "--allow", glob.escape("app/[id]/page.tsx"))
+        assert glob.escape("app/[id]/page.tsx") == "app/[[]id]/page.tsx"
+        assert r.returncode == 0, r.stdout + r.stderr
+
+    def test_unescaped_bracket_pattern_does_not_admit_it(self, repo):
+        make_db(repo, delivered=True, removed=True)
+        (repo / "app/[id]").mkdir(parents=True)
+        (repo / "app/[id]/page.tsx").write_text("export default 1\n")
+        r = run(repo, [*GOOD_DIFF, "app/[id]/page.tsx"], "--strict",
+                "--allow", "app/[id]/page.tsx")
+        assert r.returncode == 1, r.stdout + r.stderr
+        assert "OUT-OF-SCOPE-TOUCH" in r.stdout and "app/[id]/page.tsx" in r.stdout
 
 
 class TestPathClaimWithoutIndexRow:
