@@ -70,6 +70,40 @@ A declared path counts as a test file when it matches `test_*`, `*_test.*`,
 `*.test.*`, or lives under `tests/`. No declared test files → the
 TESTS-MISSING check is reported as `n/a (no test files declared)`.
 
+## Scope file (2026-11-15)
+
+`--scope-file <path>` reads a JSON array of repo-relative path strings and
+makes that exact list **the only scope authority**:
+
+- a changed file is in scope **iff** it is in the list (exact string match
+  after stripping one leading `./`); each other changed file is an
+  `OUT-OF-SCOPE-TOUCH` finding, as today;
+- the plan block's declared paths (`touch:` / `new:` / `remove:`) and
+  `--allow` globs play **no part** in the scope decision — a path the block
+  declares but the list omits is still `OUT-OF-SCOPE-TOUCH`;
+- `MANIFEST-EMPTY` is unchanged; qualifiers, claims and declared-test checks
+  are unchanged code. With a block that declares nothing (only a `tier:` line)
+  those checks produce no finding, which is the intended use; a declared test
+  file that did not change still yields `TESTS-MISSING`;
+- a note records the decision: `scope decided by --scope-file (<N> exact
+  paths); block paths and --allow not used for scope`.
+
+`--scope-file` with `--allow`, or with `--per-step`, is refused (exit 2) — two
+authorities for one question is the failure this option exists to avoid. A
+missing file, invalid JSON, a non-list, or an item that is not a non-empty
+string is `error: …` on stderr and exit 2.
+
+**Why:** a task can carry its one authoritative file list outside the plan
+(an orchestration layer's contract/BRIEF for the step) while the plan block
+holds only a `tier:` line. Pattern-based widening is the wrong answer there —
+the task's contract file list is the contract, and it is exact. Without this
+option the only way to express that would be `--allow` globs, which admit
+more than the contract and cannot express `app/[id]/page.tsx` at all
+(`fnmatch` reads `[id]` as a character class).
+
+When `scope is None` — no `--scope-file` — behaviour is byte-for-byte what it
+was before this date.
+
 ## Ground rules inherited
 
 Read-only DB via `_shared/db.py` · CLI standalone (no hook mode — wave-end is
