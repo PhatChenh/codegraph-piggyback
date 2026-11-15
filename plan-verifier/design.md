@@ -76,8 +76,8 @@ remove: src/auth.py::legacy_check
   costs the planner agent a few lines. The same manifest is the input contract for
   plan-visualizer, so writing it pays twice.
 
-**Tier 2: heuristic sweep (fallback).** When no manifest block exists (or in addition to
-it, reported separately at lower confidence): backticked identifiers and path-like tokens
+**Tier 2: heuristic sweep (opt-in, `--swept`).** Off by default since 2026-11-15 (see
+"Unresolvable spelling and opt-in sweep"); when asked: backticked identifiers and path-like tokens
 in the prose, resolved against the DB the same way `decision_index bootstrap` resolves
 anchor tokens — with honest `AMBIGUOUS`/`UNRESOLVED` outcomes, never a guess. Swept claims
 are all treated as `touch`-class (the prose doesn't say intent), so they can produce
@@ -151,7 +151,8 @@ and the caller count with the top caller locations. Shape:
 ### Exit codes
 
 - Default (advisory): always exit 0; the table is informational.
-- `--strict`: exit 1 if any claim is `MISSING`, `COLLISION`, or `BLOCKED`.
+- `--strict`: exit 1 if any claim is `MISSING`, `COLLISION`, or `BLOCKED` (plus
+  `UNRESOLVABLE-SPELLING` since 2026-11-15 — see the section of that name below).
   `AMBIGUOUS` and `UNACKNOWLEDGED-BLAST` warn but do not fail even in strict mode — they
   are judgment calls, and judgment calls belong to the human/LLM layer, not the gate.
 
@@ -250,6 +251,35 @@ noise and it is STRUCTURAL — a plan legitimately names code that doesn't exist
 Deterministic filters shipped from the measurement: strip `:N[-M]` line suffixes
 (so `worker.ts:165-180` resolves as `worker.ts`), skip `://` URLs + doc extensions
 (.md/.json/…), TS/JS keyword stopwords.
+
+## Unresolvable spelling and opt-in sweep (2026-11-15)
+
+**What it catches.** A `new:` claim's symbol is looked up later — after the code is
+written — through `_shared.resolve.resolve()`, which refuses any token not matching
+`^[A-Za-z_][\w.]*$` (a bare `Name` or `Class.member`) and answers UNRESOLVED. So a claim
+written `new: src/store.rs::Store::open` (the Rust/C++ habit of `::` between class and
+member) or `new: a.py::bad name` can NEVER be found by the delivery check, and the step
+fails at the end for a spelling plan-verify could have caught for free. The new verdict
+`UNRESOLVABLE-SPELLING` fires on a `new:` claim that has a symbol (not path-only, not
+`external:`) whose symbol contains `::`, contains whitespace, or fails `_IDENT` — checked
+BEFORE the resolver runs. Evidence names the symbol and the rule, and appends
+`; write it as Store.open` whenever the obvious repair (`::` → `.`, whitespace dropped)
+is itself a legal token.
+
+**It fails `--strict`.** A claim no later check can ever satisfy is as fatal as a missing
+symbol, so `UNRESOLVABLE-SPELLING` joined the strict-fail set (`MISSING`, `COLLISION`,
+`BLOCKED`). Everything else about `new:` is unchanged: a well-formed symbol in a file that
+does not exist yet is still `OK "no existing match"`, and a path-only `new:` entry is
+untouched. `touch:` / `remove:` are also untouched — an unresolvable token there already
+ends as `MISSING`.
+
+**The prose sweep is now opt-in.** Tier 2 runs only when asked (`--swept` on the CLI, or
+`verify(..., swept=True)`); by default `swept_claims` is empty and `counts["swept"]` is 0,
+so the header drops the "N swept" segment and no swept rows are printed. The reason is
+the measured noise in "Measured sweep noise" above — ~50-60% of swept tokens are MISSING
+on real plans, structurally, because a plan legitimately names code that does not exist
+yet. Hook mode never sweeps: an injected 28-line table of low-confidence hints on every
+plan edit is noise, not context.
 
 ## Build deviations (2026-07-05)
 

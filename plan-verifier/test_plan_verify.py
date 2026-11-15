@@ -190,7 +190,8 @@ class TestVerdicts:
 
     def test_swept_tokens_get_verdicts_but_never_strict_fail(self, repo):
         body = "Prose mentions `ghost_helper` and `validate_token` only."
-        r = self.run(repo, body)
+        plan = write_plan(repo, body)
+        r = pv.verify(plan, None, swept=True)
         sw = {c.raw: c.verdict for c in r["swept_claims"]}
         assert sw["ghost_helper"] == pv.MISSING
         assert r["strict_fail"] == []          # swept never gates
@@ -257,7 +258,8 @@ class TestVerdicts:
     def test_swept_prisma_on_disk_ok_suppressed(self, repo):
         (repo / "probes").mkdir()
         (repo / "probes" / "schema.prisma").write_text("")
-        r = self.run(repo, "Prose mentions `probes/schema.prisma` only.")
+        plan = write_plan(repo, "Prose mentions `probes/schema.prisma` only.")
+        r = pv.verify(plan, None, swept=True)
         assert r["swept_claims"][0].verdict == pv.OK
         assert r["swept_claims"][0].evidence == pv.ON_DISK_EVIDENCE
         assert "probes/schema.prisma" not in pv.render(r)
@@ -294,6 +296,100 @@ class TestVerdicts:
         c = r["manifest_claims"][0]
         assert c.verdict == pv.MISSING
         assert c.evidence == "no node or file matches 'loop/a'"
+
+
+# ── unresolvable spelling + opt-in sweep (2026-11-15) ───────────────────────
+
+class TestUnresolvableSpelling:
+    def run(self, repo: Path, body: str) -> dict:
+        plan = write_plan(repo, body)
+        return pv.verify(plan, None)
+
+    def test_rust_style_member_flagged_with_suggestion(self, repo):
+        r = self.run(repo, "<!-- plan-verify\nnew: a.rs::Store::open\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.UNRESOLVABLE
+        assert "can never match the code index" in c.evidence
+        assert "write it as Store.open" in c.evidence
+        assert r["strict_fail"] == [c]
+
+    def test_rust_style_member_fails_strict_cli(self, repo):
+        plan = write_plan(repo, "<!-- plan-verify\nnew: a.rs::Store::open\n-->")
+        r = subprocess.run([sys.executable, str(CLI), str(plan), "--strict"],
+                           capture_output=True, text=True)
+        assert r.returncode == 1
+        assert "UNRESOLVABLE-SPELLING" in r.stdout
+
+    def test_spaced_symbol_flagged(self, repo):
+        r = self.run(repo, "<!-- plan-verify\nnew: a.py::bad name\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.UNRESOLVABLE
+        assert "write it as badname" in c.evidence
+
+    def test_leading_digit_no_suggestion(self, repo):
+        r = self.run(repo, "<!-- plan-verify\nnew: a.py::9lives\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.UNRESOLVABLE
+        assert "write it as" not in c.evidence
+
+    def test_new_wellformed_symbol_absent_file_stays_ok(self, repo):
+        r = self.run(repo, "<!-- plan-verify\nnew: a.py::Store.open\n-->")
+        assert r["manifest_claims"][0].verdict == pv.OK
+
+    def test_new_wellformed_helper_stays_ok(self, repo):
+        r = self.run(repo, "<!-- plan-verify\nnew: a.py::helper\n-->")
+        assert r["manifest_claims"][0].verdict == pv.OK
+
+    def test_path_only_new_unchanged(self, repo):
+        r = self.run(repo, "<!-- plan-verify\nnew: newfile.py\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.OK and c.evidence == "no existing match"
+
+    def test_touch_rust_style_member_still_missing(self, repo):
+        r = self.run(repo, "<!-- plan-verify\ntouch: a.rs::Store::open\n-->")
+        c = r["manifest_claims"][0]
+        assert c.verdict == pv.MISSING
+        assert c.verdict != pv.UNRESOLVABLE
+
+
+class TestOptInSweep:
+    SWEEP_PLAN = ("<!-- plan-verify\ntouch: src/auth.py::validate_token\n-->\n"
+                  "Prose mentions `ghost_helper` and `Settings` only.")
+
+    def test_off_by_default(self, repo):
+        plan = write_plan(repo, self.SWEEP_PLAN)
+        r = pv.verify(plan, None)
+        assert r["swept_claims"] == []
+        assert r["counts"]["swept"] == 0
+        assert "swept" not in pv.render(r)
+
+    def test_on_with_keyword(self, repo):
+        plan = write_plan(repo, self.SWEEP_PLAN)
+        r = pv.verify(plan, None, swept=True)
+        sw = {c.raw: c.verdict for c in r["swept_claims"]}
+        assert sw == {"ghost_helper": pv.MISSING, "Settings": pv.AMBIG}
+        assert r["counts"]["swept"] == 2
+        assert "2 swept" in pv.render(r)
+
+    def test_cli_swept_flag(self, repo):
+        plan = write_plan(repo, self.SWEEP_PLAN)
+        on = subprocess.run([sys.executable, str(CLI), str(plan), "--swept",
+                             "--json"], capture_output=True, text=True)
+        off = subprocess.run([sys.executable, str(CLI), str(plan), "--json"],
+                             capture_output=True, text=True)
+        assert [c["raw"] for c in json.loads(on.stdout)["swept"]] == [
+            "ghost_helper", "Settings"]
+        assert json.loads(off.stdout)["swept"] == []
+
+    def test_hook_never_sweeps(self, repo):
+        plan = write_plan(repo, self.SWEEP_PLAN)
+        r = subprocess.run([sys.executable, str(CLI), "--hook"],
+                           input=json.dumps({"tool_name": "Write",
+                                             "tool_input": {"file_path": str(plan)},
+                                             "cwd": str(repo)}),
+                           capture_output=True, text=True)
+        assert r.returncode == 0
+        assert r.stdout.strip() == ""          # only a swept problem exists
 
 
 # ── on-disk helpers (Step 1, bkt3) ──────────────────────────────────────────

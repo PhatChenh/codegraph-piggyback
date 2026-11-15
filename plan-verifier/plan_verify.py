@@ -23,15 +23,21 @@ Claim sources (design.md, skeleton-contracts Block 2):
     per-block metadata. plan_verify VALIDATES their shape and reports them;
     qualifiers are EXECUTED later by diff-verifier at wave-end, never here.
 
-  Tier 2 — heuristic sweep: backticked identifiers/paths in prose, resolved the
-    same conservative way. Swept claims are touch-class only and lower
-    confidence; they warn but never fail --strict (measured noise rate on real
-    plans in this workspace: see design.md "Measured sweep noise").
+  Tier 2 — heuristic sweep (opt-in, `--swept`): backticked identifiers/paths in
+    prose, resolved the same conservative way. Swept claims are touch-class
+    only and lower confidence; they warn but never fail --strict (measured
+    noise rate on real plans in this workspace: see design.md "Measured sweep
+    noise"). Off by default because of that measured noise; hook mode never
+    sweeps.
 
 Verdicts (frozen, Block 3a): OK · MISSING · AMBIGUOUS · COLLISION · BLOCKED ·
-UNACKNOWLEDGED-BLAST. Gate semantics (frozen, Block 3b): default advisory
-exit 0; --strict exit 1 on any manifest MISSING / COLLISION / BLOCKED.
-AMBIGUOUS + UNACKNOWLEDGED-BLAST warn-only even in strict.
+UNACKNOWLEDGED-BLAST · UNRESOLVABLE-SPELLING. Gate semantics (frozen, Block
+3b): default advisory exit 0; --strict exit 1 on any manifest MISSING /
+COLLISION / BLOCKED / UNRESOLVABLE-SPELLING. AMBIGUOUS +
+UNACKNOWLEDGED-BLAST warn-only even in strict. UNRESOLVABLE-SPELLING is a
+`new:` symbol spelled so the shared resolver can never find it later (`::`
+between class and member, whitespace, or a leading digit) — see design.md
+"Unresolvable spelling and opt-in sweep (2026-11-15)".
 
   Tier 3 — spec-reuse cross-check (`--spec <spec.md>`, added 2026-07-19 after
     the P9-w2b Step 5 probe defect): every row of the spec's "Already built
@@ -44,6 +50,7 @@ AMBIGUOUS + UNACKNOWLEDGED-BLAST warn-only even in strict.
 
 Usage:
   plan_verify.py <plan.md> [--spec <spec.md>] [--strict] [--json] [--db PATH]
+                 [--swept]
   plan_verify.py --hook          # Claude Code PostToolUse:Write|Edit hook mode
 """
 
@@ -73,11 +80,14 @@ from _shared.queries import callers_of, callers_of_name, unresolved_ref_names  #
 
 # ── contract constants ───────────────────────────────────────────────────────
 
-OK, MISSING, AMBIG, COLLISION, BLOCKED, BLAST = (
-    "OK", "MISSING", "AMBIGUOUS", "COLLISION", "BLOCKED", "UNACKNOWLEDGED-BLAST")
+OK, MISSING, AMBIG, COLLISION, BLOCKED, BLAST, UNRESOLVABLE = (
+    "OK", "MISSING", "AMBIGUOUS", "COLLISION", "BLOCKED", "UNACKNOWLEDGED-BLAST",
+    "UNRESOLVABLE-SPELLING")
 
 BLAST_THRESHOLD = 6          # impact-analyzer HIGH tier; config, not contract (Block 3b)
-STRICT_FAILS = {MISSING, COLLISION, BLOCKED}   # manifest claims only (Block 3b)
+# manifest claims only (Block 3b); UNRESOLVABLE-SPELLING added 2026-11-15 —
+# a `new:` symbol the resolver can never match is as fatal as a missing symbol.
+STRICT_FAILS = {MISSING, COLLISION, BLOCKED, UNRESOLVABLE}
 ON_DISK_EVIDENCE = "on disk, not in index"     # path-only claim, file on disk (bkt3)
 HOOK_BUDGET_LINES = 28
 
@@ -248,6 +258,27 @@ def _caller_evidence(callers: list[dict], unmentioned: list[dict]) -> str:
         f" (+{len(unmentioned) - 3} more)" if len(unmentioned) > 3 else "")
 
 
+def _spelling_evidence(symbol: str) -> str:
+    """Evidence for UNRESOLVABLE-SPELLING, plus a `write it as …` suggestion when
+    the obvious repair (`::` → `.`, whitespace dropped) is itself a legal token."""
+    ev = (f'"{symbol}" can never match the code index '
+          "(a symbol must look like Name or Class.member)")
+    fixed = symbol.replace("::", ".")
+    fixed = "".join(fixed.split())
+    if _rs._IDENT.match(fixed):
+        ev += f"; write it as {fixed}"
+    return ev
+
+
+def _unresolvable_symbol(symbol: str) -> bool:
+    """True when `_shared.resolve` would refuse this token outright (it returns
+    UNRESOLVED for anything failing `_IDENT`), so a `new:` claim written this way
+    can never be found by the tool that checks delivery later."""
+    if "::" in symbol or any(ch.isspace() for ch in symbol):
+        return True
+    return not _rs._IDENT.match(symbol)
+
+
 def verdict_claim(con: sqlite3.Connection, claim: Claim, plan_text: str,
                   dynamic_names: set[str],
                   repo_root: Path | None = None) -> None:
@@ -255,6 +286,12 @@ def verdict_claim(con: sqlite3.Connection, claim: Claim, plan_text: str,
         # `external: <abs-path>` declares a target outside the indexed repo —
         # no node/file to resolve, so verdict OK with honest evidence (21.4).
         claim.verdict, claim.evidence = OK, "declared outside the indexed repo (external:)"
+        return
+    # A `new:` symbol spelled outside the resolver's grammar is a claim no later
+    # check can ever find — catch it here, before the lookup answers "no match".
+    if claim.intent == "new" and claim.symbol and _unresolvable_symbol(claim.symbol):
+        claim.verdict = UNRESOLVABLE
+        claim.evidence = _spelling_evidence(claim.symbol)
         return
     token = claim.symbol or claim.path or claim.raw
     res = _rs.resolve(con, token, file_hint=claim.path if claim.symbol else None)
@@ -312,7 +349,7 @@ def verdict_claim(con: sqlite3.Connection, claim: Claim, plan_text: str,
 
 
 def verify(plan_path: Path, db_path: Path | None,
-           spec_path: Path | None = None) -> dict:
+           spec_path: Path | None = None, swept: bool = False) -> dict:
     text = plan_path.read_text(errors="replace")
     db = db_path or find_db(plan_path.resolve().parent)
     if db is None:
@@ -330,10 +367,13 @@ def verify(plan_path: Path, db_path: Path | None,
     already = {c.raw for c in manifest.claims} | {
         c.symbol for c in manifest.claims if c.symbol} | {
         c.path for c in manifest.claims if c.path}
-    swept = [parse_entry("swept", t) for t in sweep_tokens(text, already)]
+    # opt-in: the sweep is ~50-60% MISSING noise on real plans (design.md
+    # "Measured sweep noise"), so it runs only when the caller asks for it.
+    swept_claims = ([parse_entry("swept", t) for t in sweep_tokens(text, already)]
+                    if swept else [])
 
     dynamic = unresolved_ref_names(con)
-    for claim in [*manifest.claims, *swept]:
+    for claim in [*manifest.claims, *swept_claims]:
         verdict_claim(con, claim, text, dynamic, root)
 
     n_manifest = len(manifest.claims)
@@ -342,12 +382,12 @@ def verify(plan_path: Path, db_path: Path | None,
         "plan": str(plan_path),
         "db": str(db),
         "manifest_claims": manifest.claims,
-        "swept_claims": swept,
+        "swept_claims": swept_claims,
         "tiers": manifest.tiers,
         "gates": manifest.gates,
         "qualifiers": manifest.qualifiers,
         "meta_problems": manifest.meta_problems,
-        "counts": {"manifest": n_manifest, "swept": len(swept)},
+        "counts": {"manifest": n_manifest, "swept": len(swept_claims)},
         "strict_fail": strict_fail,
         "reuse_dropped": reuse_dropped,
         "reuse_notes": reuse_notes,
@@ -364,8 +404,9 @@ def _row(prefix: str, claim: Claim) -> str:
 
 def render(result: dict, problems_only: bool = False) -> str:
     mc, sc = result["manifest_claims"], result["swept_claims"]
+    detail = f"{len(mc)} manifest, {len(sc)} swept" if sc else f"{len(mc)} manifest"
     head = (f"── PLAN-VERIFY: {result['plan']} ── "
-            f"{len(mc) + len(sc)} claims ({len(mc)} manifest, {len(sc)} swept)")
+            f"{len(mc) + len(sc)} claims ({detail})")
     rows = []
     for c in mc:
         if problems_only and c.verdict == OK and not c.notes:
@@ -387,9 +428,10 @@ def render(result: dict, problems_only: bool = False) -> str:
     fails = result["strict_fail"]
     tail = ("── verdict: FAIL (" + ", ".join(
         f"{sum(1 for c in fails if c.verdict == v)} {v}"
-        for v in (MISSING, COLLISION, BLOCKED)
+        for v in (MISSING, COLLISION, BLOCKED, UNRESOLVABLE)
         if any(c.verdict == v for c in fails)) + ") ──") if fails else \
-        "── verdict: PASS (no manifest MISSING/COLLISION/BLOCKED) ──"
+        "── verdict: PASS (no manifest MISSING/COLLISION/BLOCKED/" \
+        "UNRESOLVABLE-SPELLING) ──"
     return "\n".join([head, *rows, tail])
 
 
@@ -454,6 +496,8 @@ def main() -> None:
                     "the plan (REUSE-DROPPED warn otherwise; never fails --strict)")
     ap.add_argument("--json", action="store_true", help="machine-readable output")
     ap.add_argument("--db", help="path to .codegraph/codegraph.db (default: walk up)")
+    ap.add_argument("--swept", action="store_true",
+                    help="also sweep backticked words in the prose (noisy; off by default)")
     ap.add_argument("--hook", action="store_true", help="hook mode (stdin JSON)")
     args = ap.parse_args()
 
@@ -472,7 +516,8 @@ def main() -> None:
         print(f"error: no such spec file: {spec}", file=sys.stderr)
         sys.exit(2)
     try:
-        result = verify(plan, Path(args.db) if args.db else None, spec_path=spec)
+        result = verify(plan, Path(args.db) if args.db else None, spec_path=spec,
+                        swept=args.swept)
     except (FileNotFoundError, SchemaError) as e:
         print(f"error: {e}", file=sys.stderr)
         sys.exit(2)
